@@ -14,7 +14,6 @@ func WriteJsonMessage(message *telebot.Message) error {
 		return err
 	}
 
-	// fmt.Println("jsonMessage", string(jsonMessage))
 	err = os.WriteFile(fmt.Sprintf("message_%d.json", message.ID), jsonMessage, 0644)
 	if err != nil {
 		return err

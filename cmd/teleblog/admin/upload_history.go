@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -457,7 +458,7 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			// defer os.RemoveAll(folderPathPrefix)
+			defer os.RemoveAll(folderPathPrefix)
 
 			// Upload the history
 			if err := features.UploadHistory(app, folderPathPrefix); err != nil {

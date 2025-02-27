@@ -2,6 +2,7 @@ package features
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -12,10 +13,11 @@ import (
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/tools/filesystem"
 )
 
 func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, history teleblog.History, chat *teleblog.Chat) error {
-	var preparedPosts []teleblog.Post
+	// var preparedPosts []teleblog.Post
 
 	for _, message := range history.Messages {
 		if message.Type != "message" {
@@ -85,37 +87,53 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 			return err
 		}
 
-		// # Parse photo
-		if message.Photo != nil {
-			fmt.Println("PHOTO ", *message.Photo)
-			fmt.Println("len", len(historyZip.Photos))
-			for _, photoPath := range historyZip.Photos {
-				fmt.Println("photoPath ", photoPath)
-				if strings.Contains(photoPath, *message.Photo) {
-					post.Photos = append(post.Photos, photoPath)
-				}
-			}
-		}
-
 		err = app.Dao().Save(&post)
 		if err != nil {
 			return err
 		}
 
-		preparedPosts = append(preparedPosts, post)
-	}
+		// # Parse photo
+		record, err := app.Dao().FindRecordById("post", post.Id)
+		if err != nil {
+			return err
+		}
 
-	// # Save
-	if len(preparedPosts) == 0 {
-		return nil
-	}
+		if record == nil {
+			return errors.New("record is nil")
+		}
 
-	for _, post := range preparedPosts {
-		err := app.Dao().Save(&post)
+		if message.Photo != nil {
+			for _, photoPath := range historyZip.Photos {
+				if strings.Contains(photoPath, *message.Photo) {
+					file, err := filesystem.NewFileFromPath(photoPath)
+					if err != nil {
+						return err
+					}
+					record.Set("photos", []*filesystem.File{file})
+					break
+				}
+			}
+		}
+
+		fmt.Println("PHOTOS: ", record.Get("photos"))
+
+		err = app.Dao().Save(record)
 		if err != nil {
 			return err
 		}
 	}
+
+	// # Save
+	// if len(preparedPosts) == 0 {
+	// 	return nil
+	// }
+
+	// for _, post := range preparedPosts {
+	// 	err := app.Dao().Save(&post)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	return nil
 }
@@ -124,7 +142,6 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 	var preparedComments []teleblog.Comment
 
 	for _, message := range history.Messages {
-		fmt.Println("id: ", message.Id)
 		if message.Type != "message" {
 			continue
 		}
@@ -310,8 +327,6 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 
 		preparedComments = append(preparedComments, comment)
 	}
-
-	fmt.Println("len preparedComments: ", len(preparedComments))
 
 	// # Save
 	if len(preparedComments) == 0 {
