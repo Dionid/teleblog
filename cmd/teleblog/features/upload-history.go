@@ -47,13 +47,12 @@ func ParseChannelHistory(app core.App, history teleblog.History, chat *teleblog.
 			continue
 		}
 
-		// # Skip photo and files
-		// if message.File != nil {
-		// 	continue
-		// }
-
+		// # Parse photo
 		// if message.Photo != nil {
-		// 	continue
+		// photo, err := filesystem.NewFileFromPath()
+		// if err != nil {
+		// 	return err
+		// }
 		// }
 
 		// # Extract text
@@ -320,17 +319,19 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 }
 
 func UploadHistory(app *pocketbase.PocketBase, zipReader *zip.Reader) error {
-	// Find result.json in zip
+	// Parse zip structure
+	structure, err := teleblog.ParseZipIntoFolderStructure(zipReader)
+	if err != nil {
+		return fmt.Errorf("failed to parse zip structure: %v", err)
+	}
+
+	// Find and open result.json
 	var resultFile *zip.File
 	for _, f := range zipReader.File {
-		if f.Name == "result.json" {
+		if f.Name == structure.ResultJson {
 			resultFile = f
 			break
 		}
-	}
-
-	if resultFile == nil {
-		return fmt.Errorf("no result.json found in zip file")
 	}
 
 	// Open result.json from zip

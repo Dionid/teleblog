@@ -1,8 +1,10 @@
 package teleblog
 
 import (
+	"archive/zip"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"gopkg.in/telebot.v3"
 )
@@ -56,6 +58,47 @@ type History struct {
 	Name     string           `json:"name"`
 	Type     string           `json:"type"` // "public_channel" | "public_supergroup"
 	Messages []HistoryMessage `json:"messages"`
+}
+
+// HistoryFolderStructure represents the folder structure of a Telegram chat export
+type HistoryFolderStructure struct {
+	ResultJson         string   // result.json file
+	Photos             []string // photos directory - contains jpg files
+	Files              []string // files directory - contains various files (HEIC, etc)
+	VideoFiles         []string // video_files directory - contains video files and stickers (webm)
+	VoiceMessages      []string // voice_messages directory - contains voice messages (ogg)
+	RoundVideoMessages []string // round_video_messages directory - contains round video messages (mp4)
+	Stickers           []string // stickers directory - contains sticker files (tgs)
+}
+
+// ParseZipIntoFolderStructure parses a zip reader into HistoryFolderStructure
+func ParseZipIntoFolderStructure(zipReader *zip.Reader) (*HistoryFolderStructure, error) {
+	structure := &HistoryFolderStructure{}
+
+	for _, f := range zipReader.File {
+		switch {
+		case f.Name == "result.json":
+			structure.ResultJson = f.Name
+		case strings.HasPrefix(f.Name, "photos/"):
+			structure.Photos = append(structure.Photos, f.Name)
+		case strings.HasPrefix(f.Name, "files/"):
+			structure.Files = append(structure.Files, f.Name)
+		case strings.HasPrefix(f.Name, "video_files/"):
+			structure.VideoFiles = append(structure.VideoFiles, f.Name)
+		case strings.HasPrefix(f.Name, "voice_messages/"):
+			structure.VoiceMessages = append(structure.VoiceMessages, f.Name)
+		case strings.HasPrefix(f.Name, "round_video_messages/"):
+			structure.RoundVideoMessages = append(structure.RoundVideoMessages, f.Name)
+		case strings.HasPrefix(f.Name, "stickers/"):
+			structure.Stickers = append(structure.Stickers, f.Name)
+		}
+	}
+
+	if structure.ResultJson == "" {
+		return nil, fmt.Errorf("no result.json found in zip file")
+	}
+
+	return structure, nil
 }
 
 func (h *History) GetChatTgId() (int64, error) {
