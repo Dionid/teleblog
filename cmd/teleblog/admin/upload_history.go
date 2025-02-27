@@ -3,14 +3,12 @@ package admin
 import (
 	"archive/zip"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"path/filepath"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
-	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -463,40 +461,8 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 				})
 			}
 
-			// Find result.json in zip
-			var resultFile *zip.File
-			for _, f := range zipReader.File {
-				if f.Name == "result.json" {
-					resultFile = f
-					break
-				}
-			}
-
-			if resultFile == nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": "No result.json found in zip file",
-				})
-			}
-
-			// Open result.json from zip
-			rc, err := resultFile.Open()
-			if err != nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": fmt.Sprintf("Failed to open result.json: %v", err),
-				})
-			}
-			defer rc.Close()
-
-			// Parse JSON content from result.json
-			var history teleblog.History
-			if err := json.NewDecoder(rc).Decode(&history); err != nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": fmt.Sprintf("Invalid JSON format in result.json: %v", err),
-				})
-			}
-
 			// Upload the history
-			if err := features.UploadHistory(app, history); err != nil {
+			if err := features.UploadHistory(app, zipReader); err != nil {
 				return c.JSON(http.StatusInternalServerError, map[string]string{
 					"error": fmt.Sprintf("Failed to upload history: %v", err),
 				})

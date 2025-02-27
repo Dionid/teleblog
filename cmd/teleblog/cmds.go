@@ -1,13 +1,16 @@
 package main
 
 import (
-	"encoding/json"
+	"archive/zip"
+	"bytes"
+	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
-	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/pocketbase/pocketbase"
 	"github.com/spf13/cobra"
 )
@@ -48,24 +51,37 @@ func AdditionalCommands(app *pocketbase.PocketBase) {
 				}
 			})()
 
-			fileName := "result.json"
+			fileName := "export.zip"
 
 			if len(args) > 0 {
 				fileName = args[0]
 			}
 
-			file, err := os.ReadFile(fileName)
+			// Check if the file is a zip file
+			if ext := filepath.Ext(fileName); ext != ".zip" {
+				log.Fatal(errors.New("Not zip"))
+			}
+
+			// Read the file content
+			reader, err := os.Open(fileName)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer reader.Close()
+
+			// Read the entire file into memory
+			fileBytes, err := io.ReadAll(reader)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			var history teleblog.History
-			err = json.Unmarshal(file, &history)
+			// Create a bytes reader which implements io.ReaderAt
+			zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			err = features.UploadHistory(app, history)
+			err = features.UploadHistory(app, zipReader)
 			if err != nil {
 				log.Fatal(err)
 			}

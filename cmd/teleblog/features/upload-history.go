@@ -1,6 +1,7 @@
 package features
 
 import (
+	"archive/zip"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -310,7 +311,33 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 	return nil
 }
 
-func UploadHistory(app *pocketbase.PocketBase, history teleblog.History) error {
+func UploadHistory(app *pocketbase.PocketBase, zipReader *zip.Reader) error {
+	// Find result.json in zip
+	var resultFile *zip.File
+	for _, f := range zipReader.File {
+		if f.Name == "result.json" {
+			resultFile = f
+			break
+		}
+	}
+
+	if resultFile == nil {
+		return fmt.Errorf("no result.json found in zip file")
+	}
+
+	// Open result.json from zip
+	rc, err := resultFile.Open()
+	if err != nil {
+		return fmt.Errorf("failed to open result.json: %v", err)
+	}
+	defer rc.Close()
+
+	// Parse JSON content from result.json
+	var history teleblog.History
+	if err := json.NewDecoder(rc).Decode(&history); err != nil {
+		return fmt.Errorf("invalid JSON format in result.json: %v", err)
+	}
+
 	chatId, err := history.GetChatTgId()
 	if err != nil {
 		return err
