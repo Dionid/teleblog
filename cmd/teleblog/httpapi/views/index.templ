@@ -108,7 +108,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 						@partials.Header()
 					</div>
 					<div class="w-full flex flex-col justify-center p-3 sm:p-6">
-						<div class="card bg-white">
+						<div class="card shadow-sm bg-white">
 							<div class="card-body flex-col p-4 items-center md:flex-row">
 								<div class="avatar">
 									<div class="w-24 rounded-full">
@@ -154,7 +154,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 									</div>
 								}
 								for _, post := range posts {
-									<div class="card bg-white w-full" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
+									<div class="card shadow-sm bg-white w-full" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
 										<div class="card-body break-words p-6">
 											<div class="flex justify-between items-end">
 												<div class=" text-gray-400">

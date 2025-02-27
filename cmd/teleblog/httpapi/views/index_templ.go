@@ -484,7 +484,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"w-full flex flex-col justify-center p-3 sm:p-6\"><div class=\"card bg-white\"><div class=\"card-body flex-col p-4 items-center md:flex-row\"><div class=\"avatar\"><div class=\"w-24 rounded-full\"><img src=\"/public/avatar.jpg\"></div></div><div class=\"p-2 sm:p-4\">Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href=\"https://t.me/it_kachalka\" target=\"_blank\" class=\"border-b-2 border-dashed border-secondary\">🦾\u00a0IT-Качалки 💪</a></div></div></div><script src=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"w-full flex flex-col justify-center p-3 sm:p-6\"><div class=\"card shadow-sm bg-white\"><div class=\"card-body flex-col p-4 items-center md:flex-row\"><div class=\"avatar\"><div class=\"w-24 rounded-full\"><img src=\"/public/avatar.jpg\"></div></div><div class=\"p-2 sm:p-4\">Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href=\"https://t.me/it_kachalka\" target=\"_blank\" class=\"border-b-2 border-dashed border-secondary\">🦾\u00a0IT-Качалки 💪</a></div></div></div><script src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -573,14 +573,14 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 				}
 			}
 			for _, post := range posts {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card bg-white w-full\" :set=\"")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card shadow-md bg-white w-full\" :set=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var41 string
 				templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf(`post = dataById["%s"]`, post.Id))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 157, Col: 95}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 157, Col: 105}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var41))
 				if templ_7745c5c3_Err != nil {
