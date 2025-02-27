@@ -2,7 +2,6 @@ package features
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -17,7 +16,16 @@ import (
 )
 
 func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, history teleblog.History, chat *teleblog.Chat) error {
-	// var preparedPosts []teleblog.Post
+	fsys, err := app.NewFilesystem()
+	if err != nil {
+		return err
+	}
+	defer fsys.Close()
+
+	postCollection, err := app.Dao().FindCollectionByNameOrId("post")
+	if err != nil {
+		return err
+	}
 
 	for _, message := range history.Messages {
 		if message.Type != "message" {
@@ -92,16 +100,6 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 			return err
 		}
 
-		// # Parse photo
-		record, err := app.Dao().FindRecordById("post", post.Id)
-		if err != nil {
-			return err
-		}
-
-		if record == nil {
-			return errors.New("record is nil")
-		}
-
 		if message.Photo != nil {
 			for _, photoPath := range historyZip.Photos {
 				if strings.Contains(photoPath, *message.Photo) {
@@ -109,18 +107,56 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 					if err != nil {
 						return err
 					}
-					record.Set("photos", []*filesystem.File{file})
+
+					fileName := postCollection.Id + "/" + post.Id + "/" + file.Name
+
+					fmt.Println("fileName: ", fileName)
+
+					err = fsys.UploadFile(file, fileName)
+					if err != nil {
+						return err
+					}
+
+					post.Photos = append(post.Photos, file.Name)
 					break
 				}
 			}
 		}
 
-		fmt.Println("PHOTOS: ", record.Get("photos"))
-
-		err = app.Dao().Save(record)
+		err = app.Dao().Save(&post)
 		if err != nil {
 			return err
 		}
+
+		// // # Parse photo
+		// record, err := app.Dao().FindRecordById("post", post.Id)
+		// if err != nil {
+		// 	return err
+		// }
+
+		// if record == nil {
+		// 	return errors.New("record is nil")
+		// }
+
+		// if message.Photo != nil {
+		// 	for _, photoPath := range historyZip.Photos {
+		// 		if strings.Contains(photoPath, *message.Photo) {
+		// 			file, err := filesystem.NewFileFromPath(photoPath)
+		// 			if err != nil {
+		// 				return err
+		// 			}
+		// 			record.Set("photos", []*filesystem.File{file})
+		// 			break
+		// 		}
+		// 	}
+		// }
+
+		// fmt.Println("PHOTOS: ", record.Get("photos"))
+
+		// err = app.Dao().Save(record)
+		// if err != nil {
+		// 	return err
+		// }
 	}
 
 	// # Save

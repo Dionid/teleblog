@@ -89,7 +89,7 @@ MG: Add content improvement features
 1. ~~Tags filter~~
 1. Images ([getFile](https://core.telegram.org/bots/api#getfile))
     1. Webhook
-    1. History
+    1. ~~History~~
 1. Videos ([getFile](https://core.telegram.org/bots/api#getfile))
 1. Link to replied comment
 1. Quote replied comment
