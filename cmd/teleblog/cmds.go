@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
@@ -12,6 +13,32 @@ import (
 )
 
 func AdditionalCommands(app *pocketbase.PocketBase) {
+	app.RootCmd.AddCommand(&cobra.Command{
+		Use:   "reset-password",
+		Short: "Reset admin password",
+		Long:  "Reset the password for an admin user. Usage: reset-password [email] [new-password]",
+		Args:  cobra.ExactArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			email := args[0]
+			newPassword := args[1]
+
+			admin, err := app.Dao().FindAdminByEmail(email)
+			if err != nil {
+				log.Fatalf("Failed to find admin with email %s: %v", email, err)
+			}
+
+			if err := admin.SetPassword(newPassword); err != nil {
+				log.Fatalf("Failed to set new password: %v", err)
+			}
+
+			if err := app.Dao().SaveAdmin(admin); err != nil {
+				log.Fatalf("Failed to save admin: %v", err)
+			}
+
+			fmt.Printf("Successfully reset password for admin %s\n", email)
+		},
+	})
+
 	app.RootCmd.AddCommand(&cobra.Command{
 		Use: "upload-history",
 		Run: func(cmd *cobra.Command, args []string) {

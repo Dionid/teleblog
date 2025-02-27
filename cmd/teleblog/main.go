@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Dionid/teleblog/cmd/teleblog/admin"
 	"github.com/Dionid/teleblog/cmd/teleblog/botapi"
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi"
 	_ "github.com/Dionid/teleblog/cmd/teleblog/pb_migrations"
@@ -34,6 +35,9 @@ func main() {
 		return mails.SendRecordVerification(app, e.Record)
 	})
 
+	// Initialize admin UI with custom buttons
+	admin.InitUploadHistoryUI(app)
+
 	AdditionalCommands(app)
 
 	// # Migrations
@@ -50,7 +54,6 @@ func main() {
 	})
 
 	// # HTTP API
-
 	httpapi.InitApi(httpapi.Config{
 		Env:    config.Env,
 		UserId: config.UserId,
