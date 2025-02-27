@@ -75,32 +75,38 @@ func FolderToHistoryExport(folderPath string) (*HistoryExport, error) {
 	// Initialize an empty HistoryExport struct
 	historyExport := HistoryExport{}
 
-	// List all files in the given folder path
-	files, err := filepath.Glob(filepath.Join(folderPath, "*"))
+	// Walk through the directory tree
+	err := filepath.Walk(folderPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Skip directories
+		if info.IsDir() {
+			return nil
+		}
+
+		// Categorize files based on their directory
+		switch filepath.Dir(path) {
+		case filepath.Join(folderPath, "photos"):
+			historyExport.Photos = append(historyExport.Photos, path)
+		case filepath.Join(folderPath, "files"):
+			historyExport.Files = append(historyExport.Files, path)
+		case filepath.Join(folderPath, "video_files"):
+			historyExport.VideoFiles = append(historyExport.VideoFiles, path)
+		case filepath.Join(folderPath, "voice_messages"):
+			historyExport.VoiceMessages = append(historyExport.VoiceMessages, path)
+		case filepath.Join(folderPath, "round_video_messages"):
+			historyExport.RoundVideoMessages = append(historyExport.RoundVideoMessages, path)
+		case filepath.Join(folderPath, "stickers"):
+			historyExport.Stickers = append(historyExport.Stickers, path)
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
-	}
-
-	// Iterate through the files to categorize them
-	for _, file := range files {
-		// Check if the file is a directory
-		if fi, err := os.Stat(file); err != nil || fi.IsDir() {
-			continue
-		}
-		switch filepath.Dir(file) {
-		case filepath.Join(folderPath, "photos"):
-			historyExport.Photos = append(historyExport.Photos, file)
-		case filepath.Join(folderPath, "files"):
-			historyExport.Files = append(historyExport.Files, file)
-		case filepath.Join(folderPath, "video_files"):
-			historyExport.VideoFiles = append(historyExport.VideoFiles, file)
-		case filepath.Join(folderPath, "voice_messages"):
-			historyExport.VoiceMessages = append(historyExport.VoiceMessages, file)
-		case filepath.Join(folderPath, "round_video_messages"):
-			historyExport.RoundVideoMessages = append(historyExport.RoundVideoMessages, file)
-		case filepath.Join(folderPath, "stickers"):
-			historyExport.Stickers = append(historyExport.Stickers, file)
-		}
 	}
 
 	// Assuming result.json is directly in the folder path

@@ -91,6 +91,8 @@ type Post struct {
 	TgMessageId      int           `json:"tgMessageId" db:"tg_post_id"`
 	TgGroupMessageId int           `json:"tgGroupMessageId" db:"tg_group_message_id"`
 	TgMessageRaw     types.JsonMap `json:"tgMessageRaw" db:"tg_message_raw"`
+
+	Photos types.JsonArray[string] `json:"photos" db:"photos"`
 }
 
 func (m *Post) TableName() string {

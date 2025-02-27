@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -258,9 +257,9 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 							<p class="subtitle">Создайте и загрузите сюда Zip файл, с выгрузкой истории чата из Telegram (в формате JSON).</p>
 							<form id="uploadForm" enctype="multipart/form-data">
 								<div class="form-group">
-									<label for="historyFile">Файл истории (JSON)</label>
+									<label for="historyFile">Файл истории (ZIP)</label>
 									<div class="file-input-wrapper" id="dropZone">
-										<input type="file" id="historyFile" name="historyFile" accept=".json" class="file-input" required>
+										<input type="file" id="historyFile" name="historyFile" accept=".zip" class="file-input" required>
 										<div class="file-input-text">
 											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 												<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -336,8 +335,16 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 						function updateFileName() {
 							const file = fileInput.files[0];
 							if (file) {
+								if (!file.name.toLowerCase().endsWith('.zip')) {
+									selectedFile.style.display = 'block';
+									selectedFile.textContent = 'Ошибка: Разрешены только ZIP файлы';
+									selectedFile.style.color = 'var(--error-color)';
+									submitButton.disabled = true;
+									return;
+								}
 								selectedFile.style.display = 'block';
 								selectedFile.textContent = file.name;
+								selectedFile.style.color = 'var(--text-secondary)';
 								submitButton.disabled = false;
 							} else {
 								selectedFile.style.display = 'none';
@@ -369,35 +376,14 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 								const resultDiv = document.getElementById('result');
 
 								if (response.ok) {
-									resultDiv.innerHTML = '
-										<div class="alert alert-success">
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-											</svg>
-											' + data.message + '
-										</div>
-									';
+									resultDiv.innerHTML = '<div class="alert alert-success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>' + data.message + '</div>';
 									fileInput.value = '';
 									selectedFile.style.display = 'none';
 								} else {
-									resultDiv.innerHTML = '
-										<div class="alert alert-error">
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-											</svg>
-											' + data.error + '
-										</div>
-									';
+									resultDiv.innerHTML = '<div class="alert alert-error"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>' + data.error + '</div>';
 								}
 							} catch (error) {
-								document.getElementById('result').innerHTML = '
-									<div class="alert alert-error">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-											<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-										</svg>
-										Ошибка загрузки: ' + error.message + '
-									</div>
-								';
+								document.getElementById('result').innerHTML = '<div class="alert alert-error"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>Ошибка загрузки: ' + error.message + '</div>';
 							} finally {
 								// Reset loading state
 								buttonText.style.display = 'block';
@@ -471,7 +457,7 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			defer os.RemoveAll(folderPathPrefix)
+			// defer os.RemoveAll(folderPathPrefix)
 
 			// Upload the history
 			if err := features.UploadHistory(app, folderPathPrefix); err != nil {

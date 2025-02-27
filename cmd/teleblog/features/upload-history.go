@@ -22,10 +22,6 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 			continue
 		}
 
-		if message.Text == "" {
-			continue
-		}
-
 		// # Skip if exists
 		total := struct {
 			Total int64 `db:"total"`
@@ -52,6 +48,11 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 
 		for _, entity := range message.TextEntities {
 			text += entity.Text
+		}
+
+		// !!! SKIP IF NO TEXT
+		if text == "" {
+			continue
 		}
 
 		// # Create new
@@ -84,22 +85,22 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 			return err
 		}
 
+		// # Parse photo
+		if message.Photo != nil {
+			fmt.Println("PHOTO ", *message.Photo)
+			fmt.Println("len", len(historyZip.Photos))
+			for _, photoPath := range historyZip.Photos {
+				fmt.Println("photoPath ", photoPath)
+				if strings.Contains(photoPath, *message.Photo) {
+					post.Photos = append(post.Photos, photoPath)
+				}
+			}
+		}
+
 		err = app.Dao().Save(&post)
 		if err != nil {
 			return err
 		}
-
-		// // # Parse photo
-		// if message.Photo != nil {
-		// 	for _, photoPath := range historyZip.Photos {
-		// 		if photoPath == *message.Photo {
-		// 			photofile, err := filesystem.NewFileFromPath("/local/path/to/file1.txt")
-		// 			if err != nil {
-		// 				return err
-		// 			}
-		// 		}
-		// 	}
-		// }
 
 		preparedPosts = append(preparedPosts, post)
 	}

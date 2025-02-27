@@ -36,7 +36,7 @@ Don't take this project as a reference for best practices.
     1. `cd cmd/teleblog && cp app.env.example app.env` and fill it with your data
 1. Run
     1. `make serve-teleblog` to run Teleblog + Pocketbase admin panel
-    1. Go to 127.0.0.1:8090/_ to see Pocketbase admin panel and fill in your user
+    1. Go to `127.0.0.1:8090/_` to see Pocketbase admin panel and fill in your user
     1. Create "verification_token"
     1. Send this token to your bot `/verifytoken YOUR_TOKEN`
     1. Add bot to public TG channels and their groups
