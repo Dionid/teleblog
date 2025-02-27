@@ -26,6 +26,29 @@ type HistoryMessage struct {
 	Photo            *string                    `json:"photo"`
 	ReplyToMessageId int                        `json:"reply_to_message_id"`
 	ForwardedFrom    *string                    `json:"forwarded_from"`
+	// Additional fields from result.json
+	Actor             string                   `json:"actor"`
+	ActorId           string                   `json:"actor_id"`
+	Action            string                   `json:"action"`
+	Title             string                   `json:"title"`
+	Text              interface{}              `json:"text"` // Can be string or array of objects
+	FileName          string                   `json:"file_name"`
+	FileSize          int                      `json:"file_size"`
+	Thumbnail         string                   `json:"thumbnail"`
+	ThumbnailFileSize int                      `json:"thumbnail_file_size"`
+	MediaType         string                   `json:"media_type"` // video_file, voice_message, video_message
+	MimeType          string                   `json:"mime_type"`
+	DurationSeconds   int                      `json:"duration_seconds"`
+	Width             int                      `json:"width"`
+	Height            int                      `json:"height"`
+	PhotoFileSize     int                      `json:"photo_file_size"`
+	Reactions         []HistoryMessageReaction `json:"reactions"`
+}
+
+type HistoryMessageReaction struct {
+	Type  string `json:"type"` // emoji
+	Count int    `json:"count"`
+	Emoji string `json:"emoji"`
 }
 
 type History struct {

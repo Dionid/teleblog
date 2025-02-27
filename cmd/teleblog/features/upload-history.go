@@ -22,6 +22,10 @@ func ParseChannelHistory(app core.App, history teleblog.History, chat *teleblog.
 			continue
 		}
 
+		if message.Text == "" {
+			continue
+		}
+
 		// # Skip if exists
 		total := struct {
 			Total int64 `db:"total"`
@@ -113,6 +117,10 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 	for _, message := range history.Messages {
 		fmt.Println("id: ", message.Id)
 		if message.Type != "message" {
+			continue
+		}
+
+		if message.Text == "" {
 			continue
 		}
 
