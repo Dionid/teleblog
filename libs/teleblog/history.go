@@ -1,10 +1,10 @@
 package teleblog
 
 import (
-	"archive/zip"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strconv"
-	"strings"
 
 	"gopkg.in/telebot.v3"
 )
@@ -60,8 +60,8 @@ type History struct {
 	Messages []HistoryMessage `json:"messages"`
 }
 
-// HistoryFolderStructure represents the folder structure of a Telegram chat export
-type HistoryFolderStructure struct {
+// HistoryZip represents the folder structure of a Telegram chat export
+type HistoryExport struct {
 	ResultJson         string   // result.json file
 	Photos             []string // photos directory - contains jpg files
 	Files              []string // files directory - contains various files (HEIC, etc)
@@ -71,34 +71,47 @@ type HistoryFolderStructure struct {
 	Stickers           []string // stickers directory - contains sticker files (tgs)
 }
 
-// ParseZipIntoFolderStructure parses a zip reader into HistoryFolderStructure
-func ParseZipIntoFolderStructure(zipReader *zip.Reader) (*HistoryFolderStructure, error) {
-	structure := &HistoryFolderStructure{}
+func FolderToHistoryExport(folderPath string) (*HistoryExport, error) {
+	// Initialize an empty HistoryExport struct
+	historyExport := HistoryExport{}
 
-	for _, f := range zipReader.File {
-		switch {
-		case f.Name == "result.json":
-			structure.ResultJson = f.Name
-		case strings.HasPrefix(f.Name, "photos/"):
-			structure.Photos = append(structure.Photos, f.Name)
-		case strings.HasPrefix(f.Name, "files/"):
-			structure.Files = append(structure.Files, f.Name)
-		case strings.HasPrefix(f.Name, "video_files/"):
-			structure.VideoFiles = append(structure.VideoFiles, f.Name)
-		case strings.HasPrefix(f.Name, "voice_messages/"):
-			structure.VoiceMessages = append(structure.VoiceMessages, f.Name)
-		case strings.HasPrefix(f.Name, "round_video_messages/"):
-			structure.RoundVideoMessages = append(structure.RoundVideoMessages, f.Name)
-		case strings.HasPrefix(f.Name, "stickers/"):
-			structure.Stickers = append(structure.Stickers, f.Name)
+	// List all files in the given folder path
+	files, err := filepath.Glob(filepath.Join(folderPath, "*"))
+	if err != nil {
+		return nil, err
+	}
+
+	// Iterate through the files to categorize them
+	for _, file := range files {
+		// Check if the file is a directory
+		if fi, err := os.Stat(file); err != nil || fi.IsDir() {
+			continue
+		}
+		switch filepath.Dir(file) {
+		case filepath.Join(folderPath, "photos"):
+			historyExport.Photos = append(historyExport.Photos, file)
+		case filepath.Join(folderPath, "files"):
+			historyExport.Files = append(historyExport.Files, file)
+		case filepath.Join(folderPath, "video_files"):
+			historyExport.VideoFiles = append(historyExport.VideoFiles, file)
+		case filepath.Join(folderPath, "voice_messages"):
+			historyExport.VoiceMessages = append(historyExport.VoiceMessages, file)
+		case filepath.Join(folderPath, "round_video_messages"):
+			historyExport.RoundVideoMessages = append(historyExport.RoundVideoMessages, file)
+		case filepath.Join(folderPath, "stickers"):
+			historyExport.Stickers = append(historyExport.Stickers, file)
 		}
 	}
 
-	if structure.ResultJson == "" {
-		return nil, fmt.Errorf("no result.json found in zip file")
+	// Assuming result.json is directly in the folder path
+	resultJsonPath := filepath.Join(folderPath, "result.json")
+	if _, err := os.Stat(resultJsonPath); err != nil {
+		return nil, err
 	}
 
-	return structure, nil
+	historyExport.ResultJson = resultJsonPath
+
+	return &historyExport, nil
 }
 
 func (h *History) GetChatTgId() (int64, error) {

@@ -1,6 +1,7 @@
 package file
 
 import (
+	"archive/zip"
 	"embed"
 	"fmt"
 	"io"
@@ -173,4 +174,37 @@ func CopyFromEmbed(
 	}
 
 	return CreateAndCopyFromEmbed(folder, rootFolderName, content, dest)
+}
+
+func Unzip(zipReader *zip.Reader, dist string) error {
+	for _, file := range zipReader.File {
+		if file.FileInfo().IsDir() {
+			continue
+		}
+
+		rc, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer rc.Close()
+
+		fileBytes, err := io.ReadAll(rc)
+		if err != nil {
+			return err
+		}
+
+		// Assuming the directory structure is the same as the zip file
+		// and we want to extract the files to the same directory structure
+		// under the current working directory.
+		extractPath := filepath.Join(dist, file.Name)
+		if err := os.MkdirAll(filepath.Dir(extractPath), os.ModePerm); err != nil {
+			return err
+		}
+
+		if err := os.WriteFile(extractPath, fileBytes, file.Mode()); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

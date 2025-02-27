@@ -1,9 +1,9 @@
 package features
 
 import (
-	"archive/zip"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -14,7 +14,7 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
-func ParseChannelHistory(app core.App, history teleblog.History, chat *teleblog.Chat) error {
+func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, history teleblog.History, chat *teleblog.Chat) error {
 	var preparedPosts []teleblog.Post
 
 	for _, message := range history.Messages {
@@ -46,14 +46,6 @@ func ParseChannelHistory(app core.App, history teleblog.History, chat *teleblog.
 		if total.Total > 0 {
 			continue
 		}
-
-		// # Parse photo
-		// if message.Photo != nil {
-		// photo, err := filesystem.NewFileFromPath()
-		// if err != nil {
-		// 	return err
-		// }
-		// }
 
 		// # Extract text
 		text := ""
@@ -91,6 +83,23 @@ func ParseChannelHistory(app core.App, history teleblog.History, chat *teleblog.
 		if err != nil {
 			return err
 		}
+
+		err = app.Dao().Save(&post)
+		if err != nil {
+			return err
+		}
+
+		// // # Parse photo
+		// if message.Photo != nil {
+		// 	for _, photoPath := range historyZip.Photos {
+		// 		if photoPath == *message.Photo {
+		// 			photofile, err := filesystem.NewFileFromPath("/local/path/to/file1.txt")
+		// 			if err != nil {
+		// 				return err
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		preparedPosts = append(preparedPosts, post)
 	}
@@ -318,32 +327,22 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 	return nil
 }
 
-func UploadHistory(app *pocketbase.PocketBase, zipReader *zip.Reader) error {
+func UploadHistory(app *pocketbase.PocketBase, historyExportPath string) error {
 	// Parse zip structure
-	structure, err := teleblog.ParseZipIntoFolderStructure(zipReader)
+	structure, err := teleblog.FolderToHistoryExport(historyExportPath)
 	if err != nil {
 		return fmt.Errorf("failed to parse zip structure: %v", err)
 	}
 
-	// Find and open result.json
-	var resultFile *zip.File
-	for _, f := range zipReader.File {
-		if f.Name == structure.ResultJson {
-			resultFile = f
-			break
-		}
-	}
-
-	// Open result.json from zip
-	rc, err := resultFile.Open()
+	resultFile, err := os.Open(structure.ResultJson)
 	if err != nil {
-		return fmt.Errorf("failed to open result.json: %v", err)
+		return err
 	}
-	defer rc.Close()
+	defer resultFile.Close()
 
 	// Parse JSON content from result.json
 	var history teleblog.History
-	if err := json.NewDecoder(rc).Decode(&history); err != nil {
+	if err := json.NewDecoder(resultFile).Decode(&history); err != nil {
 		return fmt.Errorf("invalid JSON format in result.json: %v", err)
 	}
 
@@ -362,7 +361,7 @@ func UploadHistory(app *pocketbase.PocketBase, zipReader *zip.Reader) error {
 	}
 
 	if chat.TgType == "channel" {
-		err := ParseChannelHistory(app, history, &chat)
+		err := ParseChannelHistory(app, *structure, history, &chat)
 		if err != nil {
 			return err
 		}

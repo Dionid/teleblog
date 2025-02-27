@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
+	"github.com/Dionid/teleblog/libs/file"
 	"github.com/pocketbase/pocketbase"
 	"github.com/spf13/cobra"
 )
@@ -81,7 +82,15 @@ func AdditionalCommands(app *pocketbase.PocketBase) {
 				log.Fatal(err)
 			}
 
-			err = features.UploadHistory(app, zipReader)
+			folderPathPrefix := "extracted"
+
+			// Unzip the zip file
+			err = file.Unzip(zipReader, folderPathPrefix)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			err = features.UploadHistory(app, folderPathPrefix)
 			if err != nil {
 				log.Fatal(err)
 			}

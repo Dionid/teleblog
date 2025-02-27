@@ -5,10 +5,12 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"path/filepath"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
+	"github.com/Dionid/teleblog/libs/file"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -427,17 +429,17 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 				})
 			}
 
-			file := files[0]
+			uploadedFile := files[0]
 
 			// Check if the file is a zip file
-			if ext := filepath.Ext(file.Name); ext != ".zip" {
+			if ext := filepath.Ext(uploadedFile.Name); ext != ".zip" {
 				return c.JSON(http.StatusBadRequest, map[string]string{
 					"error": "Only zip files are allowed",
 				})
 			}
 
 			// Read the file content
-			reader, err := file.Reader.Open()
+			reader, err := uploadedFile.Reader.Open()
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, map[string]string{
 					"error": fmt.Sprintf("Failed to read file: %v", err),
@@ -461,8 +463,15 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 				})
 			}
 
+			// Unzip the zip file
+			folderPathPrefix := "extracted"
+			err = file.Unzip(zipReader, folderPathPrefix)
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			// Upload the history
-			if err := features.UploadHistory(app, zipReader); err != nil {
+			if err := features.UploadHistory(app, folderPathPrefix); err != nil {
 				return c.JSON(http.StatusInternalServerError, map[string]string{
 					"error": fmt.Sprintf("Failed to upload history: %v", err),
 				})
