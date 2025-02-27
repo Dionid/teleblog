@@ -573,7 +573,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 				}
 			}
 			for _, post := range posts {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card shadow-md bg-white w-full\" :set=\"")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card shadow-sm bg-white w-full\" :set=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
