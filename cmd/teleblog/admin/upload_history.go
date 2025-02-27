@@ -1,9 +1,13 @@
 package admin
 
 import (
+	"archive/zip"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"path/filepath"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
 	"github.com/Dionid/teleblog/libs/teleblog"
@@ -249,7 +253,7 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 					<div class="container">
 						<div class="card">
 							<h1>Загрузка истории Telegram</h1>
-							<p class="subtitle">Загрузите JSON файл, экспортированный из Telegram, чтобы импортировать историю чата.</p>
+							<p class="subtitle">Создайте и загрузите сюда Zip файл, с выгрузкой истории чата из Telegram (в формате JSON).</p>
 							<form id="uploadForm" enctype="multipart/form-data">
 								<div class="form-group">
 									<label for="historyFile">Файл истории (JSON)</label>
@@ -261,7 +265,7 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 												<polyline points="17 8 12 3 7 8"/>
 												<line x1="12" y1="3" x2="12" y2="15"/>
 											</svg>
-											<p>Перетащите файл сюда или <span>выберите файл</span></p>
+											<p>Перетащите zip файл сюда или <span>выберите файл</span></p>
 										</div>
 									</div>
 									<div class="selected-file" id="selectedFile"></div>
@@ -427,6 +431,13 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 
 			file := files[0]
 
+			// Check if the file is a zip file
+			if ext := filepath.Ext(file.Name); ext != ".zip" {
+				return c.JSON(http.StatusBadRequest, map[string]string{
+					"error": "Only zip files are allowed",
+				})
+			}
+
 			// Read the file content
 			reader, err := file.Reader.Open()
 			if err != nil {
@@ -436,11 +447,51 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 			}
 			defer reader.Close()
 
-			// Parse the JSON content
-			var history teleblog.History
-			if err := json.NewDecoder(reader).Decode(&history); err != nil {
+			// Read the entire file into memory
+			fileBytes, err := io.ReadAll(reader)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, map[string]string{
+					"error": fmt.Sprintf("Failed to read zip file: %v", err),
+				})
+			}
+
+			// Create a bytes reader which implements io.ReaderAt
+			zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
+			if err != nil {
 				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": fmt.Sprintf("Invalid JSON format: %v", err),
+					"error": fmt.Sprintf("Failed to read zip file: %v", err),
+				})
+			}
+
+			// Find result.json in zip
+			var resultFile *zip.File
+			for _, f := range zipReader.File {
+				if f.Name == "result.json" {
+					resultFile = f
+					break
+				}
+			}
+
+			if resultFile == nil {
+				return c.JSON(http.StatusBadRequest, map[string]string{
+					"error": "No result.json found in zip file",
+				})
+			}
+
+			// Open result.json from zip
+			rc, err := resultFile.Open()
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, map[string]string{
+					"error": fmt.Sprintf("Failed to open result.json: %v", err),
+				})
+			}
+			defer rc.Close()
+
+			// Parse JSON content from result.json
+			var history teleblog.History
+			if err := json.NewDecoder(rc).Decode(&history); err != nil {
+				return c.JSON(http.StatusBadRequest, map[string]string{
+					"error": fmt.Sprintf("Invalid JSON format in result.json: %v", err),
 				})
 			}
 
