@@ -42,9 +42,14 @@ Don't take this project as a reference for best practices.
     1. Add bot to public TG channels and their groups
     1. Send group links to your bot `/addchannel YOUR_CHANNEL_LINK`
 1. Upload history messages
-    1. Export history from your channel
-    1. Paste it to `cmd/teleblog` folder
-    1. Run `cd cmd/teleblog && go run . upload-history YOUR_HISTORY.json` (! DONT FORGET to upload channel posts firstly and linked groups posts afterwards)
+    1. Export JSON history from your channel
+    1. Via terminal
+        1. Paste it to `cmd/teleblog` folder
+        1. Run `cd cmd/teleblog && go run . upload-history YOUR_HISTORY.json` (! DONT FORGET to upload channel posts firstly and linked groups posts afterwards)
+    1. Via UI
+        1. Run your application
+        1. Authorize in admin panel (`/_`)
+        1. Go to `/_/upload-history` and upload file to it
 1. Customization
     1. Change [base_layout.templ](cmd/teleblog/httpapi/views/base_layout.templ) google tag manager
     1. Change [base_layout.templ](cmd/teleblog/httpapi/views/base_layout.templ) meta tags
