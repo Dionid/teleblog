@@ -89,6 +89,9 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 					<div id="result"></div>
 
 					<script>
+						// Get admin token from localStorage
+						const token = JSON.parse(localStorage.getItem('pb_admin_auth')).token;
+
 						document.getElementById('uploadForm').addEventListener('submit', async (e) => {
 							e.preventDefault();
 							const form = new FormData();
@@ -100,7 +103,7 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 									method: 'POST',
 									body: form,
 									headers: {
-										'Authorization': pb.authStore.token
+										'Authorization': token
 									}
 								});
 
@@ -122,7 +125,7 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 				</html>
 			`
 			return c.HTML(http.StatusOK, html)
-		}, apis.RequireAdminAuth())
+		})
 
 		// Add the upload history API endpoint
 		e.Router.POST("/_/upload-history", func(c echo.Context) error {
