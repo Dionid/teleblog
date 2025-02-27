@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
 	"github.com/Dionid/teleblog/libs/file"
@@ -82,13 +83,13 @@ func AdditionalCommands(app *pocketbase.PocketBase) {
 				log.Fatal(err)
 			}
 
-			folderPathPrefix := "extracted"
-
 			// Unzip the zip file
+			folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
 			err = file.Unzip(zipReader, folderPathPrefix)
 			if err != nil {
 				log.Fatal(err)
 			}
+			defer os.RemoveAll(folderPathPrefix)
 
 			err = features.UploadHistory(app, folderPathPrefix)
 			if err != nil {

@@ -7,7 +7,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
 	"github.com/Dionid/teleblog/libs/file"
@@ -464,11 +466,12 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 			}
 
 			// Unzip the zip file
-			folderPathPrefix := "extracted"
+			folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
 			err = file.Unzip(zipReader, folderPathPrefix)
 			if err != nil {
 				log.Fatal(err)
 			}
+			defer os.RemoveAll(folderPathPrefix)
 
 			// Upload the history
 			if err := features.UploadHistory(app, folderPathPrefix); err != nil {
