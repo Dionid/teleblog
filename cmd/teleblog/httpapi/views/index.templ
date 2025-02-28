@@ -124,7 +124,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 									</div>
 								</div>
 								<div class="p-2 sm:p-4">
-									Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href="https://t.me/it_kachalka" target="_blank" class="border-b-2 border-dashed border-secondary">🦾 IT-Качалки 💪</a>
+									Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href="https://t.me/it_kachalka" target="_blank" class="border-b-2 border-dashed border-secondary">🦾 IT-Качалки 💪</a>
 								</div>
 							</div>
 						</div>
@@ -166,13 +166,23 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 										<div class="card shadow-sm bg-white w-full overflow-hidden" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
 											if len(post.Photos) == 1 {
 												<div class="flex justify-center">
-													<img src={ "/api/files/" + post.Photos[0] } class="max-h-80">
+													<img 
+														src={ "/api/files/" + post.Photos[0] } 
+														class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
+														data-photo={ post.Photos[0] }
+														onclick="openImageModal(this.dataset.photo)"
+													/>
 												</div>
 											} else if len(post.Photos) > 1 {
 												<div class="grid grid-cols-2 gap-2">
 													for _, photo := range post.Photos {
 														<div class="flex justify-center">
-															<img src={ "/api/files/" + photo } class="w-full h-60 object-cover">
+															<img 
+																src={ "/api/files/" + photo } 
+																class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
+																data-photo={ photo }
+																onclick="openImageModal(this.dataset.photo)"
+															/>
 														</div>
 													}
 												</div>
@@ -224,5 +234,35 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 				</div>
 			</div>
 		</div>
+		<dialog id="imageModal" class="modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent">
+			<div class="relative">
+				<img id="modalImage" class="max-w-[95vw] max-h-[95vh] object-contain" src="" />
+				<button onclick="closeImageModal()" class="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+		</dialog>
+		<script>
+			function openImageModal(photoPath) {
+				const modal = document.getElementById('imageModal');
+				const modalImg = document.getElementById('modalImage');
+				modalImg.src = '/api/files/' + photoPath;
+				modal.showModal();
+			}
+
+			function closeImageModal() {
+				const modal = document.getElementById('imageModal');
+				modal.close();
+			}
+
+			// Close modal when clicking outside
+			document.getElementById('imageModal').addEventListener('click', function(event) {
+				if (event.target === this) {
+					this.close();
+				}
+			});
+		</script>
 	}
 }
