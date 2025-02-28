@@ -164,9 +164,17 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 								<div class="grid justify-center grid-cols-1 md:grid-cols-2 gap-4">
 									for _, post := range posts {
 										<div class="card shadow-sm bg-white w-full overflow-hidden" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
-											for _, photo := range post.Photos {
+											if len(post.Photos) == 1 {
 												<div class="flex justify-center">
-													<img src={ "/api/files/" + photo } class="max-h-80">
+													<img src={ "/api/files/" + post.Photos[0] } class="max-h-80">
+												</div>
+											} else if len(post.Photos) > 1 {
+												<div class="grid grid-cols-2 gap-2">
+													for _, photo := range post.Photos {
+														<div class="flex justify-center">
+															<img src={ "/api/files/" + photo } class="w-full h-60 object-cover">
+														</div>
+													}
 												</div>
 											}
 											<div class="card-body break-words p-6 pt-4 pb-4">

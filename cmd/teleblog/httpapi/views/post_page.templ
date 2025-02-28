@@ -29,9 +29,17 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 					<div class="flex flex-col w-full p-2 sm:p-6 items-center">
 						<div class="flex flex-col w-full gap-4">
 							<div class="card bg-white shadow-sm w-full">
-								for _, photo := range post.Photos {
+								if len(post.Photos) == 1 {
 									<div class="flex justify-center">
-										<img src={ "/api/files/" + photo } class="max-h-80">
+										<img src={ "/api/files/" + post.Photos[0] } class="max-h-80">
+									</div>
+								} else if len(post.Photos) > 1 {
+									<div class="grid grid-cols-2 gap-2">
+										for _, photo := range post.Photos {
+											<div class="flex justify-center">
+												<img src={ "/api/files/" + photo } class="w-full h-60 object-cover">
+											</div>
+										}
 									</div>
 								}
 								<div class="card-body">
