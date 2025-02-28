@@ -59,6 +59,15 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				return err
 			}
 
+			postCollection, err := app.Dao().FindCollectionByNameOrId("post")
+			if err != nil {
+				return err
+			}
+
+			for i, photo := range post.Photos {
+				post.Photos[i] = postCollection.Id + "/" + post.Id + "/" + photo
+			}
+
 			if post.IsTgHistoryMessage {
 				rawMessage := teleblog.HistoryMessage{}
 

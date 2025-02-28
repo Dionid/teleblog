@@ -91,8 +91,12 @@ MG: Add content improvement features
     1. ~~Webhook~~
     1. ~~History~~
     1. ~~UI~~
+        1. ~~Index~~
+        1. ~~Post page~~
     1. Multiple
+    1. Zoom
 1. Videos ([getFile](https://core.telegram.org/bots/api#getfile))
+1. Files
 1. Link to replied comment
 1. Quote replied comment
 1. ...
