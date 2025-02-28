@@ -143,6 +143,11 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		// TODO: count comments separately, because search string make it incorrect
 		// ...
 
+		postCollection, err := app.Dao().FindCollectionByNameOrId("post")
+		if err != nil {
+			return err
+		}
+
 		for _, post := range posts {
 			markup := ""
 
@@ -175,6 +180,10 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			}
 
 			post.TextWithMarkup = markup
+
+			for i, photo := range post.Photos {
+				post.Photos[i] = postCollection.Id + "/" + post.Id + "/" + photo
+			}
 		}
 
 		// # Tags
