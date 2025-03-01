@@ -6,11 +6,16 @@ import (
 	"fmt"
 )
 
-type PostPageComment struct {
+type CommentWithTextWithMarkup struct {
 	teleblog.Comment
+	TextWithMarkup string `json:"text_with_markup"`
+}
+
+type PostPageComment struct {
+	CommentWithTextWithMarkup
 	AuthorUsername *string 
 	AuthorTitle   string
-	TextWithMarkup string `json:"text_with_markup"`
+	ReplyToComment *CommentWithTextWithMarkup
 }
 
 type PostPagePost struct {
@@ -110,6 +115,13 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 															</svg>
 														</a>
 													</div>
+													if comment.ReplyToComment != nil {
+														<div class="p-1 pl-4 pr-4 bg-slate-300 border-l-2 border-l-slate-600 border-solid">
+															<div class="break-words link-as-contents">
+																@templ.Raw(comment.ReplyToComment.TextWithMarkup)
+															</div>
+														</div>
+													}
 													<div class="break-words link-as-contents">
 														@templ.Raw(comment.TextWithMarkup)
 													</div>

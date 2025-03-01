@@ -54,11 +54,7 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				return err
 			}
 
-			jb, err := post.Post.TgMessageRaw.MarshalJSON()
-			if err != nil {
-				return err
-			}
-
+			// # Photos
 			postCollection, err := app.Dao().FindCollectionByNameOrId("post")
 			if err != nil {
 				return err
@@ -68,6 +64,12 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				post.Photos[i] = postCollection.Id + "/" + post.Id + "/" + photo
 			}
 
+			jb, err := post.Post.TgMessageRaw.MarshalJSON()
+			if err != nil {
+				return err
+			}
+
+			// # Text with markup
 			if post.IsTgHistoryMessage {
 				rawMessage := teleblog.HistoryMessage{}
 
@@ -146,6 +148,22 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 					if err != nil {
 						return err
 					}
+				}
+			}
+
+			// # Add quote
+			for _, comment := range comments {
+				if comment.TgReplyToMessageId <= 0 || comment.TgReplyToMessageId == post.TgMessageId {
+					continue
+				}
+
+				for _, repliedTo := range comments {
+					if repliedTo.TgMessageId != comment.TgReplyToMessageId {
+						continue
+					}
+
+					comment.ReplyToComment = &repliedTo.CommentWithTextWithMarkup
+					break
 				}
 			}
 

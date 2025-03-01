@@ -16,11 +16,16 @@ import (
 	"github.com/Dionid/teleblog/libs/teleblog"
 )
 
-type PostPageComment struct {
+type CommentWithTextWithMarkup struct {
 	teleblog.Comment
+	TextWithMarkup string `json:"text_with_markup"`
+}
+
+type PostPageComment struct {
+	CommentWithTextWithMarkup
 	AuthorUsername *string
 	AuthorTitle    string
-	TextWithMarkup string `json:"text_with_markup"`
+	ReplyToComment *CommentWithTextWithMarkup
 }
 
 type PostPagePost struct {
@@ -67,7 +72,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs("/api/files/" + post.Photos[0])
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 35, Col: 47}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 40, Col: 47}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -80,7 +85,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Photos[0])
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 37, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 42, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -103,7 +108,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/api/files/" + photo)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 46, Col: 40}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 51, Col: 40}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -116,7 +121,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(photo)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 48, Col: 31}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 53, Col: 31}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
@@ -139,7 +144,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(post.Created.Time().Format("2006-01-02 15:04"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 58, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 63, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -169,7 +174,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", len(comments)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 74, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 79, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -201,7 +206,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var11 string
 					templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%c", []rune(comment.AuthorTitle)[0]))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 81, Col: 64}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 86, Col: 64}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 					if templ_7745c5c3_Err != nil {
@@ -219,7 +224,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var12 string
 					templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%c", []rune(comment.AuthorTitle)[0]))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 85, Col: 64}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 90, Col: 64}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 					if templ_7745c5c3_Err != nil {
@@ -251,7 +256,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var14 string
 					templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(comment.AuthorTitle)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 96, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 101, Col: 38}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 					if templ_7745c5c3_Err != nil {
@@ -269,7 +274,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var15 string
 					templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(comment.AuthorTitle)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 100, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 105, Col: 38}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 					if templ_7745c5c3_Err != nil {
@@ -287,7 +292,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 				var templ_7745c5c3_Var16 string
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(comment.Created.Time().Format("2006-01-02 15:04"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 104, Col: 67}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 109, Col: 67}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 				if templ_7745c5c3_Err != nil {
@@ -302,7 +307,25 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><svg class=\"w-4 h-4 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961\"></path></svg></a></div><div class=\"break-words link-as-contents\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><svg class=\"w-4 h-4 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961\"></path></svg></a></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				if comment.ReplyToComment != nil {
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-1 pl-4 pr-4 bg-gray-300 border-l-2 border-l-gray-600 border-solid\"><div class=\"break-words link-as-contents\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templ.Raw(comment.ReplyToComment.TextWithMarkup).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"break-words link-as-contents\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
