@@ -58,7 +58,10 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			).
 			// to avoid unsupported post types (video, photo, file, etc.)
 			AndWhere(
-				dbx.NewExp(`post.text != ""`),
+				dbx.Or(
+					dbx.NewExp(`post.text != ""`),
+					dbx.NewExp(`json_array_length(post.photos) > 0`),
+				),
 			)
 
 		// ## Filters
