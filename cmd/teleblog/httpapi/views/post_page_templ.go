@@ -19,12 +19,12 @@ import (
 type CommentWithTextWithMarkup struct {
 	teleblog.Comment
 	TextWithMarkup string `json:"text_with_markup"`
+	AuthorUsername *string
+	AuthorTitle    string
 }
 
 type PostPageComment struct {
 	CommentWithTextWithMarkup
-	AuthorUsername *string
-	AuthorTitle    string
 	ReplyToComment *CommentWithTextWithMarkup
 }
 
@@ -312,7 +312,57 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					return templ_7745c5c3_Err
 				}
 				if comment.ReplyToComment != nil {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-1 pl-4 pr-4 bg-gray-300 border-l-2 border-l-gray-600 border-solid\"><div class=\"break-words link-as-contents\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-1 pl-4 pr-4 bg-slate-300 border-l-2 border-l-slate-600 border-solid rounded-md\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					if comment.ReplyToComment.AuthorUsername != nil {
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a target=\"_blank\" href=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var18 templ.SafeURL = templ.SafeURL(fmt.Sprintf("https://t.me/%s", *comment.ReplyToComment.AuthorUsername))
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var18)))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"flex font-bold text-sm\">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var19 string
+						templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(comment.ReplyToComment.AuthorTitle)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 122, Col: 53}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					} else {
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex font-bold text-sm\">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var20 string
+						templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(comment.ReplyToComment.AuthorTitle)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 126, Col: 53}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"break-words link-as-contents\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -325,7 +375,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 						return templ_7745c5c3_Err
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"break-words link-as-contents\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"break-words link-as-contents \">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -342,8 +392,8 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var18 templ.SafeURL = templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", chat.TgUsername, post.TgMessageId))
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var18)))
+			var templ_7745c5c3_Var21 templ.SafeURL = templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", chat.TgUsername, post.TgMessageId))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var21)))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

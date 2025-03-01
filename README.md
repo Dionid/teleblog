@@ -101,23 +101,22 @@ MG: Add content improvement features
             1. ~~Index~~
             1. ~~Post page~~
 1. Videos
-1. Link to replied comment
-1. Quote replied comment
-1. Files
-1. Spoilers for Audio & Circles
+1. ~~Quote replied comment~~
 1. ...
 
 ## Third phase
 
 MG: ...
 
-1. Repost to Medium
-1. Theme changer
-1. Links preview
 1. SEO
     1. Meta title
     1. Meta description
     1. Meta image
+1. Repost to Medium
+1. Links preview
+1. Files
+1. Spoilers for Audio & Circles
+1. Theme changer
 1. ...
 
 ## X phase

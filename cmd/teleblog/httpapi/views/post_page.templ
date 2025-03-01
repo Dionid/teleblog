@@ -9,12 +9,12 @@ import (
 type CommentWithTextWithMarkup struct {
 	teleblog.Comment
 	TextWithMarkup string `json:"text_with_markup"`
+	AuthorUsername *string 
+	AuthorTitle   string
 }
 
 type PostPageComment struct {
 	CommentWithTextWithMarkup
-	AuthorUsername *string 
-	AuthorTitle   string
 	ReplyToComment *CommentWithTextWithMarkup
 }
 
@@ -116,13 +116,22 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 														</a>
 													</div>
 													if comment.ReplyToComment != nil {
-														<div class="p-1 pl-4 pr-4 bg-slate-300 border-l-2 border-l-slate-600 border-solid">
+														<div class="p-1 pl-4 pr-4 bg-slate-300 border-l-2 border-l-slate-600 border-solid rounded-md">
+															if comment.ReplyToComment.AuthorUsername != nil {
+																<a target="_blank" href={ templ.SafeURL(fmt.Sprintf("https://t.me/%s", *comment.ReplyToComment.AuthorUsername)) } class="flex font-bold text-sm">
+																	{ comment.ReplyToComment.AuthorTitle }
+																</a>
+															} else {
+																<div class="flex font-bold text-sm">
+																	{ comment.ReplyToComment.AuthorTitle }
+																</div>
+															}
 															<div class="break-words link-as-contents">
 																@templ.Raw(comment.ReplyToComment.TextWithMarkup)
 															</div>
 														</div>
 													}
-													<div class="break-words link-as-contents">
+													<div class="break-words link-as-contents ">
 														@templ.Raw(comment.TextWithMarkup)
 													</div>
 												</div>
