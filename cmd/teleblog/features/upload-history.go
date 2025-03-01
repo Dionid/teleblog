@@ -60,11 +60,6 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 			text += entity.Text
 		}
 
-		// !!! SKIP IF NO TEXT
-		if text == "" {
-			continue
-		}
-
 		// # Create new
 		post := teleblog.Post{
 			ChatId:             chat.Id,
@@ -127,49 +122,7 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 		if err != nil {
 			return err
 		}
-
-		// // # Parse photo
-		// record, err := app.Dao().FindRecordById("post", post.Id)
-		// if err != nil {
-		// 	return err
-		// }
-
-		// if record == nil {
-		// 	return errors.New("record is nil")
-		// }
-
-		// if message.Photo != nil {
-		// 	for _, photoPath := range historyZip.Photos {
-		// 		if strings.Contains(photoPath, *message.Photo) {
-		// 			file, err := filesystem.NewFileFromPath(photoPath)
-		// 			if err != nil {
-		// 				return err
-		// 			}
-		// 			record.Set("photos", []*filesystem.File{file})
-		// 			break
-		// 		}
-		// 	}
-		// }
-
-		// fmt.Println("PHOTOS: ", record.Get("photos"))
-
-		// err = app.Dao().Save(record)
-		// if err != nil {
-		// 	return err
-		// }
 	}
-
-	// # Save
-	// if len(preparedPosts) == 0 {
-	// 	return nil
-	// }
-
-	// for _, post := range preparedPosts {
-	// 	err := app.Dao().Save(&post)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
 
 	return nil
 }
