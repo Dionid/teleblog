@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
@@ -46,7 +47,6 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 			id := c.PathParam("id")
 
 			post := views.PostPagePost{}
-
 			err := teleblog.PostQuery(app.Dao()).Where(
 				dbx.HashExp{"id": id},
 			).Limit(1).One(&post)
@@ -54,7 +54,7 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				return err
 			}
 
-			// # Photos
+			// # Correct photo URLs
 			postCollection, err := app.Dao().FindCollectionByNameOrId("post")
 			if err != nil {
 				return err
@@ -64,6 +64,7 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				post.Photos[i] = postCollection.Id + "/" + post.Id + "/" + photo
 			}
 
+			// # Remarshal JSON to correct type
 			jb, err := post.Post.TgMessageRaw.MarshalJSON()
 			if err != nil {
 				return err
@@ -90,6 +91,40 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				post.TextWithMarkup, err = teleblog.FormWebhookTextMarkup(post.Text, rawMessage.Entities)
 				if err != nil {
 					return err
+				}
+
+				// # Find other photos and add to this post
+				mediaGroupId := rawMessage.AlbumID
+				if mediaGroupId != "" {
+					postAlbum := []teleblog.Post{}
+					err := teleblog.
+						PostQuery(app.Dao()).
+						Where(
+							dbx.Not(
+								dbx.HashExp{
+									"id": id,
+								},
+							),
+						).
+						AndWhere(
+							dbx.HashExp{
+								"json_extract(tg_message_raw, '$.media_group_id')": mediaGroupId,
+							},
+						).
+						All(&postAlbum)
+					if err != nil {
+						return err
+					}
+
+					fmt.Println("FOUND ", len(postAlbum))
+
+					for _, item := range postAlbum {
+						for i, photo := range item.Photos {
+							item.Photos[i] = postCollection.Id + "/" + item.Id + "/" + photo
+						}
+
+						post.Photos = append(post.Photos, item.Photos...)
+					}
 				}
 			}
 
