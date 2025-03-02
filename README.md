@@ -88,16 +88,16 @@ MG: Add content improvement features
 1. ~~Extract tags~~
 1. ~~Tags filter~~
 1. ~~Quote replied comment~~
-1. Images
+1. ~~Images~~
     1. ~~Webhook~~
     1. ~~History~~
     1. ~~UI~~
         1. ~~Index~~
         1. ~~Post page~~
     1. ~~Zoom~~
-    1. Multiple
+    1. ~~Multiple~~
         1. ~~Webhook~~
-        1. History
+        1. ~~History~~
         1. ~~UI~~
             1. ~~Index~~
             1. ~~Post page~~
