@@ -4,7 +4,6 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 
@@ -94,38 +93,38 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				}
 
 				// # Find other photos and add to this post
-				mediaGroupId := rawMessage.AlbumID
-				if mediaGroupId != "" {
-					postAlbum := []teleblog.Post{}
-					err := teleblog.
-						PostQuery(app.Dao()).
-						Where(
-							dbx.Not(
-								dbx.HashExp{
-									"id": id,
-								},
-							),
-						).
-						AndWhere(
-							dbx.HashExp{
-								"json_extract(tg_message_raw, '$.media_group_id')": mediaGroupId,
-							},
-						).
-						All(&postAlbum)
-					if err != nil {
-						return err
-					}
+				// mediaGroupId := rawMessage.AlbumID
+				// if mediaGroupId != "" {
+				// 	postAlbum := []teleblog.Post{}
+				// 	err := teleblog.
+				// 		PostQuery(app.Dao()).
+				// 		Where(
+				// 			dbx.Not(
+				// 				dbx.HashExp{
+				// 					"id": id,
+				// 				},
+				// 			),
+				// 		).
+				// 		AndWhere(
+				// 			dbx.HashExp{
+				// 				"json_extract(tg_message_raw, '$.media_group_id')": mediaGroupId,
+				// 			},
+				// 		).
+				// 		All(&postAlbum)
+				// 	if err != nil {
+				// 		return err
+				// 	}
 
-					fmt.Println("FOUND ", len(postAlbum))
+				// 	fmt.Println("FOUND ", len(postAlbum))
 
-					for _, item := range postAlbum {
-						for i, photo := range item.Photos {
-							item.Photos[i] = postCollection.Id + "/" + item.Id + "/" + photo
-						}
+				// 	for _, item := range postAlbum {
+				// 		for i, photo := range item.Photos {
+				// 			item.Photos[i] = postCollection.Id + "/" + item.Id + "/" + photo
+				// 		}
 
-						post.Photos = append(post.Photos, item.Photos...)
-					}
-				}
+				// 		post.Photos = append(post.Photos, item.Photos...)
+				// 	}
+				// }
 			}
 
 			chat := teleblog.Chat{}

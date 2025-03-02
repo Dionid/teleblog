@@ -87,6 +87,7 @@ MG: Add content improvement features
 1. ~~Search~~
 1. ~~Extract tags~~
 1. ~~Tags filter~~
+1. ~~Quote replied comment~~
 1. Images
     1. ~~Webhook~~
     1. ~~History~~
@@ -101,17 +102,15 @@ MG: Add content improvement features
             1. ~~Index~~
             1. ~~Post page~~
 1. Videos
-1. ~~Quote replied comment~~
-1. ...
+1. SEO
+    1. Meta title
+    1. Meta description
+    1. Meta image
 
 ## Third phase
 
 MG: ...
 
-1. SEO
-    1. Meta title
-    1. Meta description
-    1. Meta image
 1. Repost to Medium
 1. Links preview
 1. Files

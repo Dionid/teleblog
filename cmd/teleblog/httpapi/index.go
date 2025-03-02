@@ -2,7 +2,6 @@ package httpapi
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
 	"github.com/Dionid/teleblog/libs/teleblog"
@@ -188,38 +187,38 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 				}
 
 				// ## Find other photos and add to this post
-				mediaGroupId := rawMessage.AlbumID
-				if mediaGroupId != "" {
-					postAlbum := []teleblog.Post{}
-					err := teleblog.
-						PostQuery(app.Dao()).
-						Where(
-							dbx.Not(
-								dbx.HashExp{
-									"id": post.Id,
-								},
-							),
-						).
-						AndWhere(
-							dbx.HashExp{
-								"json_extract(tg_message_raw, '$.media_group_id')": mediaGroupId,
-							},
-						).
-						All(&postAlbum)
-					if err != nil {
-						return err
-					}
+				// mediaGroupId := rawMessage.AlbumID
+				// if mediaGroupId != "" {
+				// 	postAlbum := []teleblog.Post{}
+				// 	err := teleblog.
+				// 		PostQuery(app.Dao()).
+				// 		Where(
+				// 			dbx.Not(
+				// 				dbx.HashExp{
+				// 					"id": post.Id,
+				// 				},
+				// 			),
+				// 		).
+				// 		AndWhere(
+				// 			dbx.HashExp{
+				// 				"json_extract(tg_message_raw, '$.media_group_id')": mediaGroupId,
+				// 			},
+				// 		).
+				// 		All(&postAlbum)
+				// 	if err != nil {
+				// 		return err
+				// 	}
 
-					fmt.Println("FOUND ", len(postAlbum))
+				// 	fmt.Println("FOUND ", len(postAlbum))
 
-					for _, item := range postAlbum {
-						for i, photo := range item.Photos {
-							item.Photos[i] = postCollection.Id + "/" + item.Id + "/" + photo
-						}
+				// 	for _, item := range postAlbum {
+				// 		for i, photo := range item.Photos {
+				// 			item.Photos[i] = postCollection.Id + "/" + item.Id + "/" + photo
+				// 		}
 
-						post.Photos = append(post.Photos, item.Photos...)
-					}
-				}
+				// 		post.Photos = append(post.Photos, item.Photos...)
+				// 	}
+				// }
 			}
 
 			post.TextWithMarkup = markup
