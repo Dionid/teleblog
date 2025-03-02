@@ -2,6 +2,7 @@ package features
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/pocketbase/pocketbase"
@@ -28,9 +29,9 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 				return err
 			}
 
-			if rawMessage.Photo == nil {
-				continue
-			}
+			// if rawMessage.Photo == nil {
+			// 	continue
+			// }
 
 			// This is a hack to set AlbumID to DateUnix
 			post.AlbumID = rawMessage.DateUnix
@@ -42,7 +43,11 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 				return err
 			}
 
-			post.AlbumID = rawMessage.AlbumID
+			if rawMessage.AlbumID != "" {
+				post.AlbumID = rawMessage.AlbumID
+			} else {
+				post.AlbumID = strconv.Itoa(int(rawMessage.Unixtime))
+			}
 		}
 
 		err = app.Dao().Save(post)
