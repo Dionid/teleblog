@@ -53,6 +53,18 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				return err
 			}
 
+			albumPosts := []*views.PostPagePost{}
+			err = teleblog.PostQuery(app.Dao()).Where(
+				dbx.HashExp{"album_id": post.AlbumID},
+			).AndWhere(
+				dbx.Not(
+					dbx.HashExp{"id": id},
+				),
+			).All(&albumPosts)
+			if err != nil {
+				return err
+			}
+
 			// # Correct photo URLs
 			postCollection, err := app.Dao().FindCollectionByNameOrId("post")
 			if err != nil {
@@ -61,6 +73,15 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 
 			for i, photo := range post.Photos {
 				post.Photos[i] = postCollection.Id + "/" + post.Id + "/" + photo
+			}
+
+			// # Correct photo URLs for album posts
+			for _, albumPost := range albumPosts {
+				for i, photo := range albumPost.Photos {
+					albumPost.Photos[i] = postCollection.Id + "/" + albumPost.Id + "/" + photo
+				}
+
+				post.Photos = append(post.Photos, albumPost.Photos...)
 			}
 
 			// # Remarshal JSON to correct type
@@ -91,40 +112,6 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				if err != nil {
 					return err
 				}
-
-				// # Find other photos and add to this post
-				// mediaGroupId := rawMessage.AlbumID
-				// if mediaGroupId != "" {
-				// 	postAlbum := []teleblog.Post{}
-				// 	err := teleblog.
-				// 		PostQuery(app.Dao()).
-				// 		Where(
-				// 			dbx.Not(
-				// 				dbx.HashExp{
-				// 					"id": id,
-				// 				},
-				// 			),
-				// 		).
-				// 		AndWhere(
-				// 			dbx.HashExp{
-				// 				"json_extract(tg_message_raw, '$.media_group_id')": mediaGroupId,
-				// 			},
-				// 		).
-				// 		All(&postAlbum)
-				// 	if err != nil {
-				// 		return err
-				// 	}
-
-				// 	fmt.Println("FOUND ", len(postAlbum))
-
-				// 	for _, item := range postAlbum {
-				// 		for i, photo := range item.Photos {
-				// 			item.Photos[i] = postCollection.Id + "/" + item.Id + "/" + photo
-				// 		}
-
-				// 		post.Photos = append(post.Photos, item.Photos...)
-				// 	}
-				// }
 			}
 
 			chat := teleblog.Chat{}
