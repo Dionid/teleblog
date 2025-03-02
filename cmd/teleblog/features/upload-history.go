@@ -96,6 +96,8 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 		}
 
 		if message.Photo != nil {
+			post.AlbumID = message.DateUnix
+
 			for _, photoPath := range historyZip.Photos {
 				if strings.Contains(photoPath, *message.Photo) {
 					file, err := filesystem.NewFileFromPath(photoPath)

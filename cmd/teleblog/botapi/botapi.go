@@ -87,6 +87,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			IsTgMessage: true,
 			Text:        c.Message().Text + c.Message().Caption,
 			TgMessageId: c.Message().ID,
+			AlbumID:     c.Message().AlbumID,
 		}
 
 		newPost.Created.Scan(c.Message().Time())
@@ -290,6 +291,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 		post.Text = c.Message().Text + c.Message().Caption
 		post.TgMessageRaw = tgMessageRaw
 		post.IsTgHistoryMessage = false
+		post.AlbumID = c.Message().AlbumID
 
 		err = app.Dao().Save(&post)
 		if err != nil {
