@@ -95,12 +95,36 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 			return err
 		}
 
-		if message.Photo != nil {
-			post.AlbumID = message.DateUnix
+		// # Hack for albums
+		post.AlbumID = message.DateUnix
 
+		if message.Photo != nil {
 			for _, photoPath := range historyZip.Photos {
 				if strings.Contains(photoPath, *message.Photo) {
 					file, err := filesystem.NewFileFromPath(photoPath)
+					if err != nil {
+						return err
+					}
+
+					fileName := postCollection.Id + "/" + post.Id + "/" + file.Name
+
+					fmt.Println("fileName: ", fileName)
+
+					err = fsys.UploadFile(file, fileName)
+					if err != nil {
+						return err
+					}
+
+					post.Photos = append(post.Photos, file.Name)
+					break
+				}
+			}
+		}
+
+		if message.MediaType == "video_file" && message.File != nil {
+			for _, videoPath := range historyZip.VideoFiles {
+				if strings.Contains(videoPath, *message.File) {
+					file, err := filesystem.NewFileFromPath(videoPath)
 					if err != nil {
 						return err
 					}

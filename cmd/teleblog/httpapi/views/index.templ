@@ -7,6 +7,7 @@ import (
 	"github.com/pocketbase/pocketbase/tools/types"
 	"fmt"
 	"math"
+	"strings"
 )
 
 type IndexPagePostAlbumPost struct {
@@ -173,23 +174,39 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 										<div class="card shadow-sm bg-white w-full overflow-hidden" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
 											if len(post.Photos) == 1 {
 												<div class="flex justify-center">
-													<img 
-														src={ "/api/files/" + post.Photos[0] } 
-														class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
-														data-photo={ post.Photos[0] }
-														onclick="openImageModal(this.dataset.photo)"
-													/>
+													if strings.Contains(post.Photos[0], ".mp4") {
+														<video 
+															src={ "/api/files/" + post.Photos[0] } 
+															class="max-h-80 cursor-pointer" 
+															controls
+														/>
+													} else {
+														<img 
+															src={ "/api/files/" + post.Photos[0] } 
+															class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
+															data-photo={ post.Photos[0] }
+															onclick="openImageModal(this.dataset.photo)"
+														/>
+													}
 												</div>
 											} else if len(post.Photos) > 1 {
 												<div class="grid grid-cols-2 gap-2">
 													for _, photo := range post.Photos {
 														<div class="flex justify-center">
-															<img 
-																src={ "/api/files/" + photo } 
-																class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
-																data-photo={ photo }
-																onclick="openImageModal(this.dataset.photo)"
-															/>
+															if strings.Contains(photo, ".mp4") {
+																<video 
+																	src={ "/api/files/" + photo } 
+																	class="w-full h-60 object-cover cursor-pointer" 
+																	controls
+																/>
+															} else {
+																<img 
+																	src={ "/api/files/" + photo } 
+																	class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
+																	data-photo={ photo }
+																	onclick="openImageModal(this.dataset.photo)"
+																/>
+															}
 														</div>
 													}
 												</div>

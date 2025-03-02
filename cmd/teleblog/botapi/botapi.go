@@ -27,15 +27,15 @@ func skipContent(_ telebot.Context) bool {
 }
 
 // downloadPhoto downloads a photo from a message to the specified directory
-func downloadPhoto(b *telebot.Bot, photo *telebot.Photo, outputDir string) (string, error) {
+func downloadPhoto(b *telebot.Bot, fileId string, uniqueID string, outputDir string, fileExt string) (string, error) {
 	// Get file info from Telegram
-	file, err := b.FileByID(photo.FileID)
+	file, err := b.FileByID(fileId)
 	if err != nil {
 		return "", fmt.Errorf("failed to get file info: %w", err)
 	}
 
 	// Generate unique filename
-	filename := filepath.Join(outputDir, fmt.Sprintf("%s.jpg", photo.UniqueID))
+	filename := filepath.Join(outputDir, fmt.Sprintf("%s.%s", uniqueID, fileExt))
 
 	// Download the file
 	err = b.Download(&file, filename)
@@ -107,19 +107,19 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return err
 		}
 
+		postCollection, err := app.Dao().FindCollectionByNameOrId("post")
+		if err != nil {
+			return err
+		}
+
+		fsys, err := app.NewFilesystem()
+		if err != nil {
+			return err
+		}
+		defer fsys.Close()
+
 		// Handle photo if present
 		if photo := c.Message().Photo; photo != nil {
-			postCollection, err := app.Dao().FindCollectionByNameOrId("post")
-			if err != nil {
-				return err
-			}
-
-			fsys, err := app.NewFilesystem()
-			if err != nil {
-				return err
-			}
-			defer fsys.Close()
-
 			outputDir := "temp-tg-webhook-uploads-" + newPost.Id
 			// Create output directory if it doesn't exist
 			err = os.MkdirAll(outputDir, 0755)
@@ -128,7 +128,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			}
 			defer os.RemoveAll(outputDir)
 
-			filename, err := downloadPhoto(b, photo, outputDir)
+			filename, err := downloadPhoto(b, photo.FileID, photo.UniqueID, outputDir, "jpg")
 			if err != nil {
 				return fmt.Errorf("failed to download photo: %w", err)
 			}
@@ -140,7 +140,34 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 
 			fileName := postCollection.Id + "/" + newPost.Id + "/" + file.Name
 
-			fmt.Println("fileName: ", fileName)
+			err = fsys.UploadFile(file, fileName)
+			if err != nil {
+				return err
+			}
+
+			newPost.Photos = append(newPost.Photos, file.Name)
+		}
+
+		if video := c.Message().Video; video != nil {
+			outputDir := "temp-tg-webhook-uploads-" + newPost.Id
+			// Create output directory if it doesn't exist
+			err = os.MkdirAll(outputDir, 0755)
+			if err != nil {
+				return fmt.Errorf("failed to create output directory: %w", err)
+			}
+			defer os.RemoveAll(outputDir)
+
+			filename, err := downloadPhoto(b, video.FileID, video.UniqueID, outputDir, "mp4")
+			if err != nil {
+				return fmt.Errorf("failed to download photo: %w", err)
+			}
+
+			file, err := filesystem.NewFileFromPath(filename)
+			if err != nil {
+				return err
+			}
+
+			fileName := postCollection.Id + "/" + newPost.Id + "/" + file.Name
 
 			err = fsys.UploadFile(file, fileName)
 			if err != nil {
