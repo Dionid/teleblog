@@ -115,7 +115,7 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 						return err
 					}
 
-					post.Photos = append(post.Photos, file.Name)
+					post.Media = append(post.Media, file.Name)
 					break
 				}
 			}
@@ -138,7 +138,7 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 						return err
 					}
 
-					post.Photos = append(post.Photos, file.Name)
+					post.Media = append(post.Media, file.Name)
 					break
 				}
 			}

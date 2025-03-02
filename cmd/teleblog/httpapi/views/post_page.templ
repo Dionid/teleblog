@@ -35,26 +35,26 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 					<div class="flex flex-col w-full p-2 sm:p-6 items-center">
 						<div class="flex flex-col w-full gap-4">
 							<div class="card bg-white shadow-sm w-full">
-								if len(post.Photos) == 1 {
+								if len(post.Media) == 1 {
 									<div class="flex justify-center">
-										if strings.Contains(post.Photos[0], ".mp4") {
+										if strings.Contains(post.Media[0], ".mp4") {
 											<video 
-												src={ "/api/files/" + post.Photos[0] } 
+												src={ "/api/files/" + post.Media[0] } 
 												class="max-h-80 cursor-pointer" 
 												controls
 											/>
 										} else {
 											<img 
-												src={ "/api/files/" + post.Photos[0] } 
+												src={ "/api/files/" + post.Media[0] } 
 												class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
-												data-photo={ post.Photos[0] }
+												data-photo={ post.Media[0] }
 												onclick="openImageModal(this.dataset.photo)"
 											/>
 										}
 									</div>
-								} else if len(post.Photos) > 1 {
+								} else if len(post.Media) > 1 {
 									<div class="grid grid-cols-2 gap-2">
-										for _, photo := range post.Photos {
+										for _, photo := range post.Media {
 											<div class="flex justify-center">
 												if strings.Contains(photo, ".mp4") {
 													<video 

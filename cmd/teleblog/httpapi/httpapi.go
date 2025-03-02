@@ -65,23 +65,23 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				return err
 			}
 
-			// # Correct photo URLs
+			// # Correct media URLs
 			postCollection, err := app.Dao().FindCollectionByNameOrId("post")
 			if err != nil {
 				return err
 			}
 
-			for i, photo := range post.Photos {
-				post.Photos[i] = postCollection.Id + "/" + post.Id + "/" + photo
+			for i, media := range post.Media {
+				post.Media[i] = postCollection.Id + "/" + post.Id + "/" + media
 			}
 
-			// # Correct photo URLs for album posts
+			// # Correct media URLs for album posts
 			for _, albumPost := range albumPosts {
-				for i, photo := range albumPost.Photos {
-					albumPost.Photos[i] = postCollection.Id + "/" + albumPost.Id + "/" + photo
+				for i, media := range albumPost.Media {
+					albumPost.Media[i] = postCollection.Id + "/" + albumPost.Id + "/" + media
 				}
 
-				post.Photos = append(post.Photos, albumPost.Photos...)
+				post.Media = append(post.Media, albumPost.Media...)
 			}
 
 			// # Remarshal JSON to correct type

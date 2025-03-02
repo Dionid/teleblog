@@ -12,7 +12,7 @@ import (
 
 type IndexPagePostAlbumPost struct {
 	Id string `db:"id" json:"id"`
-	Photos string `db:"photos" json:"photos"`
+	Media string `db:"media" json:"media"`
 	Text string `db:"text" json:"text"`
 }
 
@@ -172,26 +172,26 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 								<div class="grid justify-center grid-cols-1 md:grid-cols-2 gap-4">
 									for _, post := range posts {
 										<div class="card shadow-sm bg-white w-full overflow-hidden" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
-											if len(post.Photos) == 1 {
+											if len(post.Media) == 1 {
 												<div class="flex justify-center">
-													if strings.Contains(post.Photos[0], ".mp4") {
+													if strings.Contains(post.Media[0], ".mp4") {
 														<video 
-															src={ "/api/files/" + post.Photos[0] } 
+															src={ "/api/files/" + post.Media[0] } 
 															class="max-h-80 cursor-pointer" 
 															controls
 														/>
 													} else {
 														<img 
-															src={ "/api/files/" + post.Photos[0] } 
+															src={ "/api/files/" + post.Media[0] } 
 															class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
-															data-photo={ post.Photos[0] }
+															data-photo={ post.Media[0] }
 															onclick="openImageModal(this.dataset.photo)"
 														/>
 													}
 												</div>
-											} else if len(post.Photos) > 1 {
+											} else if len(post.Media) > 1 {
 												<div class="grid grid-cols-2 gap-2">
-													for _, photo := range post.Photos {
+													for _, photo := range post.Media {
 														<div class="flex justify-center">
 															if strings.Contains(photo, ".mp4") {
 																<video 

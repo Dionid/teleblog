@@ -92,7 +92,7 @@ type Post struct {
 	TgGroupMessageId int           `json:"tgGroupMessageId" db:"tg_group_message_id"`
 	TgMessageRaw     types.JsonMap `json:"tgMessageRaw" db:"tg_message_raw"`
 
-	Photos types.JsonArray[string] `json:"photos" db:"photos"`
+	Media types.JsonArray[string] `json:"media" db:"media"`
 
 	AlbumID string `json:"albumId" db:"album_id"`
 }

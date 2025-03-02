@@ -36,7 +36,7 @@ func baseQuery(
 		AndWhere(
 			dbx.Or(
 				dbx.NewExp(`post.text != ""`),
-				dbx.NewExp(`json_array_length(post.photos) > 0`),
+				dbx.NewExp(`json_array_length(post.media) > 0`),
 			),
 		)
 
@@ -129,7 +129,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			"chat.tg_username as tg_chat_username",
 			"json_group_array(json_object("+
 				"'id', post.id,"+
-				"'photos', post.photos"+
+				"'media', post.media"+
 				")) as album_posts",
 		).
 			LeftJoin(
@@ -178,12 +178,12 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		for _, post := range posts {
 			markup := ""
 
-			for i, photo := range post.Photos {
-				post.Photos[i] = postCollection.Id + "/" + post.Id + "/" + photo
+			for i, media := range post.Media {
+				post.Media[i] = postCollection.Id + "/" + post.Id + "/" + media
 			}
 
 			for _, innerPost := range post.AlbumPosts {
-				if innerPost.Id == post.Id || innerPost.Photos == "" {
+				if innerPost.Id == post.Id || innerPost.Media == "" {
 					continue
 				}
 
@@ -191,18 +191,18 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 				post.Text += innerPost.Text
 
 				// # Photos
-				photos := []string{}
+				medias := []string{}
 
-				err = json.Unmarshal([]byte(innerPost.Photos), &photos)
+				err = json.Unmarshal([]byte(innerPost.Media), &medias)
 				if err != nil {
 					return err
 				}
 
-				for i, photo := range photos {
-					photos[i] = postCollection.Id + "/" + innerPost.Id + "/" + photo
+				for i, media := range medias {
+					medias[i] = postCollection.Id + "/" + innerPost.Id + "/" + media
 				}
 
-				post.Photos = append(post.Photos, photos...)
+				post.Media = append(post.Media, medias...)
 			}
 
 			// # Prase raw message

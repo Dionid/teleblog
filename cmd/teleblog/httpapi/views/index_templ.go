@@ -21,9 +21,9 @@ import (
 )
 
 type IndexPagePostAlbumPost struct {
-	Id     string `db:"id" json:"id"`
-	Photos string `db:"photos" json:"photos"`
-	Text   string `db:"text" json:"text"`
+	Id    string `db:"id" json:"id"`
+	Media string `db:"media" json:"media"`
+	Text  string `db:"text" json:"text"`
 }
 
 type InpexPagePost struct {
@@ -609,20 +609,20 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				if len(post.Photos) == 1 {
+				if len(post.Media) == 1 {
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-center\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					if strings.Contains(post.Photos[0], ".mp4") {
+					if strings.Contains(post.Media[0], ".mp4") {
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<video src=\"")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var42 string
-						templ_7745c5c3_Var42, templ_7745c5c3_Err = templ.JoinStringErrs("/api/files/" + post.Photos[0])
+						templ_7745c5c3_Var42, templ_7745c5c3_Err = templ.JoinStringErrs("/api/files/" + post.Media[0])
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 179, Col: 51}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 179, Col: 50}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var42))
 						if templ_7745c5c3_Err != nil {
@@ -638,9 +638,9 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var43 string
-						templ_7745c5c3_Var43, templ_7745c5c3_Err = templ.JoinStringErrs("/api/files/" + post.Photos[0])
+						templ_7745c5c3_Var43, templ_7745c5c3_Err = templ.JoinStringErrs("/api/files/" + post.Media[0])
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 185, Col: 51}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 185, Col: 50}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var43))
 						if templ_7745c5c3_Err != nil {
@@ -651,9 +651,9 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var44 string
-						templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.JoinStringErrs(post.Photos[0])
+						templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.JoinStringErrs(post.Media[0])
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 187, Col: 42}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 187, Col: 41}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var44))
 						if templ_7745c5c3_Err != nil {
@@ -668,12 +668,12 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				} else if len(post.Photos) > 1 {
+				} else if len(post.Media) > 1 {
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-cols-2 gap-2\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					for _, photo := range post.Photos {
+					for _, photo := range post.Media {
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-center\">")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err

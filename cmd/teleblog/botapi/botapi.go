@@ -145,7 +145,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 				return err
 			}
 
-			newPost.Photos = append(newPost.Photos, file.Name)
+			newPost.Media = append(newPost.Media, file.Name)
 		}
 
 		if video := c.Message().Video; video != nil {
@@ -174,7 +174,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 				return err
 			}
 
-			newPost.Photos = append(newPost.Photos, file.Name)
+			newPost.Media = append(newPost.Media, file.Name)
 		}
 
 		err = app.Dao().Save(newPost)
