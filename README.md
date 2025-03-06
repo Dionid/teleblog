@@ -101,18 +101,21 @@ MG: Add content improvement features
         1. ~~UI~~
             1. ~~Index~~
             1. ~~Post page~~
-1. Videos
-1. SEO
-    1. Meta title
-    1. Meta description
-    1. Meta image
+1. ~~Videos~~
+1. ~~Links preview~~
+1. ~~SEO~~
+    1. ~~Sitemap & robots.txt~~
+    1. ~~Meta title~~
+    1. ~~Meta description~~
+    1. ~~Meta image~~
+1. ~~Remove CSS, JS cache~~
+1. ~~Deploy DB backup~~
 
 ## Third phase
 
 MG: ...
 
 1. Repost to Medium
-1. Links preview
 1. Files
 1. Spoilers for Audio & Circles
 1. Theme changer
@@ -120,6 +123,7 @@ MG: ...
 
 ## X phase
 
+1. Dark / Light theme changer
 1. Delete old tags
 1. Backup
 1. Empty chats page

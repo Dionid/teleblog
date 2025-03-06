@@ -4,8 +4,11 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
 	"github.com/Dionid/teleblog/libs/file"
@@ -20,6 +23,10 @@ import (
 type Config struct {
 	Env    string
 	UserId string
+}
+
+func RemoveNewLines(text string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(text, "\r\n", " "), "\n", "")
 }
 
 //go:embed public
@@ -42,12 +49,39 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 
 		IndexPageHandler(config, e, app)
 
+		// # robots.txt
+		e.Router.GET("/robots.txt", func(c echo.Context) error {
+			return c.String(http.StatusOK, `User-agent: *
+Allow: /
+Allow: /post/*
+Allow: /public/*
+Allow: /sitemap.xml
+
+Disallow: /api/*
+Disallow: /admin/*
+Disallow: /_/*
+
+# Optimize crawling rate
+Crawl-delay: 1
+
+# Main sitemap
+Sitemap: https://davidshekunts.ru/sitemap.xml
+
+# Host directive for preferred domain version
+Host: davidshekunts.ru`)
+		})
+
+		SiteMapHandler(e, app)
+
 		e.Router.GET("/post/:id", func(c echo.Context) error {
 			id := c.PathParam("id")
 
 			post := views.PostPagePost{}
 			err := teleblog.PostQuery(app.Dao()).Where(
-				dbx.HashExp{"id": id},
+				dbx.Or(
+					dbx.HashExp{"id": id},
+					dbx.HashExp{"slug": id},
+				),
 			).Limit(1).One(&post)
 			if err != nil {
 				return err
@@ -188,7 +222,23 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				}
 			}
 
-			component := views.PostPage(chat, post, comments)
+			seo := views.SeoMetadata{
+				Title:       post.Title,
+				Description: post.SeoDescription,
+				Image:       "",
+				Url:         fmt.Sprintf("https://davidshekunts.ru%s", views.GetPostUrl(post.Post)),
+				Type:        "article",
+			}
+
+			if seo.Description == "" {
+				seo.Description = RemoveNewLines(fmt.Sprintf("%.60s", post.Text))
+			}
+
+			if len(post.Media) > 0 {
+				seo.Image = fmt.Sprintf("https://davidshekunts.ru/%s", post.Media[0])
+			}
+
+			component := views.PostPage(chat, post, comments, &seo)
 
 			return component.Render(c.Request().Context(), c.Response().Writer)
 		})

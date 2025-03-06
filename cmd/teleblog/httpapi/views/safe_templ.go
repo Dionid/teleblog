@@ -8,6 +8,8 @@ package views
 import "github.com/a-h/templ"
 
 import (
+	"fmt"
+	"github.com/Dionid/teleblog/libs/teleblog"
 	"html/template"
 )
 
@@ -15,4 +17,12 @@ var StyleTemplate = template.Must(template.New("example").Parse("<style>{{ . }}<
 
 func EscapedCssComponent(content string) templ.Component {
 	return templ.FromGoHTML(StyleTemplate, template.CSS(templ.EscapeString(content)))
+}
+
+func GetPostUrl(post teleblog.Post) string {
+	if post.Slug != "" {
+		return fmt.Sprintf("/post/%s", post.Slug)
+	}
+
+	return fmt.Sprintf("/post/%s", post.Id)
 }

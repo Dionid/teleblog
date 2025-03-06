@@ -95,6 +95,10 @@ type Post struct {
 	Media types.JsonArray[string] `json:"media" db:"media"`
 
 	AlbumID string `json:"albumId" db:"album_id"`
+
+	Title          string `json:"title" db:"title"`
+	Slug           string `json:"slug" db:"slug"`
+	SeoDescription string `json:"seoDescription" db:"seo_description"`
 }
 
 func (m *Post) TableName() string {
