@@ -65,6 +65,8 @@ Sitemap: https://davidshekunts.ru/sitemap.xml
 Host: davidshekunts.ru`)
 		})
 
+		SiteMapHandler(e, app)
+
 		e.Router.GET("/post/:id", func(c echo.Context) error {
 			id := c.PathParam("id")
 
