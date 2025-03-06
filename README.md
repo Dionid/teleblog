@@ -115,18 +115,16 @@ MG: Add content improvement features
 
 MG: ...
 
+1. Auto-translate
 1. Repost to Medium
 1. Files
 1. Spoilers for Audio & Circles
-1. Theme changer
 1. ...
 
 ## X phase
 
 1. Dark / Light theme changer
 1. Delete old tags
-1. Backup
-1. Empty chats page
 1. Author Image ([getUserProfilePhotos](https://core.telegram.org/bots/api#getuserprofilephotos))
 1. Admin page
 1. Partial reload
