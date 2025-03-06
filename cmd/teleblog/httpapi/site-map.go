@@ -39,8 +39,14 @@ func SiteMapHandler(e *core.ServeEvent, app core.App) {
 		}
 
 		for _, post := range posts {
+			loc := post.Slug
+
+			if loc == "" {
+				loc = post.Id
+			}
+
 			urls = append(urls, SitemapURL{
-				Loc:        baseURL + "/post/" + post.Id,
+				Loc:        baseURL + "/post/" + loc,
 				LastMod:    post.Created.Time(),
 				ChangeFreq: "monthly",
 				Priority:   "0.8",

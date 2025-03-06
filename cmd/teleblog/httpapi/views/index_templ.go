@@ -819,7 +819,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" target=\"_blank\" class=\"flex p-2 hover:bg-slate-50 transition-colors border border-gray-200 rounded-md m-4 mb-0\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" target=\"_blank\" class=\"flex p-2 hover:bg-slate-50 transition-colors border border-gray-200 rounded-md m-4 mb-0 overflow-hidden\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -855,7 +855,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 							return templ_7745c5c3_Err
 						}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col ml-4\"><div class=\"font-bold line-clamp-2\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col ml-4 overflow-hidden\"><div class=\"font-bold line-clamp-2\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
