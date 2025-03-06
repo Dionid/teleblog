@@ -5,6 +5,7 @@ import (
 	"embed"
 	"encoding/json"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
@@ -41,6 +42,28 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 		}
 
 		IndexPageHandler(config, e, app)
+
+		// # robots.txt
+		e.Router.GET("/robots.txt", func(c echo.Context) error {
+			return c.String(http.StatusOK, `User-agent: *
+Allow: /
+Allow: /post/*
+Allow: /public/*
+Allow: /sitemap.xml
+
+Disallow: /api/*
+Disallow: /admin/*
+Disallow: /_/*
+
+# Optimize crawling rate
+Crawl-delay: 1
+
+# Main sitemap
+Sitemap: https://davidshekunts.ru/sitemap.xml
+
+# Host directive for preferred domain version
+Host: davidshekunts.ru`)
+		})
 
 		e.Router.GET("/post/:id", func(c echo.Context) error {
 			id := c.PathParam("id")

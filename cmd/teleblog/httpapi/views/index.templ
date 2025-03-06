@@ -43,14 +43,6 @@ func (p *PaginationData) TotalPages() int {
 	return int(math.Ceil(float64(p.Total) / float64(p.PerPage)))
 }
 
-// func bgImage(trustedURL string) templ.SafeCSSProperty {
-// 	return templ.SafeCSSProperty("url(" + trustedURL + ")")
-// }
-
-// css profileCSS(image string) {
-// 	background-image: { bgImage(image) };
-// }
-
 templ Pagination(data PaginationData) {
 	if data.TotalPages() < 7 {
 		<div class="join">

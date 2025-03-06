@@ -104,6 +104,7 @@ MG: Add content improvement features
 1. ~~Videos~~
 1. ~~Links preview~~
 1. SEO
+    1. Sitemap & robots.txt
     1. Meta title
     1. Meta description
     1. Meta image
