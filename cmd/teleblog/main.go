@@ -88,6 +88,10 @@ func main() {
 	// # Pre start
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		// # Set albumId for posts
+		if err := features.ExtractSlugs(app); err != nil {
+			return err
+		}
+
 		return features.SetAlbumId(app)
 	})
 
