@@ -21,7 +21,6 @@ func SiteMapHandler(e *core.ServeEvent, app core.App) {
 		posts := []teleblog.Post{}
 		err := teleblog.PostQuery(app.Dao()).
 			OrderBy("created desc").
-			Select("id", "created").
 			All(&posts)
 
 		if err != nil {
