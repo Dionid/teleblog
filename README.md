@@ -108,12 +108,12 @@ MG: Add content improvement features
     1. ~~Meta title~~
     1. ~~Meta description~~
     1. ~~Meta image~~
+1. ~~Remove CSS, JS cache~~
 
 ## Third phase
 
 MG: ...
 
-1. Remove CSS, JS cache
 1. Deploy DB backup
 1. Repost to Medium
 1. Files

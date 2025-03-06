@@ -75,8 +75,19 @@ setup-droplet:
 
 # Deploy
 
+increment-production-app-version:
+	ssh root@${SERVER_IP} '\
+		cd /root/teleblog && \
+		current=$$(grep "^APP_VERSION=" app.env | cut -d= -f2) && \
+		IFS=. read -r major minor patch <<< "$$current" && \
+		new_minor=$$((minor + 1)) && \
+		new_version="$$major.$$new_minor.$$patch" && \
+		sed -i "s/^APP_VERSION=.*/APP_VERSION=$$new_version/" app.env && \
+		echo "Version updated to $$new_version"'
+
 deploy:
 	make build-teleblog-linux
+	make increment-production-app-version
 	ssh root@${SERVER_IP} "systemctl stop teleblog"
 	scp ./cmd/teleblog/${BINARY_NAME}-linux root@${SERVER_IP}:/root/teleblog/${BINARY_NAME}-linux
 	ssh root@${SERVER_IP} "systemctl start teleblog"
