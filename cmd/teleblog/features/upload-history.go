@@ -8,7 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Dionid/teleblog/libs/slug"
 	"github.com/Dionid/teleblog/libs/teleblog"
+	"github.com/Dionid/teleblog/libs/templu"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
@@ -67,6 +69,9 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 			IsTgHistoryMessage: true,
 			Text:               text,
 			TgMessageId:        message.Id,
+			Title:              templu.RemoveNewLines(fmt.Sprintf("%.60s", text)),
+			SeoDescription:     templu.RemoveNewLines(fmt.Sprintf("%.160s", text)),
+			Slug:               slug.GenerateSlug(text, time.Now()),
 		}
 
 		// # post.Created

@@ -7,9 +7,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
+	"github.com/Dionid/teleblog/libs/slug"
 	"github.com/Dionid/teleblog/libs/teleblog"
+	"github.com/Dionid/teleblog/libs/templu"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/tools/filesystem"
@@ -82,12 +85,17 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return err
 		}
 
+		text := c.Message().Text + c.Message().Caption
+
 		newPost := &teleblog.Post{
-			ChatId:      chat.Id,
-			IsTgMessage: true,
-			Text:        c.Message().Text + c.Message().Caption,
-			TgMessageId: c.Message().ID,
-			AlbumID:     c.Message().AlbumID,
+			ChatId:         chat.Id,
+			IsTgMessage:    true,
+			Text:           text,
+			TgMessageId:    c.Message().ID,
+			AlbumID:        c.Message().AlbumID,
+			Title:          templu.RemoveNewLines(fmt.Sprintf("%.60s", text)),
+			SeoDescription: templu.RemoveNewLines(fmt.Sprintf("%.160s", text)),
+			Slug:           slug.GenerateSlug(text, time.Now()),
 		}
 
 		newPost.Created.Scan(c.Message().Time())
@@ -315,7 +323,9 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return err
 		}
 
-		post.Text = c.Message().Text + c.Message().Caption
+		text := c.Message().Text + c.Message().Caption
+
+		post.Text = text
 		post.TgMessageRaw = tgMessageRaw
 		post.IsTgHistoryMessage = false
 		post.AlbumID = c.Message().AlbumID
