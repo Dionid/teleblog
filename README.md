@@ -111,6 +111,9 @@ MG: Add content improvement features
 
 MG: ...
 
+1. Remove CSS, JS cache
+1. Deploy DB backup
+1. Links preview
 1. Repost to Medium
 1. Links preview
 1. Files
@@ -120,6 +123,7 @@ MG: ...
 
 ## X phase
 
+1. Dark / Light theme changer
 1. Delete old tags
 1. Backup
 1. Empty chats page
