@@ -24,8 +24,8 @@ type PostPagePost struct {
 	TextWithMarkup string `json:"text_with_markup"`
 }
 
-templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment) {
-	@BaseLayout() {
+templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment, seo *SeoMetadata) {
+	@BaseLayout(seo) {
 		<div class="flex flex-col w-full justify-center items-center">
 			<div class="w-full flex justify-center max-w-6xl">
 				<div class="w-full flex flex-col justify-center max-w-3xl">

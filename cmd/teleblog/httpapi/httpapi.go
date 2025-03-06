@@ -4,9 +4,11 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
 	"github.com/Dionid/teleblog/libs/file"
@@ -21,6 +23,10 @@ import (
 type Config struct {
 	Env    string
 	UserId string
+}
+
+func RemoveNewLines(text string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(text, "\r\n", " "), "\n", "")
 }
 
 //go:embed public
@@ -216,7 +222,23 @@ Host: davidshekunts.ru`)
 				}
 			}
 
-			component := views.PostPage(chat, post, comments)
+			seo := views.SeoMetadata{
+				Title:       post.Title,
+				Description: post.SeoDescription,
+				Image:       "",
+				Url:         fmt.Sprintf("https://davidshekunts.ru%s", views.GetPostUrl(post.Post)),
+				Type:        "article",
+			}
+
+			if seo.Description == "" {
+				seo.Description = RemoveNewLines(fmt.Sprintf("%.60s", post.Text))
+			}
+
+			if len(post.Media) > 0 {
+				seo.Image = fmt.Sprintf("https://davidshekunts.ru/%s", post.Media[0])
+			}
+
+			component := views.PostPage(chat, post, comments, &seo)
 
 			return component.Render(c.Request().Context(), c.Response().Writer)
 		})

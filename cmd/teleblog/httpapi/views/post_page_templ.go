@@ -34,7 +34,7 @@ type PostPagePost struct {
 	TextWithMarkup string `json:"text_with_markup"`
 }
 
-func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment) templ.Component {
+func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment, seo *SeoMetadata) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -494,7 +494,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = BaseLayout().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = BaseLayout(seo).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
