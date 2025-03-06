@@ -2,12 +2,18 @@ package httpapi
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
 	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/core"
+	"golang.org/x/net/html"
 	"gopkg.in/telebot.v3"
 )
 
@@ -67,6 +73,83 @@ func baseQuery(
 	}
 
 	return baseQuery
+}
+
+func extractFirstURL(text string) string {
+	urlRegex := regexp.MustCompile(`https?://[^\s<>"]+|www\.[^\s<>"]+`)
+	matches := urlRegex.FindStringSubmatch(text)
+	if len(matches) > 0 {
+		return matches[0]
+	}
+	return ""
+}
+
+func fetchLinkPreview(url string) (*views.LinkPreview, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("bad status: %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		return nil, err
+	}
+
+	preview := &views.LinkPreview{
+		URL: url,
+	}
+
+	var findMeta func(*html.Node)
+	findMeta = func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			switch n.Data {
+			case "title":
+				if n.FirstChild != nil {
+					preview.Title = n.FirstChild.Data
+				}
+			case "meta":
+				var property, content string
+				for _, attr := range n.Attr {
+					switch attr.Key {
+					case "property", "name":
+						property = attr.Val
+					case "content":
+						content = attr.Val
+					}
+				}
+				switch property {
+				case "og:title":
+					if preview.Title == "" {
+						preview.Title = content
+					}
+				case "og:description", "description":
+					if preview.Description == "" {
+						preview.Description = content
+					}
+				case "og:image":
+					if preview.Image == "" {
+						preview.Image = content
+					}
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			findMeta(c)
+		}
+	}
+	findMeta(doc)
+
+	return preview, nil
 }
 
 func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
@@ -235,6 +318,13 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			}
 
 			post.TextWithMarkup = markup
+
+			// Extract and fetch link preview
+			if url := extractFirstURL(post.Text); url != "" {
+				if preview, err := fetchLinkPreview(url); err == nil {
+					post.LinkPreview = preview
+				}
+			}
 		}
 
 		// # Tags

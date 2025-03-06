@@ -101,7 +101,8 @@ MG: Add content improvement features
         1. ~~UI~~
             1. ~~Index~~
             1. ~~Post page~~
-1. Videos
+1. ~~Videos~~
+1. ~~Links preview~~
 1. SEO
     1. Meta title
     1. Meta description
@@ -113,9 +114,7 @@ MG: ...
 
 1. Remove CSS, JS cache
 1. Deploy DB backup
-1. Links preview
 1. Repost to Medium
-1. Links preview
 1. Files
 1. Spoilers for Audio & Circles
 1. Theme changer
