@@ -72,7 +72,10 @@ Host: davidshekunts.ru`)
 
 			post := views.PostPagePost{}
 			err := teleblog.PostQuery(app.Dao()).Where(
-				dbx.HashExp{"id": id},
+				dbx.Or(
+					dbx.HashExp{"id": id},
+					dbx.HashExp{"slug": id},
+				),
 			).Limit(1).One(&post)
 			if err != nil {
 				return err
