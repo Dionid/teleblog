@@ -18,6 +18,57 @@ type PostPageFilters struct {
 	Tag     string `query:"tag"`
 }
 
+func baseQuery(
+	app core.App,
+	filters PostPageFilters,
+	chatIds ...interface{},
+) *dbx.SelectQuery {
+	// Query
+	baseQuery := teleblog.PostQuery(app.Dao()).
+		LeftJoin(
+			"comment",
+			dbx.NewExp("comment.post_id = post.id"),
+		).
+		Where(
+			dbx.In("post.chat_id", chatIds...),
+		).
+		// to avoid unsupported post types (video, photo, file, etc.)
+		AndWhere(
+			dbx.Or(
+				dbx.NewExp(`post.text != ""`),
+				dbx.NewExp(`json_array_length(post.media) > 0`),
+			),
+		)
+
+	// ## Filters
+
+	if filters.Search != "" {
+		baseQuery = baseQuery.AndWhere(
+			dbx.Or(
+				dbx.Like("post.text", filters.Search),
+				dbx.Like("comment.text", filters.Search),
+			),
+		)
+	}
+
+	if filters.Tag != "" {
+		baseQuery = baseQuery.
+			LeftJoin(
+				"post_tag",
+				dbx.NewExp("post_tag.post_id = post.id"),
+			).
+			LeftJoin(
+				"tag",
+				dbx.NewExp("tag.id = post_tag.tag_id"),
+			).
+			AndWhere(
+				dbx.HashExp{"tag.value": filters.Tag},
+			)
+	}
+
+	return baseQuery
+}
+
 func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 	e.Router.GET("", func(c echo.Context) error {
 		chats := []teleblog.Chat{}
@@ -46,73 +97,49 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			return err
 		}
 
-		// Query
-		baseQuery := teleblog.PostQuery(app.Dao()).
-			LeftJoin(
-				"comment",
-				dbx.NewExp("comment.post_id = post.id"),
-			).
-			Where(
-				dbx.In("post.chat_id", chatIds...),
-			).
-			// to avoid unsupported post types (video, photo, file, etc.)
-			AndWhere(
-				dbx.NewExp(`post.text != ""`),
-			)
-
-		// ## Filters
-
-		if filters.Search != "" {
-			baseQuery = baseQuery.AndWhere(
-				dbx.Or(
-					dbx.Like("post.text", filters.Search),
-					dbx.Like("comment.text", filters.Search),
-				),
-			)
-		}
-
-		if filters.Tag != "" {
-			baseQuery = baseQuery.
-				LeftJoin(
-					"post_tag",
-					dbx.NewExp("post_tag.post_id = post.id"),
-				).
-				LeftJoin(
-					"tag",
-					dbx.NewExp("tag.id = post_tag.tag_id"),
-				).
-				AndWhere(
-					dbx.HashExp{"tag.value": filters.Tag},
-				)
-		}
-
 		// ## Total
 		total := []struct {
 			Total int64 `db:"total"`
 		}{}
 
-		err = baseQuery.Select(
+		err = baseQuery(
+			app,
+			filters,
+			chatIds...,
+		).Select(
 			"count(post.id) as total",
 		).
-			GroupBy("post.id").
+			GroupBy("post.album_id").
 			All(&total)
 		if err != nil {
 			return err
 		}
 
+		// fmt.Println("TOTAL ", totalQuery.Build().SQL())
+
 		// ## Posts
 		posts := []*views.InpexPagePost{}
-		contentQuery := baseQuery.Select(
+		contentQuery := baseQuery(
+			app,
+			filters,
+			chatIds...,
+		).Select(
 			"post.*",
 			"count(comment.id) as comments_count",
 			"chat.tg_username as tg_chat_username",
+			"json_group_array(json_object("+
+				"'id', post.id,"+
+				"'media', post.media"+
+				")) as album_posts",
 		).
 			LeftJoin(
 				"chat",
 				dbx.NewExp("chat.id = post.chat_id"),
 			).
-			GroupBy("post.id").
-			OrderBy("post.created desc")
+			// TODO: think about it
+			// GroupBy("post.id").
+			OrderBy("post.created desc", "post.tg_post_id asc").
+			GroupBy("post.album_id")
 
 		// ## Pagination
 		// ### Per page
@@ -143,9 +170,42 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		// TODO: count comments separately, because search string make it incorrect
 		// ...
 
+		postCollection, err := app.Dao().FindCollectionByNameOrId("post")
+		if err != nil {
+			return err
+		}
+
 		for _, post := range posts {
 			markup := ""
 
+			for i, media := range post.Media {
+				post.Media[i] = postCollection.Id + "/" + post.Id + "/" + media
+			}
+
+			for _, innerPost := range post.AlbumPosts {
+				if innerPost.Id == post.Id || innerPost.Media == "" {
+					continue
+				}
+
+				// # Text
+				post.Text += innerPost.Text
+
+				// # Photos
+				medias := []string{}
+
+				err = json.Unmarshal([]byte(innerPost.Media), &medias)
+				if err != nil {
+					return err
+				}
+
+				for i, media := range medias {
+					medias[i] = postCollection.Id + "/" + innerPost.Id + "/" + media
+				}
+
+				post.Media = append(post.Media, medias...)
+			}
+
+			// # Prase raw message
 			jb, err := post.TgMessageRaw.MarshalJSON()
 			if err != nil {
 				return err
@@ -189,7 +249,6 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			Where(
 				dbx.In("post_tag.chat_id", chatIds...),
 			).
-			GroupBy("tag.id").
 			OrderBy("created desc").
 			All(&tags)
 		if err != nil {

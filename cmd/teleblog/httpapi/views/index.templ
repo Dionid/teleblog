@@ -7,7 +7,14 @@ import (
 	"github.com/pocketbase/pocketbase/tools/types"
 	"fmt"
 	"math"
+	"strings"
 )
+
+type IndexPagePostAlbumPost struct {
+	Id string `db:"id" json:"id"`
+	Media string `db:"media" json:"media"`
+	Text string `db:"text" json:"text"`
+}
 
 type InpexPagePost struct {
 	teleblog.Post
@@ -15,6 +22,7 @@ type InpexPagePost struct {
 	CommentsCount int `db:"comments_count" json:"comments_count"`
 	TgChatUsername string `db:"tg_chat_username" json:"tg_chat_username"`
 	TextWithMarkup string `json:"text_with_markup"`
+	AlbumPosts types.JsonArray[IndexPagePostAlbumPost] `db:"album_posts" json:"album_posts"`
 }
 
 type PaginationData struct {
@@ -26,6 +34,14 @@ type PaginationData struct {
 func (p *PaginationData) TotalPages() int {
 	return int(math.Ceil(float64(p.Total) / float64(p.PerPage)))
 }
+
+// func bgImage(trustedURL string) templ.SafeCSSProperty {
+// 	return templ.SafeCSSProperty("url(" + trustedURL + ")")
+// }
+
+// css profileCSS(image string) {
+// 	background-image: { bgImage(image) };
+// }
 
 templ Pagination(data PaginationData) {
 	if data.TotalPages() < 7 {
@@ -108,7 +124,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 						@partials.Header()
 					</div>
 					<div class="w-full flex flex-col justify-center p-3 sm:p-6">
-						<div class="card bg-white">
+						<div class="card shadow-sm bg-white">
 							<div class="card-body flex-col p-4 items-center md:flex-row">
 								<div class="avatar">
 									<div class="w-24 rounded-full">
@@ -116,7 +132,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 									</div>
 								</div>
 								<div class="p-2 sm:p-4">
-									Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href="https://t.me/it_kachalka" target="_blank" class="border-b-2 border-dashed border-secondary">🦾 IT-Качалки 💪</a>
+									Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href="https://t.me/it_kachalka" target="_blank" class="border-b-2 border-dashed border-secondary">🦾 IT-Качалки 💪</a>
 								</div>
 							</div>
 						</div>
@@ -153,42 +169,88 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 										</div>
 									</div>
 								}
-								for _, post := range posts {
-									<div class="card bg-white w-full" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
-										<div class="card-body break-words p-6">
-											<div class="flex justify-between items-end">
-												<div class=" text-gray-400">
-													{ post.Created.Time().Format("2006-01-02 15:04") }
+								<div class="grid justify-center grid-cols-1 md:grid-cols-2 gap-4">
+									for _, post := range posts {
+										<div class="card shadow-sm bg-white w-full overflow-hidden" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
+											if len(post.Media) == 1 {
+												<div class="flex justify-center">
+													if strings.Contains(post.Media[0], ".mp4") {
+														<video 
+															src={ "/api/files/" + post.Media[0] } 
+															class="max-h-80 cursor-pointer" 
+															controls
+														/>
+													} else {
+														<img 
+															src={ "/api/files/" + post.Media[0] } 
+															class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
+															data-photo={ post.Media[0] }
+															onclick="openImageModal(this.dataset.photo)"
+														/>
+													}
 												</div>
-												<a class="btn btn-ghost btn-sm  right-0" target="_blank" href={ templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", post.TgChatUsername, post.TgMessageId)) }>
-													<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-														<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
-													</svg>
-												</a>
-											</div>
-											<div class="link-as-contents" v-show="!post.collapsed">
-												@templ.Raw(post.TextWithMarkup)
-											</div>
-											<div class="link-as-contents" v-html="cropText(post.text_with_markup)" v-show="post.collapsed"></div>
-											<div class="btn mt-4" v-show="post.collapsed" @click={ fmt.Sprintf("expandPostText('%s')", post.Id) }>
-												Развернуть
-												<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-													<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-												</svg>
-											</div>
-											<div class="card-actions pt-3 justify-between">
-												<a class="flex p-2 gap-2" href={ templ.SafeURL("/post/" + post.Id)}>
-													{ fmt.Sprintf("%d", post.CommentsCount) }
+											} else if len(post.Media) > 1 {
+												<div class="grid grid-cols-2 gap-2">
+													for _, photo := range post.Media {
+														<div class="flex justify-center">
+															if strings.Contains(photo, ".mp4") {
+																<video 
+																	src={ "/api/files/" + photo } 
+																	class="w-full h-60 object-cover cursor-pointer" 
+																	controls
+																/>
+															} else {
+																<img 
+																	src={ "/api/files/" + photo } 
+																	class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
+																	data-photo={ photo }
+																	onclick="openImageModal(this.dataset.photo)"
+																/>
+															}
+														</div>
+													}
+												</div>
+											}
+											<div class="card-body break-words p-6 pt-4 pb-4">
+												<div class="flex justify-between items-end">
+													<div class=" text-gray-400">
+														{ post.Created.Time().Format("2006-01-02 15:04") }
+													</div>
+													// <a class="btn btn-ghost btn-sm  right-0" target="_blank" href={ templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", post.TgChatUsername, post.TgMessageId)) }>
+													// 	<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+													// 		<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
+													// 	</svg>
+													// </a>
+												</div>
+												<div class="link-as-contents" v-show="!post.collapsed">
+													@templ.Raw(post.TextWithMarkup)
+												</div>
+												<div class="link-as-contents" v-html="cropText(post.text_with_markup)" v-show="post.collapsed"></div>
+												<div class="btn mt-4" v-show="post.collapsed" @click={ fmt.Sprintf("expandPostText('%s')", post.Id) }>
+													Развернуть
 													<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-														<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6l3 3v-3h2V9h-2M4 4h11v8H9l-3 3v-3H4V4Z"/>
+														<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
 													</svg>
-												</a>
-												<a class="btn btn-sm btn-primary" href={ templ.SafeURL("/post/" + post.Id)} v-if="post.comments_count > 0">Читать далее</a>
-												<a class="btn btn-sm btn-ghost" href={ templ.SafeURL("/post/" + post.Id)} v-if="post.comments_count == 0">Читать далее</a>
+												</div>
+												<div class="card-actions pt-3 justify-between mt-auto">
+													<a class="flex p-2 gap-2" href={ templ.SafeURL("/post/" + post.Id)}>
+														{ fmt.Sprintf("%d", post.CommentsCount) }
+														<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+															<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6l3 3v-3h2V9h-2M4 4h11v8H9l-3 3v-3H4V4Z"/>
+														</svg>
+													</a>
+													<a class="btn btn-sm btn-primary" href={ templ.SafeURL("/post/" + post.Id)} v-if="post.comments_count > 0">Читать далее</a>
+													// <a class="btn btn-sm btn-ghost" href={ templ.SafeURL("/post/" + post.Id)} v-if="post.comments_count == 0">Читать далее</a>
+													<a class="btn btn-ghost btn-sm  right-0" target="_blank" href={ templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", post.TgChatUsername, post.TgMessageId)) }>
+														<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+															<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
+														</svg>
+													</a>
+												</div>
 											</div>
 										</div>
-									</div>
-								}
+									}
+								</div>
 								<div class="flex w-full justify-center">
 									@Pagination(pagination)
 								</div>
@@ -201,5 +263,35 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 				</div>
 			</div>
 		</div>
+		<dialog id="imageModal" class="modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent">
+			<div class="relative">
+				<img id="modalImage" class="max-w-[95vw] max-h-[95vh] object-contain" src="" />
+				<button onclick="closeImageModal()" class="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+		</dialog>
+		<script>
+			function openImageModal(photoPath) {
+				const modal = document.getElementById('imageModal');
+				const modalImg = document.getElementById('modalImage');
+				modalImg.src = '/api/files/' + photoPath;
+				modal.showModal();
+			}
+
+			function closeImageModal() {
+				const modal = document.getElementById('imageModal');
+				modal.close();
+			}
+
+			// Close modal when clicking outside
+			document.getElementById('imageModal').addEventListener('click', function(event) {
+				if (event.target === this) {
+					this.close();
+				}
+			});
+		</script>
 	}
 }

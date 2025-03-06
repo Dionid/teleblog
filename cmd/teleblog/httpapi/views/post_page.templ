@@ -4,13 +4,19 @@ import (
 	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views/partials"
 	"fmt"
+	"strings"
 )
 
-type PostPageComment struct {
+type CommentWithTextWithMarkup struct {
 	teleblog.Comment
+	TextWithMarkup string `json:"text_with_markup"`
 	AuthorUsername *string 
 	AuthorTitle   string
-	TextWithMarkup string `json:"text_with_markup"`
+}
+
+type PostPageComment struct {
+	CommentWithTextWithMarkup
+	ReplyToComment *CommentWithTextWithMarkup
 }
 
 type PostPagePost struct {
@@ -29,6 +35,45 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 					<div class="flex flex-col w-full p-2 sm:p-6 items-center">
 						<div class="flex flex-col w-full gap-4">
 							<div class="card bg-white shadow-sm w-full">
+								if len(post.Media) == 1 {
+									<div class="flex justify-center">
+										if strings.Contains(post.Media[0], ".mp4") {
+											<video 
+												src={ "/api/files/" + post.Media[0] } 
+												class="max-h-80 cursor-pointer" 
+												controls
+											/>
+										} else {
+											<img 
+												src={ "/api/files/" + post.Media[0] } 
+												class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
+												data-photo={ post.Media[0] }
+												onclick="openImageModal(this.dataset.photo)"
+											/>
+										}
+									</div>
+								} else if len(post.Media) > 1 {
+									<div class="grid grid-cols-2 gap-2">
+										for _, photo := range post.Media {
+											<div class="flex justify-center">
+												if strings.Contains(photo, ".mp4") {
+													<video 
+														src={ "/api/files/" + photo } 
+														class="max-h-40 cursor-pointer" 
+														controls
+													/>
+												} else {
+													<img 
+														src={ "/api/files/" + photo } 
+														class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
+														data-photo={ photo }
+														onclick="openImageModal(this.dataset.photo)"
+													/>
+												}
+											</div>
+										}
+									</div>
+								}
 								<div class="card-body">
 									<div class="text-gray-400 flex justify-between items-center relative gap-4">
 										<div>
@@ -38,6 +83,7 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 											<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 												<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
 											</svg>
+											<p>Оригинал</p>
 										</a>
 									</div>
 									<div class="break-words link-as-contents">
@@ -53,11 +99,11 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 									<div class="flex">
 										<div class="avatar pr-2 sm:pr-4 pt-3">
 											if comment.AuthorUsername != nil {
-												<a target="_blank" href={ templ.SafeURL(fmt.Sprintf("https://t.me/%s", *comment.AuthorUsername)) } class="w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-primary" style="display: flex">
+												<a target="_blank" href={ templ.SafeURL(fmt.Sprintf("https://t.me/%s", *comment.AuthorUsername)) } class="mt-auto w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-primary" style="display: flex">
 													{ fmt.Sprintf("%c", []rune(comment.AuthorTitle)[0]) }
 												</a>
 											} else {
-												<div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-primary" style="display: flex">
+												<div class="mt-auto w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-primary" style="display: flex">
 													{ fmt.Sprintf("%c", []rune(comment.AuthorTitle)[0]) }
 												</div>
 											}
@@ -86,7 +132,23 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 															</svg>
 														</a>
 													</div>
-													<div class="break-words link-as-contents">
+													if comment.ReplyToComment != nil {
+														<div class="p-1 pl-4 pr-4 bg-slate-300 border-l-2 border-l-slate-600 border-solid rounded-md">
+															if comment.ReplyToComment.AuthorUsername != nil {
+																<a target="_blank" href={ templ.SafeURL(fmt.Sprintf("https://t.me/%s", *comment.ReplyToComment.AuthorUsername)) } class="flex font-bold text-sm">
+																	{ comment.ReplyToComment.AuthorTitle }
+																</a>
+															} else {
+																<div class="flex font-bold text-sm">
+																	{ comment.ReplyToComment.AuthorTitle }
+																</div>
+															}
+															<div class="break-words link-as-contents">
+																@templ.Raw(comment.ReplyToComment.TextWithMarkup)
+															</div>
+														</div>
+													}
+													<div class="break-words link-as-contents ">
 														@templ.Raw(comment.TextWithMarkup)
 													</div>
 												</div>
@@ -106,5 +168,35 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 				</div>
 			</div>
 		</div>
+		<dialog id="imageModal" class="modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent">
+			<div class="relative">
+				<img id="modalImage" class="max-w-[95vw] max-h-[95vh] object-contain" src="" />
+				<button onclick="closeImageModal()" class="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+		</dialog>
+		<script>
+			function openImageModal(photoPath) {
+				const modal = document.getElementById('imageModal');
+				const modalImg = document.getElementById('modalImage');
+				modalImg.src = '/api/files/' + photoPath;
+				modal.showModal();
+			}
+
+			function closeImageModal() {
+				const modal = document.getElementById('imageModal');
+				modal.close();
+			}
+
+			// Close modal when clicking outside
+			document.getElementById('imageModal').addEventListener('click', function(event) {
+				if (event.target === this) {
+					this.close();
+				}
+			});
+		</script>
 	}
 }

@@ -1,0 +1,1596 @@
+{
+ "name": "Teleblog CHANNEL",
+ "type": "public_channel",
+ "id": 1405579475,
+ "messages": [
+  {
+   "id": 1,
+   "type": "service",
+   "date": "2021-11-22T17:42:57",
+   "date_unixtime": "1637577777",
+   "actor": "Teleblog CHANNEL",
+   "actor_id": "channel1405579475",
+   "action": "create_channel",
+   "title": "Teleadmin 2 private",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 2,
+   "type": "message",
+   "date": "2024-06-23T10:08:11",
+   "date_unixtime": "1719112091",
+   "edited": "2024-06-23T10:09:48",
+   "edited_unixtime": "1719112188",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "EDITTED Some post in channel",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "EDITTED Some post in channel"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "type": "message",
+   "date": "2024-06-23T10:08:32",
+   "date_unixtime": "1719112112",
+   "edited": "2024-06-23T10:10:45",
+   "edited_unixtime": "1719112245",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "222 Other post in channel",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "222 Other post in channel"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "type": "message",
+   "date": "2024-06-23T10:14:36",
+   "date_unixtime": "1719112476",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Another one",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Another one"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "type": "service",
+   "date": "2024-06-23T10:27:26",
+   "date_unixtime": "1719113246",
+   "actor": "Teleblog CHANNEL",
+   "actor_id": "channel1405579475",
+   "action": "edit_group_title",
+   "title": "Telebot",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 6,
+   "type": "service",
+   "date": "2024-06-23T11:17:02",
+   "date_unixtime": "1719116222",
+   "actor": "Teleblog CHANNEL",
+   "actor_id": "channel1405579475",
+   "action": "edit_group_title",
+   "title": "Telebot CHANNEL",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 7,
+   "type": "service",
+   "date": "2024-06-23T11:20:07",
+   "date_unixtime": "1719116407",
+   "actor": "Teleblog CHANNEL",
+   "actor_id": "channel1405579475",
+   "action": "edit_group_title",
+   "title": "Teleblog CHANNEL",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 8,
+   "type": "message",
+   "date": "2024-06-23T11:39:41",
+   "date_unixtime": "1719117581",
+   "edited": "2024-06-23T12:05:36",
+   "edited_unixtime": "1719119136",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "qweqwe 333",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "qweqwe 333"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "type": "message",
+   "date": "2024-06-23T12:06:25",
+   "date_unixtime": "1719119185",
+   "edited": "2024-06-23T12:06:28",
+   "edited_unixtime": "1719119188",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Some new message",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Some new message"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "type": "message",
+   "date": "2024-06-23T12:51:00",
+   "date_unixtime": "1719121860",
+   "edited": "2024-06-23T12:51:03",
+   "edited_unixtime": "1719121863",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "qweqwe",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "qweqwe"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "type": "message",
+   "date": "2024-06-23T13:25:18",
+   "date_unixtime": "1719123918",
+   "edited": "2024-06-23T13:25:22",
+   "edited_unixtime": "1719123922",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "test channel",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "test channel"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "type": "message",
+   "date": "2024-06-23T13:26:16",
+   "date_unixtime": "1719123976",
+   "edited": "2024-06-23T13:26:19",
+   "edited_unixtime": "1719123979",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "What?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "What?"
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "type": "message",
+   "date": "2024-06-23T13:28:29",
+   "date_unixtime": "1719124109",
+   "edited": "2024-06-23T13:28:32",
+   "edited_unixtime": "1719124112",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "asdqwe",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "asdqwe"
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "type": "message",
+   "date": "2024-06-23T13:30:32",
+   "date_unixtime": "1719124232",
+   "edited": "2024-06-23T13:30:35",
+   "edited_unixtime": "1719124235",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "zxcasd",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "zxcasd"
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "type": "message",
+   "date": "2024-06-23T13:31:01",
+   "date_unixtime": "1719124261",
+   "edited": "2024-06-23T13:31:04",
+   "edited_unixtime": "1719124264",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "dgbdb",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "dgbdb"
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "type": "message",
+   "date": "2024-06-23T13:36:14",
+   "date_unixtime": "1719124574",
+   "edited": "2024-06-23T13:36:17",
+   "edited_unixtime": "1719124577",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "asdzxc",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "asdzxc"
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "type": "message",
+   "date": "2024-06-23T13:41:11",
+   "date_unixtime": "1719124871",
+   "edited": "2024-06-23T13:41:14",
+   "edited_unixtime": "1719124874",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "This is new post!",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "This is new post!"
+    }
+   ]
+  },
+  {
+   "id": 18,
+   "type": "message",
+   "date": "2024-06-23T13:42:17",
+   "date_unixtime": "1719124937",
+   "edited": "2024-06-23T13:42:20",
+   "edited_unixtime": "1719124940",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "This is ",
+    {
+     "type": "bold",
+     "text": "bold"
+    },
+    " text"
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "This is "
+    },
+    {
+     "type": "bold",
+     "text": "bold"
+    },
+    {
+     "type": "plain",
+     "text": " text"
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "type": "message",
+   "date": "2024-06-23T13:42:39",
+   "date_unixtime": "1719124959",
+   "edited": "2024-06-23T13:42:42",
+   "edited_unixtime": "1719124962",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "🔥 This with emoji  ",
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "🔥 This with emoji  "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "type": "message",
+   "date": "2024-06-23T13:44:04",
+   "date_unixtime": "1719125044",
+   "edited": "2024-06-23T13:44:07",
+   "edited_unixtime": "1719125047",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "This is ",
+    {
+     "type": "bold",
+     "text": "bold"
+    },
+    " text"
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "This is "
+    },
+    {
+     "type": "bold",
+     "text": "bold"
+    },
+    {
+     "type": "plain",
+     "text": " text"
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "type": "message",
+   "date": "2024-06-23T13:50:47",
+   "date_unixtime": "1719125447",
+   "edited": "2024-06-23T13:50:50",
+   "edited_unixtime": "1719125450",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "🔥 This ",
+    {
+     "type": "bold",
+     "text": "with"
+    },
+    " emoji  ",
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "🔥 This "
+    },
+    {
+     "type": "bold",
+     "text": "with"
+    },
+    {
+     "type": "plain",
+     "text": " emoji  "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "type": "message",
+   "date": "2024-06-23T13:57:51",
+   "date_unixtime": "1719125871",
+   "edited": "2024-06-23T13:57:54",
+   "edited_unixtime": "1719125874",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "🔥 This ",
+    {
+     "type": "bold",
+     "text": "with"
+    },
+    " emoji  ",
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "🔥 This "
+    },
+    {
+     "type": "bold",
+     "text": "with"
+    },
+    {
+     "type": "plain",
+     "text": " emoji  "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "type": "message",
+   "date": "2024-06-23T13:57:52",
+   "date_unixtime": "1719125872",
+   "edited": "2024-06-23T13:57:54",
+   "edited_unixtime": "1719125874",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "reply_to_message_id": 22,
+   "text": "Something went wrong! We will fix it soon stay tuned.",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Something went wrong! We will fix it soon stay tuned."
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "type": "message",
+   "date": "2024-06-23T14:03:36",
+   "date_unixtime": "1719126216",
+   "edited": "2024-06-23T14:03:39",
+   "edited_unixtime": "1719126219",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "🔥 This ",
+    {
+     "type": "bold",
+     "text": "with"
+    },
+    " emoji  ",
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "🔥 This "
+    },
+    {
+     "type": "bold",
+     "text": "with"
+    },
+    {
+     "type": "plain",
+     "text": " emoji  "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "😎",
+     "document_id": "video_files/sticker.webm"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "type": "message",
+   "date": "2024-06-23T14:05:07",
+   "date_unixtime": "1719126307",
+   "edited": "2024-06-23T14:05:11",
+   "edited_unixtime": "1719126311",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "Some other text with ",
+    {
+     "type": "text_link",
+     "text": "link",
+     "href": "https://www.google.com/search?q=tg+bot+custom+emoji&oq=tg+bot+custom+emoji&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRigATIHCAIQIRigAdIBCDQ5ODVqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8"
+    }
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Some other text with "
+    },
+    {
+     "type": "text_link",
+     "text": "link",
+     "href": "https://www.google.com/search?q=tg+bot+custom+emoji&oq=tg+bot+custom+emoji&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRigATIHCAIQIRigAdIBCDQ5ODVqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8"
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "type": "message",
+   "date": "2024-06-23T14:07:44",
+   "date_unixtime": "1719126464",
+   "edited": "2024-06-23T14:07:47",
+   "edited_unixtime": "1719126467",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "And one wuth\n\nnew line",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "And one wuth\n\nnew line"
+    }
+   ]
+  },
+  {
+   "id": 27,
+   "type": "message",
+   "date": "2024-06-24T14:56:04",
+   "date_unixtime": "1719215764",
+   "edited": "2024-06-24T14:56:07",
+   "edited_unixtime": "1719215767",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Hello",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Hello"
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "type": "message",
+   "date": "2024-06-24T14:58:06",
+   "date_unixtime": "1719215886",
+   "edited": "2024-06-24T14:58:09",
+   "edited_unixtime": "1719215889",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Test post 1",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Test post 1"
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "type": "message",
+   "date": "2024-06-24T15:00:14",
+   "date_unixtime": "1719216014",
+   "edited": "2024-06-24T15:00:17",
+   "edited_unixtime": "1719216017",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Test post 2",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Test post 2"
+    }
+   ]
+  },
+  {
+   "id": 30,
+   "type": "message",
+   "date": "2024-06-24T15:08:42",
+   "date_unixtime": "1719216522",
+   "edited": "2024-06-26T15:02:58",
+   "edited_unixtime": "1719388978",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Test post sadasd 3",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Test post sadasd 3"
+    }
+   ]
+  },
+  {
+   "id": 31,
+   "type": "message",
+   "date": "2024-06-24T15:19:30",
+   "date_unixtime": "1719217170",
+   "edited": "2024-06-26T15:02:52",
+   "edited_unixtime": "1719388972",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "EDIT 4 Test post 4 4444",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "EDIT 4 Test post 4 4444"
+    }
+   ]
+  },
+  {
+   "id": 32,
+   "type": "message",
+   "date": "2024-06-25T10:46:45",
+   "date_unixtime": "1719287205",
+   "edited": "2024-07-02T16:18:59",
+   "edited_unixtime": "1719911939",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    {
+     "type": "link",
+     "text": "N2P.dev"
+    },
+    {
+     "type": "bold",
+     "text": " – я выпустил свой первый micro-saas"
+    },
+    " ",
+    {
+     "type": "custom_emoji",
+     "text": "⚡️",
+     "document_id": "stickers/AnimatedSticker.tgs"
+    },
+    "\n\n| ",
+    {
+     "type": "link",
+     "text": "https://n2p.dev/"
+    },
+    "\n\n",
+    {
+     "type": "text_link",
+     "text": "Notion",
+     "href": "https://N2P.dev/"
+    },
+    " и время от времени делаете презентации? Тогда N2P поможет превращать ваши Notion страницы в интерактивные презентации\n\nВсем альфа-тестерам, кто воспользуется N2P для проведения любой публичной презентации подарю платный тариф \n\n",
+    {
+     "type": "italic",
+     "text": "P.S."
+    },
+    "\n\nЭто альфа-версия, в ней будет много багов, поэтому, если вы готовы попробовать, подсказать мне какие баги обнаружили или предложить новые фичи, вступайте в группу альфа-тестеров:\n\n",
+    {
+     "type": "mention",
+     "text": "@n2p_alpha_ru"
+    },
+    "\n\nПосле того, как все отточим, пойду это дело маркетить по канонам инди-хакеров\n\n",
+    {
+     "type": "bold",
+     "text": "P.P.S."
+    },
+    "\n\nНу и конечноже вот вам репозиторий: ",
+    {
+     "type": "link",
+     "text": "https://github.com/Dionid/notion-to-presentation"
+    },
+    " – о том, какими техническими решениями я воспользовался по итогу расскажу в будущих постах и стримах\n\nВсем мощной прокачки ",
+    {
+     "type": "custom_emoji",
+     "text": "💪",
+     "document_id": "stickers/AnimatedSticker (1).tgs"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "link",
+     "text": "N2P.dev"
+    },
+    {
+     "type": "bold",
+     "text": " – я выпустил свой первый micro-saas"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "⚡️",
+     "document_id": "stickers/AnimatedSticker.tgs"
+    },
+    {
+     "type": "plain",
+     "text": "\n\n| "
+    },
+    {
+     "type": "link",
+     "text": "https://n2p.dev/"
+    },
+    {
+     "type": "plain",
+     "text": "\n\n"
+    },
+    {
+     "type": "text_link",
+     "text": "Notion",
+     "href": "https://N2P.dev/"
+    },
+    {
+     "type": "plain",
+     "text": " и время от времени делаете презентации? Тогда N2P поможет превращать ваши Notion страницы в интерактивные презентации\n\nВсем альфа-тестерам, кто воспользуется N2P для проведения любой публичной презентации подарю платный тариф \n\n"
+    },
+    {
+     "type": "italic",
+     "text": "P.S."
+    },
+    {
+     "type": "plain",
+     "text": "\n\nЭто альфа-версия, в ней будет много багов, поэтому, если вы готовы попробовать, подсказать мне какие баги обнаружили или предложить новые фичи, вступайте в группу альфа-тестеров:\n\n"
+    },
+    {
+     "type": "mention",
+     "text": "@n2p_alpha_ru"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nПосле того, как все отточим, пойду это дело маркетить по канонам инди-хакеров\n\n"
+    },
+    {
+     "type": "bold",
+     "text": "P.P.S."
+    },
+    {
+     "type": "plain",
+     "text": "\n\nНу и конечноже вот вам репозиторий: "
+    },
+    {
+     "type": "link",
+     "text": "https://github.com/Dionid/notion-to-presentation"
+    },
+    {
+     "type": "plain",
+     "text": " – о том, какими техническими решениями я воспользовался по итогу расскажу в будущих постах и стримах\n\nВсем мощной прокачки "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "💪",
+     "document_id": "stickers/AnimatedSticker (1).tgs"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "👎"
+     }
+    ]
+  },
+  {
+   "id": 33,
+   "type": "message",
+   "date": "2024-06-25T10:51:21",
+   "date_unixtime": "1719287481",
+   "edited": "2024-06-26T13:21:12",
+   "edited_unixtime": "1719382872",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    {
+     "type": "custom_emoji",
+     "text": "🤥",
+     "document_id": "video_files/sticker (1).webm"
+    },
+    " ",
+    {
+     "type": "bold",
+     "text": "Реляции – это очень плохо"
+    },
+    " ",
+    {
+     "type": "custom_emoji",
+     "text": "🤥",
+     "document_id": "video_files/sticker (1).webm"
+    },
+    "\n\nОчередной раз, когда из каждой дырки все кричат \"реляции в БД это маст хэв\", а на реальной практике понимаешь, что от этого намного больше проблем, чем пользы\n\n",
+    {
+     "type": "hashtag",
+     "text": "#pg"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#sql"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#db"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "custom_emoji",
+     "text": "🤥",
+     "document_id": "video_files/sticker (1).webm"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "bold",
+     "text": "Реляции – это очень плохо"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "🤥",
+     "document_id": "video_files/sticker (1).webm"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nОчередной раз, когда из каждой дырки все кричат \"реляции в БД это маст хэв\", а на реальной практике понимаешь, что от этого намного больше проблем, чем пользы\n\n"
+    },
+    {
+     "type": "hashtag",
+     "text": "#pg"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#sql"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#db"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "👍"
+     },
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "👎"
+     }
+    ]
+  },
+  {
+   "id": 34,
+   "type": "message",
+   "date": "2024-06-26T15:04:16",
+   "date_unixtime": "1719389056",
+   "edited": "2024-06-26T15:05:30",
+   "edited_unixtime": "1719389130",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "asdqwe pokpokqwe",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "asdqwe pokpokqwe"
+    }
+   ]
+  },
+  {
+   "id": 35,
+   "type": "message",
+   "date": "2024-06-26T15:05:58",
+   "date_unixtime": "1719389158",
+   "edited": "2024-06-26T15:31:36",
+   "edited_unixtime": "1719390696",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "!!! Change it to YEAH SOAPDKAPOSKD",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "!!! Change it to YEAH SOAPDKAPOSKD"
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "type": "message",
+   "date": "2024-06-26T15:23:20",
+   "date_unixtime": "1719390200",
+   "edited": "2024-06-26T15:23:30",
+   "edited_unixtime": "1719390210",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Test possss edit !!!",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Test possss edit !!!"
+    }
+   ]
+  },
+  {
+   "id": 37,
+   "type": "message",
+   "date": "2024-06-26T15:45:12",
+   "date_unixtime": "1719391512",
+   "edited": "2024-06-26T15:45:16",
+   "edited_unixtime": "1719391516",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "opmaco",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "opmaco"
+    }
+   ]
+  },
+  {
+   "id": 50,
+   "type": "message",
+   "date": "2024-07-02T16:36:30",
+   "date_unixtime": "1719912990",
+   "edited": "2024-07-02T16:36:33",
+   "edited_unixtime": "1719912993",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    {
+     "type": "link",
+     "text": "https://www.youtube.com/"
+    }
+   ],
+   "text_entities": [
+    {
+     "type": "link",
+     "text": "https://www.youtube.com/"
+    }
+   ]
+  },
+  {
+   "id": 51,
+   "type": "message",
+   "date": "2024-07-02T16:37:09",
+   "date_unixtime": "1719913029",
+   "edited": "2024-07-02T16:37:12",
+   "edited_unixtime": "1719913032",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "file": "video_files/mp4.mp4",
+   "file_name": "mp4.mp4",
+   "file_size": 383631,
+   "thumbnail": "video_files/mp4.mp4_thumb.jpg",
+   "thumbnail_file_size": 11747,
+   "media_type": "video_file",
+   "mime_type": "video/mp4",
+   "duration_seconds": 5,
+   "width": 560,
+   "height": 320,
+   "text": "Some video",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Some video"
+    }
+   ]
+  },
+  {
+   "id": 52,
+   "type": "message",
+   "date": "2024-07-05T11:55:19",
+   "date_unixtime": "1720155319",
+   "edited": "2024-07-05T11:55:22",
+   "edited_unixtime": "1720155322",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "(post) Adding from webhook",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "(post) Adding from webhook"
+    }
+   ]
+  },
+  {
+   "id": 53,
+   "type": "message",
+   "date": "2024-07-08T13:04:12",
+   "date_unixtime": "1720418652",
+   "edited": "2024-07-08T13:04:15",
+   "edited_unixtime": "1720418655",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "WTF",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "WTF"
+    }
+   ]
+  },
+  {
+   "id": 54,
+   "type": "message",
+   "date": "2024-07-08T13:10:25",
+   "date_unixtime": "1720419025",
+   "edited": "2024-07-08T13:32:02",
+   "edited_unixtime": "1720420322",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "WTF 23",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "WTF 23"
+    }
+   ]
+  },
+  {
+   "id": 55,
+   "type": "message",
+   "date": "2024-07-08T13:10:38",
+   "date_unixtime": "1720419038",
+   "edited": "2024-07-08T13:29:27",
+   "edited_unixtime": "1720420167",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Why it is working...\n\nWhy?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Why it is working...\n\nWhy?"
+    }
+   ]
+  },
+  {
+   "id": 56,
+   "type": "message",
+   "date": "2024-07-08T13:29:50",
+   "date_unixtime": "1720420190",
+   "edited": "2024-07-08T13:30:29",
+   "edited_unixtime": "1720420229",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "What?\n\nWhyyyyyy???",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "What?\n\nWhyyyyyy???"
+    }
+   ]
+  },
+  {
+   "id": 57,
+   "type": "message",
+   "date": "2024-07-08T13:31:52",
+   "date_unixtime": "1720420312",
+   "edited": "2024-07-08T13:31:55",
+   "edited_unixtime": "1720420315",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Added now",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Added now"
+    }
+   ]
+  },
+  {
+   "id": 58,
+   "type": "message",
+   "date": "2024-07-11T14:47:57",
+   "date_unixtime": "1720684077",
+   "edited": "2024-07-11T14:48:00",
+   "edited_unixtime": "1720684080",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "Some post with tags\n\n",
+    {
+     "type": "hashtag",
+     "text": "#hello"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#bitch"
+    }
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Some post with tags\n\n"
+    },
+    {
+     "type": "hashtag",
+     "text": "#hello"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#bitch"
+    }
+   ]
+  },
+  {
+   "id": 59,
+   "type": "message",
+   "date": "2024-07-11T14:48:17",
+   "date_unixtime": "1720684097",
+   "edited": "2024-07-11T14:48:20",
+   "edited_unixtime": "1720684100",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "💲 Крипто-кошелек от Телеграма работает... 💲\n\nНе знаю как это пропустил, но оказалось, что это уже полноценный инструмент, в котором даже есть P2P за рубли!\n\n",
+    {
+     "type": "hashtag",
+     "text": "#new"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#tag"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "💲 Крипто-кошелек от Телеграма работает... 💲\n\nНе знаю как это пропустил, но оказалось, что это уже полноценный инструмент, в котором даже есть P2P за рубли!\n\n"
+    },
+    {
+     "type": "hashtag",
+     "text": "#new"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#tag"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 60,
+   "type": "message",
+   "date": "2024-07-11T14:48:34",
+   "date_unixtime": "1720684114",
+   "edited": "2024-07-11T14:48:38",
+   "edited_unixtime": "1720684118",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    "💲 Крипто-кошелек от Телеграма работает... 💲\n\nНе знаю как это пропустил, но оказалось, что это уже полноценный инструмент, в котором даже есть P2P за рубли!\n\n(продолжение в комментариях)\n\n",
+    {
+     "type": "hashtag",
+     "text": "#tg"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#crypto"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "💲 Крипто-кошелек от Телеграма работает... 💲\n\nНе знаю как это пропустил, но оказалось, что это уже полноценный инструмент, в котором даже есть P2P за рубли!\n\n(продолжение в комментариях)\n\n"
+    },
+    {
+     "type": "hashtag",
+     "text": "#tg"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#crypto"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 61,
+   "type": "message",
+   "date": "2024-07-11T14:48:58",
+   "date_unixtime": "1720684138",
+   "edited": "2024-07-11T16:21:40",
+   "edited_unixtime": "1720689700",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": [
+    {
+     "type": "custom_emoji",
+     "text": "💲",
+     "document_id": "stickers/AnimatedSticker (2).tgs"
+    },
+    " ",
+    {
+     "type": "bold",
+     "text": "Крипто-кошелек от Телеграма работает..."
+    },
+    " ",
+    {
+     "type": "custom_emoji",
+     "text": "💲",
+     "document_id": "stickers/AnimatedSticker (2).tgs"
+    },
+    "\n\nНе знаю как это пропустил, но оказалось, что это уже полноценный инструмент, в котором даже есть P2P за рубли!\n\n(продолжение в комментариях)\n\n",
+    {
+     "type": "hashtag",
+     "text": "#tg"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#crypto"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#onemore"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#andonemore"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#totest"
+    },
+    " ",
+    {
+     "type": "hashtag",
+     "text": "#evenmoretags"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "custom_emoji",
+     "text": "💲",
+     "document_id": "stickers/AnimatedSticker (2).tgs"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "bold",
+     "text": "Крипто-кошелек от Телеграма работает..."
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "custom_emoji",
+     "text": "💲",
+     "document_id": "stickers/AnimatedSticker (2).tgs"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nНе знаю как это пропустил, но оказалось, что это уже полноценный инструмент, в котором даже есть P2P за рубли!\n\n(продолжение в комментариях)\n\n"
+    },
+    {
+     "type": "hashtag",
+     "text": "#tg"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#crypto"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#onemore"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#andonemore"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#totest"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "hashtag",
+     "text": "#evenmoretags"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 62,
+   "type": "message",
+   "date": "2025-02-27T16:05:02",
+   "date_unixtime": "1740647102",
+   "edited": "2025-02-27T16:05:05",
+   "edited_unixtime": "1740647105",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "photo": "photos/photo_1@27-02-2025_16-05-02.jpg",
+   "photo_file_size": 81661,
+   "width": 1280,
+   "height": 822,
+   "text": "Пост с фотографией",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Пост с фотографией"
+    }
+   ]
+  },
+  {
+   "id": 63,
+   "type": "message",
+   "date": "2025-02-27T16:05:38",
+   "date_unixtime": "1740647138",
+   "edited": "2025-02-27T16:05:41",
+   "edited_unixtime": "1740647141",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "file": "voice_messages/audio_1@27-02-2025_16-05-38.ogg",
+   "file_size": 13080,
+   "media_type": "voice_message",
+   "mime_type": "audio/ogg",
+   "duration_seconds": 4,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 64,
+   "type": "message",
+   "date": "2025-02-27T16:05:45",
+   "date_unixtime": "1740647145",
+   "edited": "2025-02-27T16:05:48",
+   "edited_unixtime": "1740647148",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "file": "round_video_messages/round_2025-02-27_16-05-43.mp4",
+   "file_name": "round_2025-02-27_16-05-43.mp4",
+   "file_size": 362611,
+   "thumbnail": "round_video_messages/round_2025-02-27_16-05-43.mp4_thumb.jpg",
+   "thumbnail_file_size": 15902,
+   "media_type": "video_message",
+   "mime_type": "video/mp4",
+   "duration_seconds": 2,
+   "width": 400,
+   "height": 400,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 65,
+   "type": "message",
+   "date": "2025-02-27T16:11:42",
+   "date_unixtime": "1740647502",
+   "edited": "2025-02-27T16:11:45",
+   "edited_unixtime": "1740647505",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "photo": "photos/photo_2@27-02-2025_16-11-42.jpg",
+   "photo_file_size": 192058,
+   "width": 720,
+   "height": 1280,
+   "text": "Несколько фото",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Несколько фото"
+    }
+   ]
+  },
+  {
+   "id": 66,
+   "type": "message",
+   "date": "2025-02-27T16:11:42",
+   "date_unixtime": "1740647502",
+   "edited": "2025-02-27T16:11:45",
+   "edited_unixtime": "1740647505",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "photo": "photos/photo_3@27-02-2025_16-11-42.jpg",
+   "photo_file_size": 191254,
+   "width": 720,
+   "height": 1280,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 67,
+   "type": "message",
+   "date": "2025-02-27T16:11:42",
+   "date_unixtime": "1740647502",
+   "edited": "2025-02-27T16:11:45",
+   "edited_unixtime": "1740647505",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "photo": "photos/photo_4@27-02-2025_16-11-42.jpg",
+   "photo_file_size": 192023,
+   "width": 720,
+   "height": 1280,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 68,
+   "type": "message",
+   "date": "2025-02-27T16:12:20",
+   "date_unixtime": "1740647540",
+   "edited": "2025-02-27T16:12:23",
+   "edited_unixtime": "1740647543",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "text": "Несколько фото без компрессии",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Несколько фото без компрессии"
+    }
+   ]
+  },
+  {
+   "id": 69,
+   "type": "message",
+   "date": "2025-02-27T16:12:25",
+   "date_unixtime": "1740647545",
+   "edited": "2025-02-27T16:12:28",
+   "edited_unixtime": "1740647548",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "file": "files/IMG_2643.HEIC",
+   "file_name": "IMG_2643.HEIC",
+   "file_size": 1607051,
+   "thumbnail": "files/IMG_2643.HEIC_thumb.jpg",
+   "thumbnail_file_size": 15390,
+   "mime_type": "image/heif",
+   "width": 2268,
+   "height": 4032,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 70,
+   "type": "message",
+   "date": "2025-02-27T16:12:25",
+   "date_unixtime": "1740647545",
+   "edited": "2025-02-27T16:12:28",
+   "edited_unixtime": "1740647548",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "file": "files/IMG_2644.HEIC",
+   "file_name": "IMG_2644.HEIC",
+   "file_size": 3217845,
+   "thumbnail": "files/IMG_2644.HEIC_thumb.jpg",
+   "thumbnail_file_size": 17542,
+   "mime_type": "image/heif",
+   "width": 3213,
+   "height": 5712,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 71,
+   "type": "message",
+   "date": "2025-02-27T16:12:25",
+   "date_unixtime": "1740647545",
+   "edited": "2025-02-27T16:12:28",
+   "edited_unixtime": "1740647548",
+   "from": "Teleblog CHANNEL",
+   "from_id": "channel1405579475",
+   "file": "files/IMG_2645.HEIC",
+   "file_name": "IMG_2645.HEIC",
+   "file_size": 3199596,
+   "thumbnail": "files/IMG_2645.HEIC_thumb.jpg",
+   "thumbnail_file_size": 17151,
+   "mime_type": "image/heif",
+   "width": 3213,
+   "height": 5712,
+   "text": "",
+   "text_entities": []
+  }
+ ]
+}

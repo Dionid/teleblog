@@ -46,7 +46,6 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 			id := c.PathParam("id")
 
 			post := views.PostPagePost{}
-
 			err := teleblog.PostQuery(app.Dao()).Where(
 				dbx.HashExp{"id": id},
 			).Limit(1).One(&post)
@@ -54,11 +53,44 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				return err
 			}
 
+			albumPosts := []*views.PostPagePost{}
+			err = teleblog.PostQuery(app.Dao()).Where(
+				dbx.HashExp{"album_id": post.AlbumID},
+			).AndWhere(
+				dbx.Not(
+					dbx.HashExp{"id": id},
+				),
+			).All(&albumPosts)
+			if err != nil {
+				return err
+			}
+
+			// # Correct media URLs
+			postCollection, err := app.Dao().FindCollectionByNameOrId("post")
+			if err != nil {
+				return err
+			}
+
+			for i, media := range post.Media {
+				post.Media[i] = postCollection.Id + "/" + post.Id + "/" + media
+			}
+
+			// # Correct media URLs for album posts
+			for _, albumPost := range albumPosts {
+				for i, media := range albumPost.Media {
+					albumPost.Media[i] = postCollection.Id + "/" + albumPost.Id + "/" + media
+				}
+
+				post.Media = append(post.Media, albumPost.Media...)
+			}
+
+			// # Remarshal JSON to correct type
 			jb, err := post.Post.TgMessageRaw.MarshalJSON()
 			if err != nil {
 				return err
 			}
 
+			// # Text with markup
 			if post.IsTgHistoryMessage {
 				rawMessage := teleblog.HistoryMessage{}
 
@@ -137,6 +169,22 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 					if err != nil {
 						return err
 					}
+				}
+			}
+
+			// # Add quote
+			for _, comment := range comments {
+				if comment.TgReplyToMessageId <= 0 || comment.TgReplyToMessageId == post.TgMessageId {
+					continue
+				}
+
+				for _, repliedTo := range comments {
+					if repliedTo.TgMessageId != comment.TgReplyToMessageId {
+						continue
+					}
+
+					comment.ReplyToComment = &repliedTo.CommentWithTextWithMarkup
+					break
 				}
 			}
 

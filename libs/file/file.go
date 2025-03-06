@@ -1,12 +1,14 @@
 package file
 
 import (
+	"archive/zip"
 	"embed"
 	"fmt"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"syscall"
 )
 
@@ -173,4 +175,78 @@ func CopyFromEmbed(
 	}
 
 	return CreateAndCopyFromEmbed(folder, rootFolderName, content, dest)
+}
+
+func Unzip(zipReader *zip.Reader, dist string) error {
+	// Find if there's only one root folder
+	var rootPath string
+	rootFolders := make(map[string]bool)
+
+	// First pass - collect all root level paths
+	for _, file := range zipReader.File {
+		// Skip __MACOSX folder and its contents
+		if strings.HasPrefix(file.Name, "__MACOSX/") {
+			continue
+		}
+
+		parts := strings.Split(strings.Trim(file.Name, "/"), "/")
+		if len(parts) > 0 {
+			rootFolders[parts[0]] = true
+		}
+	}
+
+	// If there's exactly one root folder, use it as the prefix to trim
+	if len(rootFolders) == 1 {
+		for root := range rootFolders {
+			rootPath = root
+			break
+		}
+	}
+
+	for _, file := range zipReader.File {
+		// Skip __MACOSX folder and its contents
+		if strings.HasPrefix(file.Name, "__MACOSX/") {
+			continue
+		}
+
+		if file.FileInfo().IsDir() {
+			continue
+		}
+
+		rc, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer rc.Close()
+
+		fileBytes, err := io.ReadAll(rc)
+		if err != nil {
+			return err
+		}
+
+		// Remove the root directory from the path if it exists
+		relativePath := file.Name
+		if rootPath != "" {
+			prefix := rootPath + "/"
+			if strings.HasPrefix(relativePath, prefix) {
+				relativePath = strings.TrimPrefix(relativePath, prefix)
+			}
+		}
+
+		// Skip empty paths
+		if relativePath == "" {
+			continue
+		}
+
+		extractPath := filepath.Join(dist, relativePath)
+		if err := os.MkdirAll(filepath.Dir(extractPath), os.ModePerm); err != nil {
+			return err
+		}
+
+		if err := os.WriteFile(extractPath, fileBytes, file.Mode()); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

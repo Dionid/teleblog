@@ -1,12 +1,18 @@
 package admin
 
 import (
-	"encoding/json"
+	"archive/zip"
+	"bytes"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
-	"github.com/Dionid/teleblog/libs/teleblog"
+	"github.com/Dionid/teleblog/libs/file"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -249,19 +255,19 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 					<div class="container">
 						<div class="card">
 							<h1>Загрузка истории Telegram</h1>
-							<p class="subtitle">Загрузите JSON файл, экспортированный из Telegram, чтобы импортировать историю чата.</p>
+							<p class="subtitle">Создайте и загрузите сюда Zip файл, с выгрузкой истории чата из Telegram (в формате JSON).</p>
 							<form id="uploadForm" enctype="multipart/form-data">
 								<div class="form-group">
-									<label for="historyFile">Файл истории (JSON)</label>
+									<label for="historyFile">Файл истории (ZIP)</label>
 									<div class="file-input-wrapper" id="dropZone">
-										<input type="file" id="historyFile" name="historyFile" accept=".json" class="file-input" required>
+										<input type="file" id="historyFile" name="historyFile" accept=".zip" class="file-input" required>
 										<div class="file-input-text">
 											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 												<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
 												<polyline points="17 8 12 3 7 8"/>
 												<line x1="12" y1="3" x2="12" y2="15"/>
 											</svg>
-											<p>Перетащите файл сюда или <span>выберите файл</span></p>
+											<p>Перетащите zip файл сюда или <span>выберите файл</span></p>
 										</div>
 									</div>
 									<div class="selected-file" id="selectedFile"></div>
@@ -330,8 +336,16 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 						function updateFileName() {
 							const file = fileInput.files[0];
 							if (file) {
+								if (!file.name.toLowerCase().endsWith('.zip')) {
+									selectedFile.style.display = 'block';
+									selectedFile.textContent = 'Ошибка: Разрешены только ZIP файлы';
+									selectedFile.style.color = 'var(--error-color)';
+									submitButton.disabled = true;
+									return;
+								}
 								selectedFile.style.display = 'block';
 								selectedFile.textContent = file.name;
+								selectedFile.style.color = 'var(--text-secondary)';
 								submitButton.disabled = false;
 							} else {
 								selectedFile.style.display = 'none';
@@ -363,35 +377,14 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 								const resultDiv = document.getElementById('result');
 
 								if (response.ok) {
-									resultDiv.innerHTML = '
-										<div class="alert alert-success">
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-											</svg>
-											' + data.message + '
-										</div>
-									';
+									resultDiv.innerHTML = '<div class="alert alert-success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>' + data.message + '</div>';
 									fileInput.value = '';
 									selectedFile.style.display = 'none';
 								} else {
-									resultDiv.innerHTML = '
-										<div class="alert alert-error">
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-											</svg>
-											' + data.error + '
-										</div>
-									';
+									resultDiv.innerHTML = '<div class="alert alert-error"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>' + data.error + '</div>';
 								}
 							} catch (error) {
-								document.getElementById('result').innerHTML = '
-									<div class="alert alert-error">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-											<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-										</svg>
-										Ошибка загрузки: ' + error.message + '
-									</div>
-								';
+								document.getElementById('result').innerHTML = '<div class="alert alert-error"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>Ошибка загрузки: ' + error.message + '</div>';
 							} finally {
 								// Reset loading state
 								buttonText.style.display = 'block';
@@ -425,10 +418,17 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 				})
 			}
 
-			file := files[0]
+			uploadedFile := files[0]
+
+			// Check if the file is a zip file
+			if ext := filepath.Ext(uploadedFile.Name); ext != ".zip" {
+				return c.JSON(http.StatusBadRequest, map[string]string{
+					"error": "Only zip files are allowed",
+				})
+			}
 
 			// Read the file content
-			reader, err := file.Reader.Open()
+			reader, err := uploadedFile.Reader.Open()
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, map[string]string{
 					"error": fmt.Sprintf("Failed to read file: %v", err),
@@ -436,16 +436,32 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 			}
 			defer reader.Close()
 
-			// Parse the JSON content
-			var history teleblog.History
-			if err := json.NewDecoder(reader).Decode(&history); err != nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": fmt.Sprintf("Invalid JSON format: %v", err),
+			// Read the entire file into memory
+			fileBytes, err := io.ReadAll(reader)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, map[string]string{
+					"error": fmt.Sprintf("Failed to read zip file: %v", err),
 				})
 			}
 
+			// Create a bytes reader which implements io.ReaderAt
+			zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, map[string]string{
+					"error": fmt.Sprintf("Failed to read zip file: %v", err),
+				})
+			}
+
+			// Unzip the zip file
+			folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
+			err = file.Unzip(zipReader, folderPathPrefix)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer os.RemoveAll(folderPathPrefix)
+
 			// Upload the history
-			if err := features.UploadHistory(app, history); err != nil {
+			if err := features.UploadHistory(app, folderPathPrefix); err != nil {
 				return c.JSON(http.StatusInternalServerError, map[string]string{
 					"error": fmt.Sprintf("Failed to upload history: %v", err),
 				})

@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/features"
 	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/tools/filesystem"
 	"github.com/pocketbase/pocketbase/tools/types"
 	"gopkg.in/telebot.v3"
 	"gopkg.in/telebot.v3/middleware"
@@ -21,6 +24,26 @@ const VERIFY_TOKEN_COMMAND_NAME = "verifytoken"
 func skipContent(_ telebot.Context) bool {
 	// # We can't skip content, because we need all posts for links
 	return false
+}
+
+// downloadPhoto downloads a photo from a message to the specified directory
+func downloadPhoto(b *telebot.Bot, fileId string, uniqueID string, outputDir string, fileExt string) (string, error) {
+	// Get file info from Telegram
+	file, err := b.FileByID(fileId)
+	if err != nil {
+		return "", fmt.Errorf("failed to get file info: %w", err)
+	}
+
+	// Generate unique filename
+	filename := filepath.Join(outputDir, fmt.Sprintf("%s.%s", uniqueID, fileExt))
+
+	// Download the file
+	err = b.Download(&file, filename)
+	if err != nil {
+		return "", fmt.Errorf("failed to download file: %w", err)
+	}
+
+	return filename, nil
 }
 
 func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
@@ -62,8 +85,9 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 		newPost := &teleblog.Post{
 			ChatId:      chat.Id,
 			IsTgMessage: true,
-			Text:        c.Message().Text,
+			Text:        c.Message().Text + c.Message().Caption,
 			TgMessageId: c.Message().ID,
+			AlbumID:     c.Message().AlbumID,
 		}
 
 		newPost.Created.Scan(c.Message().Time())
@@ -76,6 +100,81 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 		err = newPost.TgMessageRaw.Scan(jsonMessageRaw)
 		if err != nil {
 			return err
+		}
+
+		err = app.Dao().Save(newPost)
+		if err != nil {
+			return err
+		}
+
+		postCollection, err := app.Dao().FindCollectionByNameOrId("post")
+		if err != nil {
+			return err
+		}
+
+		fsys, err := app.NewFilesystem()
+		if err != nil {
+			return err
+		}
+		defer fsys.Close()
+
+		// Handle photo if present
+		if photo := c.Message().Photo; photo != nil {
+			outputDir := "temp-tg-webhook-uploads-" + newPost.Id
+			// Create output directory if it doesn't exist
+			err = os.MkdirAll(outputDir, 0755)
+			if err != nil {
+				return fmt.Errorf("failed to create output directory: %w", err)
+			}
+			defer os.RemoveAll(outputDir)
+
+			filename, err := downloadPhoto(b, photo.FileID, photo.UniqueID, outputDir, "jpg")
+			if err != nil {
+				return fmt.Errorf("failed to download photo: %w", err)
+			}
+
+			file, err := filesystem.NewFileFromPath(filename)
+			if err != nil {
+				return err
+			}
+
+			fileName := postCollection.Id + "/" + newPost.Id + "/" + file.Name
+
+			err = fsys.UploadFile(file, fileName)
+			if err != nil {
+				return err
+			}
+
+			newPost.Media = append(newPost.Media, file.Name)
+		}
+
+		if video := c.Message().Video; video != nil {
+			outputDir := "temp-tg-webhook-uploads-" + newPost.Id
+			// Create output directory if it doesn't exist
+			err = os.MkdirAll(outputDir, 0755)
+			if err != nil {
+				return fmt.Errorf("failed to create output directory: %w", err)
+			}
+			defer os.RemoveAll(outputDir)
+
+			filename, err := downloadPhoto(b, video.FileID, video.UniqueID, outputDir, "mp4")
+			if err != nil {
+				return fmt.Errorf("failed to download photo: %w", err)
+			}
+
+			file, err := filesystem.NewFileFromPath(filename)
+			if err != nil {
+				return err
+			}
+
+			fileName := postCollection.Id + "/" + newPost.Id + "/" + file.Name
+
+			err = fsys.UploadFile(file, fileName)
+			if err != nil {
+				return err
+			}
+
+			newPost.Media = append(newPost.Media, file.Name)
 		}
 
 		err = app.Dao().Save(newPost)
@@ -128,7 +227,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 
 			newComment := &teleblog.Comment{
 				ChatId:      chat.Id,
-				Text:        c.Message().Text,
+				Text:        c.Message().Text + c.Message().Caption,
 				TgMessageId: c.Message().ID,
 			}
 
@@ -216,9 +315,10 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return err
 		}
 
-		post.Text = c.Message().Text
+		post.Text = c.Message().Text + c.Message().Caption
 		post.TgMessageRaw = tgMessageRaw
 		post.IsTgHistoryMessage = false
+		post.AlbumID = c.Message().AlbumID
 
 		err = app.Dao().Save(&post)
 		if err != nil {
@@ -234,7 +334,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 	})
 
 	b.Handle(telebot.OnEdited, func(c telebot.Context) error {
-		fmt.Println("OnEdited", c.Message().Text)
+		fmt.Println("OnEdited", c.Message().Text+c.Message().Caption)
 		fmt.Println("c.Sender().ID", c.Sender().ID)
 
 		if skipContent(c) {

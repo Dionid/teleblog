@@ -10,6 +10,7 @@ import (
 
 	"github.com/Dionid/teleblog/cmd/teleblog/admin"
 	"github.com/Dionid/teleblog/cmd/teleblog/botapi"
+	"github.com/Dionid/teleblog/cmd/teleblog/features"
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi"
 	_ "github.com/Dionid/teleblog/cmd/teleblog/pb_migrations"
 	"github.com/pocketbase/pocketbase"
@@ -83,6 +84,12 @@ func main() {
 
 		go b.Start()
 	}
+
+	// # Pre start
+	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+		// # Set albumId for posts
+		return features.SetAlbumId(app)
+	})
 
 	// # Start app
 	if err := app.Start(); err != nil {

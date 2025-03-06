@@ -36,7 +36,7 @@ Don't take this project as a reference for best practices.
     1. `cd cmd/teleblog && cp app.env.example app.env` and fill it with your data
 1. Run
     1. `make serve-teleblog` to run Teleblog + Pocketbase admin panel
-    1. Go to 127.0.0.1:8090/_ to see Pocketbase admin panel and fill in your user
+    1. Go to `127.0.0.1:8090/_` to see Pocketbase admin panel and fill in your user
     1. Create "verification_token"
     1. Send this token to your bot `/verifytoken YOUR_TOKEN`
     1. Add bot to public TG channels and their groups
@@ -87,25 +87,35 @@ MG: Add content improvement features
 1. ~~Search~~
 1. ~~Extract tags~~
 1. ~~Tags filter~~
-1. Images ([getFile](https://core.telegram.org/bots/api#getfile))
-    1. Webhook
-    1. History
-1. Videos ([getFile](https://core.telegram.org/bots/api#getfile))
-1. Link to replied comment
-1. Quote replied comment
-1. ...
+1. ~~Quote replied comment~~
+1. ~~Images~~
+    1. ~~Webhook~~
+    1. ~~History~~
+    1. ~~UI~~
+        1. ~~Index~~
+        1. ~~Post page~~
+    1. ~~Zoom~~
+    1. ~~Multiple~~
+        1. ~~Webhook~~
+        1. ~~History~~
+        1. ~~UI~~
+            1. ~~Index~~
+            1. ~~Post page~~
+1. Videos
+1. SEO
+    1. Meta title
+    1. Meta description
+    1. Meta image
 
 ## Third phase
 
 MG: ...
 
 1. Repost to Medium
-1. Theme changer
 1. Links preview
-1. SEO
-    1. Meta title
-    1. Meta description
-    1. Meta image
+1. Files
+1. Spoilers for Audio & Circles
+1. Theme changer
 1. ...
 
 ## X phase
