@@ -3,6 +3,7 @@ package templu
 import (
 	"context"
 	"os"
+	"strings"
 )
 
 func PathWithVersion(ctx context.Context, url string) string {
@@ -16,4 +17,8 @@ func PathWithVersion(ctx context.Context, url string) string {
 	}
 
 	return url + "?v=0.0.1"
+}
+
+func RemoveNewLines(text string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(text, "\r\n", " "), "\n", "")
 }

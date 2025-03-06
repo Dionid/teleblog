@@ -23,11 +23,11 @@ func Footer() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<footer class=\"w-full flex items-center justify-between\"><div>Made by <a href=\"https://github.com/Dionid\" target=\"_blank\">David Shekunts</a> with ♥️</div><div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<footer class=\"w-full flex items-center justify-between\"><div>Сделано <a href=\"https://about-me.davidshekunts.ru/\" target=\"_blank\">Давидом Шекунцем</a> с ♥️</div><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.Raw("@2024").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templ.Raw("@2025").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

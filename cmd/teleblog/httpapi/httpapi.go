@@ -8,11 +8,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
 	"github.com/Dionid/teleblog/libs/file"
 	"github.com/Dionid/teleblog/libs/teleblog"
+	"github.com/Dionid/teleblog/libs/templu"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/apis"
@@ -23,10 +23,6 @@ import (
 type Config struct {
 	Env    string
 	UserId string
-}
-
-func RemoveNewLines(text string) string {
-	return strings.ReplaceAll(strings.ReplaceAll(text, "\r\n", " "), "\n", "")
 }
 
 //go:embed public
@@ -230,8 +226,12 @@ Host: davidshekunts.ru`)
 				Type:        "article",
 			}
 
+			if seo.Title == "" {
+				seo.Title = templu.RemoveNewLines(fmt.Sprintf("%.60s", post.Text))
+			}
+
 			if seo.Description == "" {
-				seo.Description = RemoveNewLines(fmt.Sprintf("%.60s", post.Text))
+				seo.Description = templu.RemoveNewLines(fmt.Sprintf("%.160s", post.Text))
 			}
 
 			if len(post.Media) > 0 {
