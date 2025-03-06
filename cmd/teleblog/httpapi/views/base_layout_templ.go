@@ -430,14 +430,14 @@ func BaseLayout(seo *SeoMetadata) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body><script defer src=\"https://cdn.jsdelivr.net/npm/vue@3.4.27/dist/vue.global.min.js\"></script><!-- Google tag (gtag.js) --><script async src=\"https://www.googletagmanager.com/gtag/js?id=G-ZLF3GF8LHB\"></script><script>\n\t\twindow.dataLayer = window.dataLayer || [];\n\t\tfunction gtag(){dataLayer.push(arguments);}\n\t\tgtag('js', new Date());\n\n\t\tgtag('config', 'G-ZLF3GF8LHB');\n\t\t</script><link rel=\"stylesheet\" href=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body><script defer src=\"https://cdn.jsdelivr.net/npm/vue@3.4.27/dist/vue.global.min.js\"></script><!-- Google tag (gtag.js) --><script async src=\"https://www.googletagmanager.com/gtag/js?id=G-ZLF3GF8LHB\"></script><script>\n\t\twindow.dataLayer = window.dataLayer || [];\n\t\tfunction gtag(){dataLayer.push(arguments);}\n\t\tgtag('js', new Date());\n\n\t\tgtag('config', 'G-ZLF3GF8LHB');\n\t\t</script><!-- Yandex.Metrika counter --><script type=\"text/javascript\">\n\t\t(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};\n\t\tm[i].l=1*new Date();\n\t\tfor (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}\n\t\tk=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})\n\t\t(window, document, \"script\", \"https://mc.yandex.com/metrika/tag.js\", \"ym\");\n\n\t\tym(56681971, \"init\", {\n\t\t\t\tclickmap:true,\n\t\t\t\ttrackLinks:true,\n\t\t\t\taccurateTrackBounce:true\n\t\t});\n\t\t</script><noscript><div><img src=\"https://mc.yandex.com/watch/56681971\" style=\"position:absolute; left:-9999px;\" alt=\"\"></div></noscript><!-- /Yandex.Metrika counter --><link rel=\"stylesheet\" href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var28 string
 		templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(templu.PathWithVersion(ctx, "/public/custom.css"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 102, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 118, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 		if templ_7745c5c3_Err != nil {
