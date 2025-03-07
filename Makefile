@@ -45,7 +45,7 @@ clean-mac:
 	rm ${BINARY_NAME}-darwin
 
 build-teleblog-linux:
-	npx tailwindcss build -i tailwind.css -o cmd/teleblog/httpapi/public/style.css
+	npx tailwindcss build -i tailwind.css -o cmd/teleblog/httpapi/public/style.css --minify
 	make templ
 	GOARCH=amd64 GOOS=linux go build -o ./cmd/teleblog/${BINARY_NAME}-linux ./cmd/teleblog
 
