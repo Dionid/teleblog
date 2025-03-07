@@ -144,7 +144,8 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 								<div class="flex w-full justify-between items-center">
 									<div class="join shadow-sm w-full">
 										<input @keyup.enter="search" class="input join-item w-full" placeholder="Полнотекстовый поиск" v-model="searchString" />
-										<select v-model="tag" class="select join-item border-0 border-gray-300 border-solid border-l max-w-24 sm:max-w-52">
+										<label for="search-select" class="hidden"></label>
+										<select id="search-select" v-model="tag" class="select join-item border-0 border-gray-300 border-solid border-l max-w-24 sm:max-w-52">
 											<option disabled selected value="_">Тэг</option>
 											for _, tag := range tags {
 												<option value={ tag.Value }>{ tag.Value }</option>
@@ -156,7 +157,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 									</div>
 								</div>
 								<div class="flex w-full justify-between items-center">
-									<div class="text-gray-500">
+									<div class="text-gray-600">
 										Постов: { fmt.Sprintf("%d", pagination.Total) }
 									</div>
 									@Pagination(pagination)
@@ -216,7 +217,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 											}
 											<div class="card-body break-words p-4 pt-4 pb-0">
 												<div class="flex justify-between items-end">
-													<div class=" text-gray-400">
+													<div class=" text-gray-500">
 														{ post.Created.Time().Format("2006-01-02 15:04") }
 													</div>
 												</div>
@@ -242,9 +243,9 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 													<div class="flex flex-col ml-4 overflow-hidden">
 														<div class="font-bold line-clamp-2">{ post.LinkPreview.Title }</div>
 														if post.LinkPreview.Description != "" {
-															<div class="text-sm text-gray-500 mt-1 line-clamp-2">{ post.LinkPreview.Description }</div>
+															<div class="text-sm text-gray-600 mt-1 line-clamp-2">{ post.LinkPreview.Description }</div>
 														}
-														<div class="text-sm text-gray-400 mt-1">{ post.LinkPreview.URL }</div>
+														<div class="text-sm text-gray-500 mt-1">{ post.LinkPreview.URL }</div>
 													</div>
 												</a>
 											}

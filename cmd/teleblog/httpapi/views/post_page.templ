@@ -78,7 +78,7 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 									</div>
 								}
 								<div class="card-body">
-									<div class="text-gray-400 flex justify-between items-center relative gap-4">
+									<div class="text-gray-500 flex justify-between items-center relative gap-4">
 										<div>
 											{ post.Created.Time().Format("2006-01-02 15:04") }
 										</div>
@@ -135,7 +135,7 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 																	{ comment.AuthorTitle }
 																</div>
 															}
-															<div class=" text-gray-400 text-sm">
+															<div class=" text-gray-500 text-sm">
 																{ comment.Created.Time().Format("2006-01-02 15:04") }
 															</div>
 														</div>
