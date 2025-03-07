@@ -558,7 +558,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select><div class=\"indicator\"><button class=\"btn btn-primary join-item\" @click=\"search\">Поиск</button></div></div></div><div class=\"flex w-full justify-between items-center\"><div class=\"text-gray-500\">Постов: ")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select><div class=\"indicator\"><button class=\"btn btn-primary join-item\" @click=\"search\" aria-label=\"Искать\">Поиск</button></div></div></div><div class=\"flex w-full justify-between items-center\"><div class=\"text-gray-500\">Постов: ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -832,7 +832,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Развернуть <svg class=\"w-6 h-6 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m19 9-7 7-7-7\"></path></svg></div></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" aria-label=\"Развернуть текст\">Развернуть <svg class=\"w-6 h-6 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m19 9-7 7-7-7\"></path></svg></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -936,7 +936,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 						return templ_7745c5c3_Err
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card-actions p-4 justify-between mt-auto\"><a class=\"btn btn-ghost btn-sm \" href=\"")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card-actions p-4 justify-between mt-auto\"><a class=\"btn btn-ghost btn-sm\" href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -945,16 +945,29 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" aria-label=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var61 string
-				templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", post.CommentsCount))
+				templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("Комментарии: %d", post.CommentsCount))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 253, Col: 52}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 255, Col: 106}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var61))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var62 string
+				templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", post.CommentsCount))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 257, Col: 71}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var62))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -962,21 +975,21 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var62 templ.SafeURL = templ.SafeURL(GetPostUrl(post.Post))
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var62)))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" v-if=\"post.comments_count &gt; 0\">Читать далее</a><a class=\"btn btn-ghost btn-sm  right-0\" target=\"_blank\" href=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var63 templ.SafeURL = templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", post.TgChatUsername, post.TgMessageId))
+				var templ_7745c5c3_Var63 templ.SafeURL = templ.SafeURL(GetPostUrl(post.Post))
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var63)))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><svg class=\"w-4 h-4 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961\"></path></svg></a></div></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" v-if=\"post.comments_count &gt; 0\" aria-label=\"Читать пост полностью\">Читать далее</a> <a class=\"btn btn-ghost btn-sm right-0\" target=\"_blank\" href=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var64 templ.SafeURL = templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", post.TgChatUsername, post.TgMessageId))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var64)))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" aria-label=\"Открыть пост в Telegram\"><svg class=\"w-4 h-4 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961\"></path></svg></a></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -997,7 +1010,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div><dialog id=\"imageModal\" class=\"modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent\"><div class=\"relative\"><img id=\"modalImage\" class=\"max-w-[95vw] max-h-[95vh] object-contain\" src=\"\" alt=\"modal\"> <button onclick=\"closeImageModal()\" class=\"absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></dialog><script>\n\t\t\tfunction openImageModal(photoPath) {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tconst modalImg = document.getElementById('modalImage');\n\t\t\t\tmodalImg.src = '/api/files/' + photoPath;\n\t\t\t\tmodal.showModal();\n\t\t\t}\n\n\t\t\tfunction closeImageModal() {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tmodal.close();\n\t\t\t}\n\n\t\t\t// Close modal when clicking outside\n\t\t\tdocument.getElementById('imageModal').addEventListener('click', function(event) {\n\t\t\t\tif (event.target === this) {\n\t\t\t\t\tthis.close();\n\t\t\t\t}\n\t\t\t});\n\t\t</script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div><dialog id=\"imageModal\" class=\"modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent\"><div class=\"relative\"><img id=\"modalImage\" class=\"max-w-[95vw] max-h-[95vh] object-contain\" src=\"\" alt=\"modal\"> <button onclick=\"closeImageModal()\" class=\"absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors\" aria-label=\"Закрыть изображение\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></dialog><script>\n\t\t\tfunction openImageModal(photoPath) {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tconst modalImg = document.getElementById('modalImage');\n\t\t\t\tmodalImg.src = '/api/files/' + photoPath;\n\t\t\t\tmodal.showModal();\n\t\t\t}\n\n\t\t\tfunction closeImageModal() {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tmodal.close();\n\t\t\t}\n\n\t\t\t// Close modal when clicking outside\n\t\t\tdocument.getElementById('imageModal').addEventListener('click', function(event) {\n\t\t\t\tif (event.target === this) {\n\t\t\t\t\tthis.close();\n\t\t\t\t}\n\t\t\t});\n\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -234,7 +234,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><a class=\"btn btn-ghost btn-sm  right-0\" target=\"_blank\" href=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><a class=\"btn btn-ghost btn-sm right-0\" target=\"_blank\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -243,7 +243,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><svg class=\"w-4 h-4 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961\"></path></svg><p>Оригинал</p></a></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" aria-label=\"Открыть оригинал в Telegram\"><svg class=\"w-4 h-4 text-gray-800 dark:text-white\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961\"></path></svg><p>Оригинал</p></a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -255,7 +255,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 94, Col: 23}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 99, Col: 23}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {
@@ -281,7 +281,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", len(comments)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 104, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 109, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -313,7 +313,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var16 string
 					templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%c", []rune(comment.AuthorTitle)[0]))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 111, Col: 64}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 116, Col: 64}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 					if templ_7745c5c3_Err != nil {
@@ -331,7 +331,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var17 string
 					templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%c", []rune(comment.AuthorTitle)[0]))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 115, Col: 64}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 120, Col: 64}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 					if templ_7745c5c3_Err != nil {
@@ -363,7 +363,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var19 string
 					templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(comment.AuthorTitle)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 126, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 131, Col: 38}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 					if templ_7745c5c3_Err != nil {
@@ -381,7 +381,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 					var templ_7745c5c3_Var20 string
 					templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(comment.AuthorTitle)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 130, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 135, Col: 38}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 					if templ_7745c5c3_Err != nil {
@@ -399,7 +399,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 				var templ_7745c5c3_Var21 string
 				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(comment.Created.Time().Format("2006-01-02 15:04"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 134, Col: 67}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 139, Col: 67}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 				if templ_7745c5c3_Err != nil {
@@ -440,7 +440,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 						var templ_7745c5c3_Var24 string
 						templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(comment.ReplyToComment.AuthorTitle)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 147, Col: 53}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 152, Col: 53}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 						if templ_7745c5c3_Err != nil {
@@ -458,7 +458,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 						var templ_7745c5c3_Var25 string
 						templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(comment.ReplyToComment.AuthorTitle)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 151, Col: 53}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 156, Col: 53}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 						if templ_7745c5c3_Err != nil {
@@ -504,7 +504,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"flex w-full btn btn-primary mt-6\">Add your comment +</a></div></div></div><div class=\"w-full p-4 sm:p-6\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"flex w-full btn btn-primary mt-6\" aria-label=\"Добавить комментарий в Telegram\">Добавить комментарий +</a></div></div></div><div class=\"w-full p-4 sm:p-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -512,7 +512,7 @@ func PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageComment
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"link opacity-0 link-secondary\"></div></div></div></div><dialog id=\"imageModal\" alt=\"modal\" class=\"modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent\"><div class=\"relative\"><img id=\"modalImage\" class=\"max-w-[95vw] max-h-[95vh] object-contain\" src=\"\"> <button onclick=\"closeImageModal()\" class=\"absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></dialog><script>\n\t\t\tfunction openImageModal(photoPath) {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tconst modalImg = document.getElementById('modalImage');\n\t\t\t\tmodalImg.src = photoPath;\n\t\t\t\tmodal.showModal();\n\t\t\t}\n\n\t\t\tfunction closeImageModal() {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tmodal.close();\n\t\t\t}\n\n\t\t\t// Close modal when clicking outside\n\t\t\tdocument.getElementById('imageModal').addEventListener('click', function(event) {\n\t\t\t\tif (event.target === this) {\n\t\t\t\t\tthis.close();\n\t\t\t\t}\n\t\t\t});\n\t\t</script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"link opacity-0 link-secondary\"></div></div></div></div><dialog id=\"imageModal\" alt=\"modal\" class=\"modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent\"><div class=\"relative\"><img id=\"modalImage\" class=\"max-w-[95vw] max-h-[95vh] object-contain\" src=\"\"> <button onclick=\"closeImageModal()\" class=\"absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors\" aria-label=\"Закрыть изображение\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></dialog><script>\n\t\t\tfunction openImageModal(photoPath) {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tconst modalImg = document.getElementById('modalImage');\n\t\t\t\tmodalImg.src = photoPath;\n\t\t\t\tmodal.showModal();\n\t\t\t}\n\n\t\t\tfunction closeImageModal() {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tmodal.close();\n\t\t\t}\n\n\t\t\t// Close modal when clicking outside\n\t\t\tdocument.getElementById('imageModal').addEventListener('click', function(event) {\n\t\t\t\tif (event.target === this) {\n\t\t\t\t\tthis.close();\n\t\t\t\t}\n\t\t\t});\n\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
