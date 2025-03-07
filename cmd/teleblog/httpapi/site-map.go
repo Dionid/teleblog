@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/Dionid/teleblog/libs/teleblog"
@@ -15,7 +16,28 @@ type SitemapURL struct {
 	Priority   string
 }
 
-func SiteMapHandler(e *core.ServeEvent, app core.App) {
+func SiteMapAndRobotsPageHandler(e *core.ServeEvent, app core.App) {
+	e.Router.GET("/robots.txt", func(c echo.Context) error {
+		return c.String(http.StatusOK, `User-agent: *
+Allow: /
+Allow: /post/*
+Allow: /public/*
+Allow: /sitemap.xml
+
+Disallow: /api/*
+Disallow: /admin/*
+Disallow: /_/*
+
+# Optimize crawling rate
+Crawl-delay: 1
+
+# Main sitemap
+Sitemap: https://davidshekunts.ru/sitemap.xml
+
+# Host directive for preferred domain version
+Host: davidshekunts.ru`)
+	})
+
 	// # sitemap.xml
 	e.Router.GET("/sitemap.xml", func(c echo.Context) error {
 		posts := []teleblog.Post{}
