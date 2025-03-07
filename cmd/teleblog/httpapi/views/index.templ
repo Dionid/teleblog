@@ -151,7 +151,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 											}
 										</select>
 										<div class="indicator">
-											<button class="btn btn-primary join-item" @click="search">Поиск</button>
+											<button class="btn btn-primary join-item" @click="search" aria-label="Искать">Поиск</button>
 										</div>
 									</div>
 								</div>
@@ -227,7 +227,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 													@templ.Raw(post.TextWithMarkup)
 												</div>
 												<div class="link-as-contents" v-html="cropText(post.text_with_markup)" v-show="post.collapsed"></div>
-												<div class="btn mt-4" v-show="post.collapsed" @click={ fmt.Sprintf("expandPostText('%s')", post.Id) }>
+												<div class="btn mt-4" v-show="post.collapsed" @click={ fmt.Sprintf("expandPostText('%s')", post.Id) } aria-label="Развернуть текст">
 													Развернуть
 													<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 														<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
@@ -281,7 +281,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 		<dialog id="imageModal" class="modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent">
 			<div class="relative">
 				<img id="modalImage" class="max-w-[95vw] max-h-[95vh] object-contain" src="" alt="modal"/>
-				<button onclick="closeImageModal()" class="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors">
+				<button onclick="closeImageModal()" class="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors" aria-label="Закрыть изображение">
 					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 					</svg>
