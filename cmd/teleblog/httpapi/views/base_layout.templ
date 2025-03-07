@@ -39,14 +39,19 @@ templ BaseLayout(seo *SeoMetadata) {
 				<meta property="og:title" content={ seo.Title }/>
 				<meta property="og:description" content={ seo.Description }/>
 				<meta property="og:url" content={ seo.Url }/>
-				<meta property="og:image" content={ seo.Image }/>
+				if seo.Image != "" {
+					<meta property="og:image" content={ seo.Image }/>
+					<meta name="twitter:image" content={ seo.Image }/>
+				} else {
+					<meta property="og:image" content={ DefaultSeoMetadata.Image }/>
+					<meta name="twitter:image" content={ DefaultSeoMetadata.Image }/>
+				}
 				<meta property="og:type" content={ seo.Type }/>
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="davidshekunts.ru"/>
 				<meta property="twitter:url" content={ seo.Url }/>
 				<meta name="twitter:title" content={ seo.Title }/>
 				<meta name="twitter:description" content={ seo.Description }/>
-				<meta name="twitter:image" content={ seo.Image }/>
 			} else {
 				<title>{ DefaultSeoMetadata.Title }</title>
 				<meta name="title" content={ DefaultSeoMetadata.Title }/>
