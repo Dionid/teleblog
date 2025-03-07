@@ -28,19 +28,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			return err
 		}
 
-		albumPosts := []*views.PostPagePost{}
-		err = teleblog.PostQuery(app.Dao()).Where(
-			dbx.HashExp{"album_id": post.AlbumID},
-		).AndWhere(
-			dbx.Not(
-				dbx.HashExp{"id": id},
-			),
-		).All(&albumPosts)
-		if err != nil {
-			return err
-		}
-
-		// # Correct media URLs
+		// # Correct post media URLs
 		postCollection, err := app.Dao().FindCollectionByNameOrId("post")
 		if err != nil {
 			return err
@@ -48,6 +36,19 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 		for i, media := range post.Media {
 			post.Media[i] = postCollection.Id + "/" + post.Id + "/" + media
+		}
+
+		// # Get album posts
+		albumPosts := []*views.PostPagePost{}
+		err = teleblog.PostQuery(app.Dao()).Where(
+			dbx.HashExp{"album_id": post.AlbumID},
+		).AndWhere(
+			dbx.Not(
+				dbx.HashExp{"id": post.Id},
+			),
+		).All(&albumPosts)
+		if err != nil {
+			return err
 		}
 
 		// # Correct media URLs for album posts
@@ -89,6 +90,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			}
 		}
 
+		// # Get comments from group chat
 		chat := teleblog.Chat{}
 
 		err = teleblog.ChatQuery(app.Dao()).Where(
@@ -107,6 +109,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			return err
 		}
 
+		// # Prepare comments
 		for _, comment := range comments {
 			jb, err := comment.TgMessageRaw.MarshalJSON()
 			if err != nil {
