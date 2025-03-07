@@ -501,7 +501,7 @@ func IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*telebl
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"w-full flex flex-col justify-center p-3 sm:p-6\"><div class=\"card shadow-sm bg-white\"><div class=\"card-body flex-col p-4 items-center md:flex-row\"><div class=\"avatar\"><div class=\"w-24 rounded-full\"><img src=\"/public/avatar.jpg\" alt=\"Морда Давида Шекунца\"></div></div><div class=\"p-2 sm:p-4\">Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href=\"https://t.me/it_kachalka\" target=\"_blank\" class=\"border-b-2 border-dashed border-secondary\">🦾 IT-Качалки 💪</a></div></div></div><script src=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"w-full flex flex-col justify-center p-3 sm:p-6\"><div class=\"card shadow-sm bg-white\"><div class=\"card-body flex-col p-4 items-center md:flex-row\"><div class=\"avatar\"><div class=\"w-24 rounded-full\"><img src=\"/public/avatar.png\" alt=\"Морда Давида Шекунца\"></div></div><div class=\"p-2 sm:p-4\">Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href=\"https://t.me/it_kachalka\" target=\"_blank\" class=\"border-b-2 border-dashed border-secondary\">🦾 IT-Качалки 💪</a></div></div></div><script src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

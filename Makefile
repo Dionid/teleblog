@@ -10,7 +10,7 @@ parse:
 	cd cmd/cli && go run .
 
 serve-teleblog:
-	npx tailwindcss build -i tailwind.css -o cmd/teleblog/httpapi/public/style.css
+	npx tailwindcss build -i tailwind.css -o cmd/teleblog/httpapi/public/style.css --minify
 	cd cmd/teleblog \
 	&& go generate ./... \
 	&& go run . serve

@@ -25,7 +25,7 @@ type SeoMetadata struct {
 var DefaultSeoMetadata = SeoMetadata{
 	Title:       "🦾 IT-Качалка Давида Шекунца 💪",
 	Description: "Меня зовут 👨🏻 Давид Шекунц 👴🏿 и здесь я рассказываю про разработку IT-продуктов",
-	Image:       "https://davidshekunts.ru/public/avatar.jpg",
+	Image:       "https://davidshekunts.ru/public/avatar.png",
 	Url:         "https://davidshekunts.ru",
 	Type:        "website",
 }
