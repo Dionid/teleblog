@@ -5,6 +5,7 @@ import (
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views/partials"
 	"fmt"
 	"strings"
+	"path"
 )
 
 type CommentWithTextWithMarkup struct {
@@ -48,6 +49,7 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 												src={ "/api/files/" + post.Media[0] } 
 												class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
 												data-photo={ post.Media[0] }
+												alt={ path.Base(post.Media[0]) }
 												onclick="openImageModal(this.dataset.photo)"
 											/>
 										}
@@ -67,6 +69,7 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 														src={ "/api/files/" + photo } 
 														class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
 														data-photo={ photo }
+														alt={ path.Base(photo) }
 														onclick="openImageModal(this.dataset.photo)"
 													/>
 												}

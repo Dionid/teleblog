@@ -6,6 +6,7 @@ import (
 	"github.com/Dionid/teleblog/libs/templu"
 	"github.com/pocketbase/pocketbase/tools/types"
 	"fmt"
+	"path"
 	"math"
 	"strings"
 )
@@ -128,7 +129,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 							<div class="card-body flex-col p-4 items-center md:flex-row">
 								<div class="avatar">
 									<div class="w-24 rounded-full">
-										<img src="/public/avatar.jpg" />
+										<img src="/public/avatar.jpg" alt="Морда Давида Шекунца" />
 									</div>
 								</div>
 								<div class="p-2 sm:p-4">
@@ -185,6 +186,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 															src={ "/api/files/" + post.Media[0] } 
 															class="max-h-80 cursor-pointer hover:opacity-90 transition-opacity" 
 															data-photo={ post.Media[0] }
+															alt={ path.Base(post.Media[0]) }
 															onclick="openImageModal(this.dataset.photo)"
 														/>
 													}
@@ -204,6 +206,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 																	src={ "/api/files/" + photo } 
 																	class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
 																	data-photo={ photo }
+																	alt={ path.Base(photo) }
 																	onclick="openImageModal(this.dataset.photo)"
 																/>
 															}
