@@ -15,12 +15,13 @@ type SeoMetadata struct {
 var DefaultSeoMetadata = SeoMetadata{
 	Title:       "🦾 IT-Качалка Давида Шекунца 💪",
 	Description: "Меня зовут 👨🏻 Давид Шекунц 👴🏿 и здесь я рассказываю про разработку IT-продуктов",
-	Image:       "https://davidshekunts.ru/public/link_preview.png",
-	Url:         "davidshekunts.ru",
+	Image:       "https://davidshekunts.ru/public/avatar.jpg",
+	Url:         "https://davidshekunts.ru",
 	Type:        "website",
 }
 
 templ BaseLayout(seo *SeoMetadata) {
+	<!DOCTYPE html>
 	<html data-theme="bumblebee">
 		<head>
 			if seo != nil {
@@ -42,7 +43,7 @@ templ BaseLayout(seo *SeoMetadata) {
 				<meta property="og:type" content={ seo.Type }/>
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="davidshekunts.ru"/>
-				<meta property="twitter:url" content={ "https://" + seo.Url }/>
+				<meta property="twitter:url" content={ seo.Url }/>
 				<meta name="twitter:title" content={ seo.Title }/>
 				<meta name="twitter:description" content={ seo.Description }/>
 				<meta name="twitter:image" content={ seo.Image }/>

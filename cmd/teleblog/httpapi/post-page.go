@@ -35,7 +35,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 		}
 
 		for i, media := range post.Media {
-			post.Media[i] = postCollection.Id + "/" + post.Id + "/" + media
+			post.Media[i] = "/api/files/" + postCollection.Id + "/" + post.Id + "/" + media
 		}
 
 		// # Get album posts
@@ -54,7 +54,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 		// # Correct media URLs for album posts
 		for _, albumPost := range albumPosts {
 			for i, media := range albumPost.Media {
-				albumPost.Media[i] = postCollection.Id + "/" + albumPost.Id + "/" + media
+				albumPost.Media[i] = "/api/files/" + postCollection.Id + "/" + albumPost.Id + "/" + media
 			}
 
 			post.Media = append(post.Media, albumPost.Media...)
@@ -183,7 +183,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 		}
 
 		if len(post.Media) > 0 {
-			seo.Image = fmt.Sprintf("https://davidshekunts.ru/%s", post.Media[0])
+			seo.Image = fmt.Sprintf("https://davidshekunts.ru%s", post.Media[0])
 		}
 
 		component := views.PostPage(chat, post, comments, &seo)
