@@ -115,6 +115,7 @@ MG: Add content improvement features
 
 MG: ...
 
+1. H1 from any text
 1. Schema.org + Open Graph.
 1. Auto-translate
 1. Repost to Medium
