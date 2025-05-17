@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -76,7 +77,9 @@ func main() {
 
 		b, err := telebot.NewBot(pref)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(
+				fmt.Errorf("New bot create error: %s", err),
+			)
 			return
 		}
 

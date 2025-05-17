@@ -94,11 +94,12 @@ templ PostPage(chat teleblog.Chat, post PostPagePost, comments []*PostPageCommen
 												<p>Оригинал</p>
 											</a>
 									</div>
-									if post.Title != "" {
-										<h1 class="text-2xl font-bold mt-2">
-											{ post.Title }
-										</h1>
-									}
+									// TODO: return in future
+									// if post.Title != "" {
+									// 	<h1 class="text-2xl font-bold mt-2">
+									// 		{ post.Title }
+									// 	</h1>
+									// }
 									<div class="break-words link-as-contents">
 										@templ.Raw(post.TextWithMarkup)
 									</div>

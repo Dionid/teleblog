@@ -221,9 +221,10 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 														{ post.Created.Time().Format("2006-01-02 15:04") }
 													</div>
 												</div>
-												if post.Title != "" {
-													<a href={ templ.SafeURL(GetPostUrl(post.Post)) } class="text-xl font-bold mt-2">{ post.Title }</a>
-												}
+												// TODO: return in future
+												// if post.Title != "" {
+												// 	<a href={ templ.SafeURL(GetPostUrl(post.Post)) } class="text-xl font-bold mt-2">{ post.Title }</a>
+												// }
 												<div class="link-as-contents" v-show="!post.collapsed">
 													@templ.Raw(post.TextWithMarkup)
 												</div>

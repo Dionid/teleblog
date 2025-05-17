@@ -15,13 +15,13 @@ import (
 
 func PostPageHandler(e *core.ServeEvent, app core.App) {
 	e.Router.GET("/post/:id", func(c echo.Context) error {
-		id := c.PathParam("id")
+		postIdOrSlug := c.PathParam("id")
 
 		post := views.PostPagePost{}
 		err := teleblog.PostQuery(app.Dao()).Where(
 			dbx.Or(
-				dbx.HashExp{"id": id},
-				dbx.HashExp{"slug": id},
+				dbx.HashExp{"id": postIdOrSlug},
+				dbx.HashExp{"slug": postIdOrSlug},
 			),
 		).Limit(1).One(&post)
 		if err != nil {
@@ -103,7 +103,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 		comments := []*views.PostPageComment{}
 
 		err = teleblog.CommentQuery(app.Dao()).Where(
-			dbx.HashExp{"post_id": id},
+			dbx.HashExp{"post_id": post.Id},
 		).All(&comments)
 		if err != nil {
 			return err
