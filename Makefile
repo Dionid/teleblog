@@ -107,5 +107,5 @@ deploy:
 	make increment-production-app-version
 	ssh root@${SERVER_IP} "systemctl stop teleblog"
 	make backup-production-db
-	scp ./cmd/teleblog/${BINARY_NAME}-linux root@${SERVER_IP}:/root/teleblog/${BINARY_NAME}-linux
+	scp ./cmd/${PROJECT_NAME}/${BINARY_NAME}-linux root@${SERVER_IP}:/root/${PROJECT_NAME}/${BINARY_NAME}-linux
 	ssh root@${SERVER_IP} "systemctl start teleblog"
