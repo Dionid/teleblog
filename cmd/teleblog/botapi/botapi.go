@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -85,22 +86,28 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return err
 		}
 
-		text := c.Message().Text + c.Message().Caption
+		rawMessage := c.Message()
+
+		text := rawMessage.Text + rawMessage.Caption
 
 		newPost := &teleblog.Post{
 			ChatId:         chat.Id,
 			IsTgMessage:    true,
 			Text:           text,
-			TgMessageId:    c.Message().ID,
-			AlbumID:        c.Message().AlbumID,
+			TgMessageId:    rawMessage.ID,
+			AlbumID:        rawMessage.AlbumID,
 			Title:          templu.RemoveNewLines(fmt.Sprintf("%.60s", text)),
 			SeoDescription: templu.RemoveNewLines(fmt.Sprintf("%.160s", text)),
 			Slug:           slug.GenerateSlug(text, time.Now()),
 		}
 
-		newPost.Created.Scan(c.Message().Time())
+		if newPost.AlbumID == "" {
+			newPost.AlbumID = strconv.Itoa(int(rawMessage.Unixtime))
+		}
 
-		jsonMessageRaw, err := json.Marshal(c.Message())
+		newPost.Created.Scan(rawMessage.Time())
+
+		jsonMessageRaw, err := json.Marshal(rawMessage)
 		if err != nil {
 			return err
 		}
@@ -301,7 +308,9 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return err
 		}
 
-		jsonMessageRaw, err := json.Marshal(c.Message())
+		rawMessage := c.Message()
+
+		jsonMessageRaw, err := json.Marshal(rawMessage)
 		if err != nil {
 			return err
 		}
@@ -316,19 +325,23 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 		post := teleblog.Post{}
 
 		err = teleblog.PostQuery(app.Dao()).
-			AndWhere(dbx.HashExp{"chat_id": chat.Id, "tg_post_id": c.Message().ID}).
+			AndWhere(dbx.HashExp{"chat_id": chat.Id, "tg_post_id": rawMessage.ID}).
 			Limit(1).
 			One(&post)
 		if err != nil {
 			return err
 		}
 
-		text := c.Message().Text + c.Message().Caption
+		text := rawMessage.Text + rawMessage.Caption
 
 		post.Text = text
 		post.TgMessageRaw = tgMessageRaw
 		post.IsTgHistoryMessage = false
-		post.AlbumID = c.Message().AlbumID
+		post.AlbumID = rawMessage.AlbumID
+
+		if post.AlbumID == "" {
+			post.AlbumID = strconv.Itoa(int(rawMessage.Unixtime))
+		}
 
 		err = app.Dao().Save(&post)
 		if err != nil {
@@ -344,7 +357,9 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 	})
 
 	b.Handle(telebot.OnEdited, func(c telebot.Context) error {
-		fmt.Println("OnEdited", c.Message().Text+c.Message().Caption)
+		rawMessage := c.Message()
+
+		fmt.Println("OnEdited", rawMessage.Text+rawMessage.Caption)
 		fmt.Println("c.Sender().ID", c.Sender().ID)
 
 		if skipContent(c) {
@@ -361,12 +376,12 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return err
 		}
 
-		if c.Message().OriginalChat != nil && c.Message().OriginalChat.ID == chat.TgLinkedChatId {
+		if rawMessage.OriginalChat != nil && rawMessage.OriginalChat.ID == chat.TgLinkedChatId {
 			fmt.Println("FROM POST EDIT")
 			return nil
 		}
 
-		jsonMessageRaw, err := json.Marshal(c.Message())
+		jsonMessageRaw, err := json.Marshal(rawMessage)
 		if err != nil {
 			return err
 		}
@@ -381,11 +396,11 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 		_, err = app.DB().Update(
 			(&teleblog.Comment{}).TableName(),
 			map[string]interface{}{
-				"text":                  c.Message().Text,
+				"text":                  rawMessage.Text,
 				"tg_message_raw":        tgMessageRaw,
 				"is_tg_history_message": false,
 			},
-			dbx.HashExp{"chat_id": chat.Id, "tg_comment_id": c.Message().ID},
+			dbx.HashExp{"chat_id": chat.Id, "tg_comment_id": rawMessage.ID},
 		).Execute()
 
 		return err

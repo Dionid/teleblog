@@ -198,8 +198,6 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			return err
 		}
 
-		// fmt.Println("TOTAL ", totalQuery.Build().SQL())
-
 		// ## Posts
 		posts := []*views.InpexPagePost{}
 		contentQuery := baseQuery(
@@ -332,6 +330,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		tags := []*teleblog.Tag{}
 
 		err = teleblog.TagQuery(app.Dao()).
+			Select("tag.value").
 			LeftJoin(
 				"post_tag",
 				dbx.NewExp("post_tag.tag_id = tag.id"),
@@ -339,7 +338,8 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			Where(
 				dbx.In("post_tag.chat_id", chatIds...),
 			).
-			OrderBy("created desc").
+			OrderBy("tag.created desc").
+			GroupBy("tag.value").
 			All(&tags)
 		if err != nil {
 			return err
