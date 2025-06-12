@@ -2,6 +2,7 @@ package views
 
 import (
 	"github.com/Dionid/teleblog/libs/templu"
+	"fmt"
 )
 
 type SeoMetadata struct {
@@ -17,6 +18,9 @@ type BaseLayoutData struct {
 
 	YandexMetrikaCounter string // Yandex.Metrika counter ID
 	GoogleAnalyticsCounter    string // Google Analytics ID
+
+	PrimaryColor string // Primary color for the theme, used in CSS variables
+	BgImage string // Background image for the layout, can be used in CSS
 }
 
 templ BaseLayout(data BaseLayoutData) {
@@ -68,6 +72,22 @@ templ BaseLayout(data BaseLayoutData) {
 			<meta name="msapplication-TileColor" content="#ffffff"/>
 			<meta name="msapplication-TileImage" content="/public/favico/ms-icon-144x144.png"/>
 			<meta name="theme-color" content="#ffffff"/>
+			if data.BgImage != "" {
+				@templ.Raw(
+					fmt.Sprintf(
+						`<style>
+							body {
+								background-image: url(%s);
+								background-size: cover;
+								background-position: center;
+								background-repeat: no-repeat;
+								background-attachment: fixed;
+							}
+						</style>`,
+						data.BgImage,
+					),
+				)
+			}
 		</head>
 		<body style="min-height: 100vh; display: flex;">
 			{ children... }
@@ -98,6 +118,16 @@ templ BaseLayout(data BaseLayoutData) {
 		</script>
 		<noscript><div><img src={ "https://mc.yandex.com/watch/" + data.YandexMetrikaCounter } style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 		<!-- /Yandex.Metrika counter -->
+		@templ.Raw(
+			fmt.Sprintf(
+				`<style>
+				:root {
+					--p: %s;
+				}
+			</style>`,
+			 	templu.OrDefaultString(data.PrimaryColor, "0.78 0.14 218.3"),
+			),
+		)
 		<link rel="stylesheet" href={ templu.PathWithVersion(ctx, "/public/custom.css") } />
 	</html>
 }

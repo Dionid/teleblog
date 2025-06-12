@@ -439,6 +439,12 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 				},
 				YandexMetrikaCounter:   siteConfig.YandexMetrikaCounter,
 				GoogleAnalyticsCounter: siteConfig.GoogleAnalyticsCounter,
+				PrimaryColor:           siteConfig.PrimaryColor,
+				BgImage: teleblog.ImagePath(
+					configCollection,
+					&siteConfig.BaseModel,
+					siteConfig.BgImage,
+				),
 			},
 			views.IndexPageInfo{
 				Description: siteConfig.Description,
