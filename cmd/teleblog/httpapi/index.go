@@ -45,6 +45,9 @@ func baseQuery(
 				dbx.NewExp(`post.text != ""`),
 				dbx.NewExp(`json_array_length(post.media) > 0`),
 			),
+		).
+		AndWhere(
+			dbx.NewExp("post.unparsable = false"),
 		)
 
 	// ## Filters
@@ -321,7 +324,16 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 
 				err = json.Unmarshal(jb, &rawMessage)
 				if err != nil {
-					return err
+					app.Logger().Error("IndexPageHandler: unmarshal history message error", "error", err, "post_id", post.Id)
+					_, err := app.DB().Update(
+						"post",
+						dbx.Params{"unparsable": true},
+						dbx.HashExp{"id": post.Id},
+					).Execute()
+					if err != nil {
+						return fmt.Errorf("IndexPageHandler: update post error: %w", err)
+					}
+					continue
 				}
 
 				markup = teleblog.FormHistoryTextWithMarkup(rawMessage.TextEntities)
@@ -330,7 +342,16 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 
 				err = json.Unmarshal(jb, &rawMessage)
 				if err != nil {
-					return err
+					app.Logger().Error("IndexPageHandler: unmarshal history message error", "error", err, "post_id", post.Id)
+					_, err := app.DB().Update(
+						"post",
+						dbx.Params{"unparsable": true},
+						dbx.HashExp{"id": post.Id},
+					).Execute()
+					if err != nil {
+						return fmt.Errorf("IndexPageHandler: update post error: %w", err)
+					}
+					continue // Skip if unmarshal error, it may be a non-history message
 				}
 
 				markup, err = teleblog.FormWebhookTextMarkup(post.Text, rawMessage.Entities)

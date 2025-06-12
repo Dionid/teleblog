@@ -47,6 +47,8 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 				dbx.HashExp{"id": postIdOrSlug},
 				dbx.HashExp{"slug": postIdOrSlug},
 			),
+		).AndWhere(
+			dbx.NewExp("unparsable = false"),
 		).Limit(1).One(&post)
 		if err != nil {
 			return err

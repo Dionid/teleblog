@@ -89,7 +89,9 @@ func main() {
 	// # Pre start
 
 	// ## Prepare DB
-	prepareDB(app)
+	if !config.DisablePrepareDB {
+		prepareDB(app)
+	}
 
 	// ## Send verification email on sign-up
 	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {

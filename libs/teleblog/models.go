@@ -99,6 +99,8 @@ type Post struct {
 	Title          string `json:"title" db:"title"`
 	Slug           string `json:"slug" db:"slug"`
 	SeoDescription string `json:"seoDescription" db:"seo_description"`
+
+	Unparsable bool `json:"unparsable" db:"unparsable"`
 }
 
 func (m *Post) TableName() string {

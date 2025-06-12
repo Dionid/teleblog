@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/Dionid/teleblog/libs/teleblog"
+	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"gopkg.in/telebot.v4"
 )
@@ -14,6 +15,7 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 	posts := []*teleblog.Post{}
 	err := teleblog.
 		PostQuery(app.Dao()).
+		Where(dbx.HashExp{"unparsable": false}).
 		All(&posts)
 
 	for _, post := range posts {
@@ -27,12 +29,17 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 
 			err = json.Unmarshal(jb, &rawMessage)
 			if err != nil {
-				return fmt.Errorf("SetAlbumId: (post_id: %s) unmarshal history message error: %w", post.Id, err)
+				app.Logger().Error("SetAlbumId: unmarshal history message error", "error", err, "post_id", post.Id)
+				_, err := app.DB().Update(
+					"post",
+					dbx.Params{"unparsable": true},
+					dbx.HashExp{"id": post.Id},
+				).Execute()
+				if err != nil {
+					return fmt.Errorf("IndexPageHandler: update post error: %w", err)
+				}
+				continue
 			}
-
-			// if rawMessage.Photo == nil {
-			// 	continue
-			// }
 
 			// This is a hack to set AlbumID to DateUnix
 			post.AlbumID = rawMessage.DateUnix
@@ -41,7 +48,16 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 
 			err = json.Unmarshal(jb, &rawMessage)
 			if err != nil {
-				return fmt.Errorf("SetAlbumId: (post_id: %s) unmarshal realtime message error: %w", post.Id, err)
+				app.Logger().Error("SetAlbumId: unmarshal realtime message error", "error", err, "post_id", post.Id)
+				_, err := app.DB().Update(
+					"post",
+					dbx.Params{"unparsable": true},
+					dbx.HashExp{"id": post.Id},
+				).Execute()
+				if err != nil {
+					return fmt.Errorf("IndexPageHandler: update post error: %w", err)
+				}
+				continue
 			}
 
 			if rawMessage.AlbumID != "" {
