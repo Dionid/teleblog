@@ -10,9 +10,15 @@ import "context"
 import "io"
 import "bytes"
 
+type HeaderMenuItem struct {
+	Name string // Text to display in the menu item
+	Url  string // URL to navigate to when the item is clicked
+}
+
 type HeaderData struct {
-	LogoUrl string // URL for the logo image
-	LogoAlt string // Alternative text for the logo image
+	LogoUrl   string           // URL for the logo image
+	LogoAlt   string           // Alternative text for the logo image
+	MenuItems []HeaderMenuItem // List of menu items to display in the header
 }
 
 func Header(header HeaderData) templ.Component {
@@ -35,7 +41,7 @@ func Header(header HeaderData) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(header.LogoUrl)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 11, Col: 37}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 17, Col: 37}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -48,13 +54,58 @@ func Header(header HeaderData) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(header.LogoAlt)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 11, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 17, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></a><div class=\"flex items-center\"><div class=\"dropdown dropdown-end\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost bg-white shadow-sm\" aria-label=\"Открыть меню навигации\"><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h7\"></path></svg></div><ul tabindex=\"0\" class=\"menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow\" role=\"menu\"><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://about-me.davidshekunts.ru\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу &#39;Обо мне&#39;\">👨🏻 Обо мне 👴🏿</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://t.me/it_kachalka\" class=\"bg-white border-transparent\" aria-label=\"Перейти в Telegram канал IT-Качалка\">🦾 IT-Качалка 💪</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://fop.davidshekunts.ru/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу FOP\">λ ФОП λ</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://fdd.davidshekunts.ru/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу FDD\">🛌 FDD 🛌</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://n2p.dev/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу N2P\">📜 N2P 📜</a></li></ul></div></div></header>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></a><div class=\"flex items-center\"><div class=\"dropdown dropdown-end\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost bg-white shadow-sm\" aria-label=\"Открыть меню навигации\"><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h7\"></path></svg></div><ul tabindex=\"0\" class=\"menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow\" role=\"menu\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, item := range header.MenuItems {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 templ.SafeURL = templ.SafeURL(item.Url)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var4)))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"bg-white border-transparent\" aria-label=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var5 string
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("Перейти на страницу '" + item.Name + "'")
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 42, Col: 203}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(item.Name)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 43, Col: 43}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></li>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></div></div></header>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

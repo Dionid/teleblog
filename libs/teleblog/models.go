@@ -197,3 +197,23 @@ func (m *Config) TableName() string {
 func ConfigQuery(dao *daos.Dao) *dbx.SelectQuery {
 	return dao.ModelQuery(&Config{})
 }
+
+// # MenuItem
+
+var _ models.Model = (*MenuItem)(nil)
+
+type MenuItem struct {
+	models.BaseModel
+
+	Name     string `json:"name" db:"name"`
+	Url      string `json:"url" db:"url"`
+	Position int    `json:"position" db:"position"`
+}
+
+func (m *MenuItem) TableName() string {
+	return "menu_item"
+}
+
+func MenuItemQuery(dao *daos.Dao) *dbx.SelectQuery {
+	return dao.ModelQuery(&MenuItem{})
+}

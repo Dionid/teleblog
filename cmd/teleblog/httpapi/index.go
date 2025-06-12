@@ -169,6 +169,14 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			})
 		}
 
+		// # Get menu
+		menu := []teleblog.MenuItem{}
+
+		err = teleblog.MenuItemQuery(app.Dao()).OrderBy("position").All(&menu)
+		if err != nil {
+			return err
+		}
+
 		// # Get chats
 		chats := []teleblog.Chat{}
 
@@ -367,8 +375,20 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			CurrentPage: currentPage,
 		}
 
-		fmt.Println("siteConfig.Id", siteConfig.Id)
-		fmt.Println("siteConfig.Description", siteConfig.Description)
+		// # Render component
+		// ## Header
+		header := partials.HeaderData{
+			LogoUrl:   siteConfig.LogoUrl,
+			LogoAlt:   siteConfig.LogoAlt,
+			MenuItems: []partials.HeaderMenuItem{},
+		}
+
+		for _, item := range menu {
+			header.MenuItems = append(header.MenuItems, partials.HeaderMenuItem{
+				Name: item.Name,
+				Url:  item.Url,
+			})
+		}
 
 		component := views.IndexPage(
 			views.BaseLayoutData{
@@ -382,10 +402,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			},
 			views.IndexPageInfo{
 				Description: siteConfig.Description,
-				Header: partials.HeaderData{
-					LogoUrl: siteConfig.LogoUrl,
-					LogoAlt: siteConfig.LogoAlt,
-				},
+				Header:      header,
 				Footer: partials.FooterData{
 					Text: siteConfig.Footer,
 				},

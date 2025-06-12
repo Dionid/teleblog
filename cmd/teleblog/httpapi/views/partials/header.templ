@@ -1,8 +1,14 @@
 package partials
 
+type HeaderMenuItem struct {
+    Name string // Text to display in the menu item
+    Url   string // URL to navigate to when the item is clicked
+}
+
 type HeaderData struct {
     LogoUrl string // URL for the logo image
     LogoAlt string // Alternative text for the logo image
+    MenuItems []HeaderMenuItem // List of menu items to display in the header
 }
 
 templ Header(header HeaderData) {
@@ -31,21 +37,13 @@ templ Header(header HeaderData) {
                     class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
                     role="menu"
                 >
-                    <li role="none"><a role="menuitem" target="_blank" href="https://about-me.davidshekunts.ru" class="bg-white border-transparent" aria-label="Перейти на страницу 'Обо мне'">
-                    👨🏻 Обо мне 👴🏿
-                    </a></li>
-                    <li role="none"><a role="menuitem" target="_blank" href="https://t.me/it_kachalka" class="bg-white border-transparent" aria-label="Перейти в Telegram канал IT-Качалка">
-                        🦾 IT-Качалка 💪
-                    </a></li>
-                    <li role="none"><a role="menuitem" target="_blank" href="https://fop.davidshekunts.ru/" class="bg-white border-transparent" aria-label="Перейти на страницу FOP">
-                        λ ФОП λ
-                    </a></li>
-                    <li role="none"><a role="menuitem" target="_blank" href="https://fdd.davidshekunts.ru/" class="bg-white border-transparent" aria-label="Перейти на страницу FDD">
-                        🛌 FDD 🛌
-                    </a></li>
-                    <li role="none"><a role="menuitem" target="_blank" href="https://n2p.dev/" class="bg-white border-transparent" aria-label="Перейти на страницу N2P">
-                        📜 N2P 📜
-                    </a></li>
+                    for _, item := range header.MenuItems {
+                        <li role="none">
+                            <a role="menuitem" target="_blank" href={ templ.SafeURL(item.Url) } class="bg-white border-transparent" aria-label={ "Перейти на страницу '" + item.Name + "'" }>
+                                { item.Name }
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

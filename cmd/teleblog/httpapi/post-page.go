@@ -30,6 +30,14 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			})
 		}
 
+		// # Get menu
+		menu := []teleblog.MenuItem{}
+
+		err = teleblog.MenuItemQuery(app.Dao()).OrderBy("position").All(&menu)
+		if err != nil {
+			return err
+		}
+
 		// # Get post by ID or slug
 		postIdOrSlug := c.PathParam("id")
 
@@ -202,15 +210,26 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			seo.Image = fmt.Sprintf("https://davidshekunts.ru%s", post.Media[0])
 		}
 
+		// ## Header
+		header := partials.HeaderData{
+			LogoUrl:   siteConfig.LogoUrl,
+			LogoAlt:   siteConfig.LogoAlt,
+			MenuItems: []partials.HeaderMenuItem{},
+		}
+
+		for _, item := range menu {
+			header.MenuItems = append(header.MenuItems, partials.HeaderMenuItem{
+				Name: item.Name,
+				Url:  item.Url,
+			})
+		}
+
 		component := views.PostPage(
 			views.BaseLayoutData{
 				Seo: seo,
 			},
 			views.PostPageData{
-				Header: partials.HeaderData{
-					LogoUrl: siteConfig.LogoUrl,
-					LogoAlt: siteConfig.LogoAlt,
-				},
+				Header: header,
 				Footer: partials.FooterData{
 					Text: siteConfig.Footer,
 				},
