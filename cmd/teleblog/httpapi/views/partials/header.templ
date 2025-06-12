@@ -13,11 +13,14 @@ type HeaderData struct {
 
 templ Header(header HeaderData) {
     <header class="flex w-full items-center justify-between">
-        <a href="/" class="w-36 p-1 rounded bg-white shadow-sm" aria-label="На главную">
             if header.LogoUrl != "" {
-                <img src={ header.LogoUrl } alt={ header.LogoAlt }>
+                <a href="/" class="w-36 p-1 rounded bg-white shadow-sm" aria-label="На главную">
+                    <img src={ header.LogoUrl } alt={ header.LogoAlt }>
+                </a>
+            } else {
+                <a href="/" class="w-36 p-0 rounded bg-white shadow-sm" aria-label="На главную">
+                </a>
             }
-        </a>
         <div class="flex items-center">
             if len(header.MenuItems) > 0 {
                 <div class="dropdown dropdown-end">

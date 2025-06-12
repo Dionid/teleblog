@@ -182,16 +182,20 @@ var _ models.Model = (*Config)(nil)
 type Config struct {
 	models.BaseModel
 
-	Description            string `json:"description" db:"description"`
-	SeoTitle               string `json:"seoTitle" db:"seo_title"`
-	SeoDescription         string `json:"seoDescription" db:"seo_description"`
-	SeoImage               string `json:"seoImage" db:"seo_image"`
-	SeoUrl                 string `json:"seoUrl" db:"seo_url"`
-	LogoUrl                string `json:"logoUrl" db:"logo_url"`
-	LogoAlt                string `json:"logoAlt" db:"logo_alt"`
-	Footer                 string `json:"footer" db:"footer"`
+	Description    string `json:"description" db:"description"`
+	SeoTitle       string `json:"seoTitle" db:"seo_title"`
+	SeoDescription string `json:"seoDescription" db:"seo_description"`
+	SeoImage       string `json:"seoImage" db:"seo_image"`
+	SeoUrl         string `json:"seoUrl" db:"seo_url"`
+	LogoUrl        string `json:"logoUrl" db:"logo_url"`
+	LogoAlt        string `json:"logoAlt" db:"logo_alt"`
+	Footer         string `json:"footer" db:"footer"`
+
 	GoogleAnalyticsCounter string `json:"googleAnalyticsCounter" db:"google_analytics_counter"`
 	YandexMetrikaCounter   string `json:"yandexMetrikaCounter" db:"yandex_metrika_counter"`
+
+	PrimaryColor string `json:"mainColor" db:"main_color"`
+	BgImage      string `json:"bgImage" db:"bg_image"`
 }
 
 func (m *Config) TableName() string {
@@ -200,6 +204,11 @@ func (m *Config) TableName() string {
 
 func ConfigQuery(dao *daos.Dao) *dbx.SelectQuery {
 	return dao.ModelQuery(&Config{})
+}
+
+func Configcollection(dao *daos.Dao) (*models.Collection, error) {
+	config := &Config{}
+	return dao.FindCollectionByNameOrId(config.TableName())
 }
 
 // # MenuItem

@@ -22,3 +22,10 @@ func PathWithVersion(ctx context.Context, url string) string {
 func RemoveNewLines(text string) string {
 	return strings.ReplaceAll(strings.ReplaceAll(text, "\r\n", " "), "\n", "")
 }
+
+func OrDefaultString(value, defaultValue string) string {
+	if value == "" {
+		return defaultValue
+	}
+	return value
+}
