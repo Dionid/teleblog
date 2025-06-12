@@ -161,7 +161,12 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		// # Config
 		siteConfig := teleblog.Config{}
 
-		err := teleblog.ConfigQuery(app.Dao()).One(&siteConfig)
+		configCollection, err := teleblog.Configcollection(app.Dao())
+		if err != nil {
+			return fmt.Errorf("IndexPageHandler: get config collection error: %w", err)
+		}
+
+		err = teleblog.ConfigQuery(app.Dao()).One(&siteConfig)
 		if err != nil {
 			if strings.Contains(err.Error(), "no rows") {
 				return c.JSON(404, map[string]string{
@@ -403,7 +408,11 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		// # Render component
 		// ## Header
 		header := partials.HeaderData{
-			LogoUrl:   siteConfig.LogoUrl,
+			LogoUrl: teleblog.ImagePath(
+				configCollection,
+				&siteConfig.BaseModel,
+				siteConfig.LogoUrl,
+			),
 			LogoAlt:   siteConfig.LogoAlt,
 			MenuItems: []partials.HeaderMenuItem{},
 		}
@@ -420,9 +429,13 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 				Seo: views.SeoMetadata{
 					Title:       siteConfig.SeoTitle,
 					Description: siteConfig.SeoDescription,
-					Image:       siteConfig.SeoImage,
-					Url:         siteConfig.SeoUrl,
-					Type:        "website",
+					Image: teleblog.ImagePath(
+						configCollection,
+						&siteConfig.BaseModel,
+						siteConfig.SeoImage,
+					),
+					Url:  siteConfig.SeoUrl,
+					Type: "website",
 				},
 				YandexMetrikaCounter:   siteConfig.YandexMetrikaCounter,
 				GoogleAnalyticsCounter: siteConfig.GoogleAnalyticsCounter,

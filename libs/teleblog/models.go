@@ -202,6 +202,11 @@ func ConfigQuery(dao *daos.Dao) *dbx.SelectQuery {
 	return dao.ModelQuery(&Config{})
 }
 
+func Configcollection(dao *daos.Dao) (*models.Collection, error) {
+	config := &Config{}
+	return dao.FindCollectionByNameOrId(config.TableName())
+}
+
 // # MenuItem
 
 var _ models.Model = (*MenuItem)(nil)
