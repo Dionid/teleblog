@@ -60,11 +60,14 @@ func main() {
 	// # Bot
 	if !config.DisableBot {
 		pref := telebot.Settings{
-			Verbose: false,
+			Verbose: true,
 			Token:   config.TelegramBotToken,
 			Poller:  &telebot.LongPoller{Timeout: 60 * time.Second, AllowedUpdates: telebot.AllowedUpdates},
 			OnError: func(err error, c telebot.Context) {
 				app.Logger().Error("Error in bot", "error:", err)
+				log.Fatal(
+					fmt.Errorf("Bot error: %s", err),
+				)
 			},
 			Synchronous: true,
 		}
