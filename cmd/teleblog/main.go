@@ -65,9 +65,7 @@ func main() {
 			Poller:  &telebot.LongPoller{Timeout: 60 * time.Second, AllowedUpdates: telebot.AllowedUpdates},
 			OnError: func(err error, c telebot.Context) {
 				app.Logger().Error("Error in bot", "error:", err)
-				log.Fatal(
-					fmt.Errorf("Bot error: %s", err),
-				)
+				fmt.Println("Error in bot:", err)
 			},
 			Synchronous: true,
 		}
@@ -106,6 +104,8 @@ func main() {
 	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {
 		return mails.SendRecordVerification(app, e.Record)
 	})
+
+	app.Logger().Info("Starting PocketBase server...")
 
 	// # Start app
 	if err := app.Start(); err != nil {
