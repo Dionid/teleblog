@@ -163,6 +163,12 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 
 		err := teleblog.ConfigQuery(app.Dao()).One(&siteConfig)
 		if err != nil {
+			if strings.Contains(err.Error(), "no rows") {
+				return c.JSON(404, map[string]string{
+					"error": "Configuration not found",
+				})
+			}
+
 			return err
 		}
 

@@ -11,6 +11,9 @@ import (
 func ExtractAndSavePostTags(app *pocketbase.PocketBase, post teleblog.Post) error {
 	tags, err := teleblog.ExtractTagsFromPost(post)
 	if err != nil {
+		if strings.Contains(err.Error(), "unmarshal message") {
+			return nil
+		}
 		return err
 	}
 
@@ -57,6 +60,7 @@ func ExtractAndSaveAllTags(app *pocketbase.PocketBase) error {
 
 	err := teleblog.PostQuery(app.Dao()).
 		OrderBy("created ASC").
+		Where(dbx.HashExp{"unparsable": false}).
 		All(&posts)
 	if err != nil {
 		return err
