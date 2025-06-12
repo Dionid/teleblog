@@ -21,12 +21,15 @@ import (
 )
 
 func main() {
+	// # Context
+	gctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// # Config
 	config, err := initConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	gctx, cancel := context.WithCancel(context.Background())
 
 	// # Pocketbase
 	app := pocketbase.New()
@@ -49,49 +52,52 @@ func main() {
 		Env: config.Env,
 	}, app, gctx)
 
-	// # Initialize update history
-	admin.InitUploadHistoryUI(app)
-
 	// # Init additional commands
 	AdditionalCommands(app)
 
-	// # Bot
-	if !config.DisableBot {
-		pref := telebot.Settings{
-			Verbose: true,
-			Token:   config.TelegramBotToken,
-			Poller:  &telebot.LongPoller{Timeout: 60 * time.Second, AllowedUpdates: telebot.AllowedUpdates},
-			OnError: func(err error, c telebot.Context) {
-				app.Logger().Error("Error in bot", "error:", err)
-			},
-			Synchronous: true,
-		}
-
-		b, err := telebot.NewBot(pref)
+	// # Init
+	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+		// # Initialize update history
+		err := admin.InitUploadHistoryUI(app, e)
 		if err != nil {
-			log.Fatal(
-				fmt.Errorf("New bot create error: %s", err),
-			)
-			return
+			return fmt.Errorf("failed to initialize upload history UI: %w", err)
 		}
 
-		err = botapi.InitBotCommands(b, app)
-		if err != nil && !strings.Contains(err.Error(), "retry after") {
-			log.Fatal(
-				fmt.Errorf("Init bot commands error: %s", err),
-			)
-			return
+		// # Bot
+		if !config.DisableBot {
+			pref := telebot.Settings{
+				Verbose: config.TelegramBotVerbose,
+				Token:   config.TelegramBotToken,
+				Poller:  &telebot.LongPoller{Timeout: 60 * time.Second, AllowedUpdates: telebot.AllowedUpdates},
+				OnError: func(err error, c telebot.Context) {
+					app.Logger().Error("Error in bot", "error:", err)
+				},
+				Synchronous: true,
+			}
+
+			b, err := telebot.NewBot(pref)
+			if err != nil {
+				return fmt.Errorf("failed to create bot: %w", err)
+			}
+
+			err = botapi.InitBotCommands(b, app)
+			if err != nil && !strings.Contains(err.Error(), "retry after") {
+				return fmt.Errorf("Init bot commands error: %s", err)
+			}
+
+			go b.Start()
 		}
 
-		go b.Start()
-	}
+		// # Prepare DB
+		if !config.DisablePrepareDB {
+			err := prepareDB(app)
+			if err != nil {
+				return fmt.Errorf("prepare DB error: %s", err)
+			}
+		}
 
-	// # Pre start
-
-	// ## Prepare DB
-	if !config.DisablePrepareDB {
-		prepareDB(app)
-	}
+		return nil
+	})
 
 	// ## Send verification email on sign-up
 	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {
@@ -102,7 +108,6 @@ func main() {
 
 	// # Start app
 	if err := app.Start(); err != nil {
-		cancel()
 		log.Fatal(
 			fmt.Errorf("PocketBase start error: %s", err),
 		)

@@ -54,7 +54,6 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 			return c.Reply("You are not the administrator of the channel.")
 		}
 
-		// TODO: # Check that channel.ID + user.Id is unique
 		channel := &teleblog.Chat{}
 
 		err = teleblog.ChatQuery(app.Dao()).
@@ -84,35 +83,36 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 		}
 
 		// # Add linked chat
-		linkedGroup, err := b.ChatByID(tgChannel.LinkedChatID)
-		if err != nil {
-			return c.Reply("No channel chat like this found.")
-		}
-
-		// # Check that channel.ID + user.Id is unique
-		channelsGroup := &teleblog.Chat{}
-
-		err = teleblog.ChatQuery(app.Dao()).
-			AndWhere(dbx.HashExp{"tg_chat_id": linkedGroup.ID, "user_id": user.Id}).
-			Limit(1).
-			One(channelsGroup)
-		if err != nil {
-			if !strings.Contains(err.Error(), "no rows in result set") {
-				return err
+		if tgChannel.LinkedChatID > 0 {
+			linkedGroup, err := b.ChatByID(tgChannel.LinkedChatID)
+			if err != nil {
+				return c.Reply("No channel chat like this found.")
 			}
 
-			newChannelGroup := teleblog.Chat{
-				UserId:       user.Id,
-				LinkedChatId: channel.Id,
+			channelsChat := &teleblog.Chat{}
 
-				TgUsername:     linkedGroup.Username,
-				TgChatId:       linkedGroup.ID,
-				TgType:         string(linkedGroup.Type),
-				TgLinkedChatId: linkedGroup.LinkedChatID,
-			}
+			err = teleblog.ChatQuery(app.Dao()).
+				AndWhere(dbx.HashExp{"tg_chat_id": linkedGroup.ID, "user_id": user.Id}).
+				Limit(1).
+				One(channelsChat)
+			if err != nil {
+				if !strings.Contains(err.Error(), "no rows in result set") {
+					return err
+				}
 
-			if err := app.Dao().Save(&newChannelGroup); err != nil {
-				return err
+				newChannelsChat := teleblog.Chat{
+					UserId:       user.Id,
+					LinkedChatId: channel.Id,
+
+					TgUsername:     linkedGroup.Username,
+					TgChatId:       linkedGroup.ID,
+					TgType:         string(linkedGroup.Type),
+					TgLinkedChatId: linkedGroup.LinkedChatID,
+				}
+
+				if err := app.Dao().Save(&newChannelsChat); err != nil {
+					return err
+				}
 			}
 		}
 

@@ -20,11 +20,10 @@ import (
 )
 
 // InitUploadHistoryUI initializes the upload history admin UI routes
-func InitUploadHistoryUI(app *pocketbase.PocketBase) {
-	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		// Add the upload history page
-		e.Router.GET("/_/upload-history", func(c echo.Context) error {
-			html := `
+func InitUploadHistoryUI(app *pocketbase.PocketBase, e *core.ServeEvent) error {
+	// Add the upload history page
+	e.Router.GET("/_/upload-history", func(c echo.Context) error {
+		html := `
 				<!DOCTYPE html>
 				<html lang="ru">
 				<head>
@@ -398,79 +397,78 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 				</body>
 				</html>
 			`
-			return c.HTML(http.StatusOK, html)
-		})
-
-		// Add the upload history API endpoint
-		e.Router.POST("/_/upload-history", func(c echo.Context) error {
-			// Get the uploaded file
-			files, err := rest.FindUploadedFiles(c.Request(), "historyFile")
-			if err != nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": fmt.Sprintf("Failed to get uploaded file: %v", err),
-				})
-			}
-
-			if len(files) == 0 {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": "No file was uploaded",
-				})
-			}
-
-			uploadedFile := files[0]
-
-			// Check if the file is a zip file
-			if ext := filepath.Ext(uploadedFile.Name); ext != ".zip" {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": "Only zip files are allowed",
-				})
-			}
-
-			// Read the file content
-			reader, err := uploadedFile.Reader.Open()
-			if err != nil {
-				return c.JSON(http.StatusInternalServerError, map[string]string{
-					"error": fmt.Sprintf("Failed to read file: %v", err),
-				})
-			}
-			defer reader.Close()
-
-			// Read the entire file into memory
-			fileBytes, err := io.ReadAll(reader)
-			if err != nil {
-				return c.JSON(http.StatusInternalServerError, map[string]string{
-					"error": fmt.Sprintf("Failed to read zip file: %v", err),
-				})
-			}
-
-			// Create a bytes reader which implements io.ReaderAt
-			zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
-			if err != nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": fmt.Sprintf("Failed to read zip file: %v", err),
-				})
-			}
-
-			// Unzip the zip file
-			folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
-			err = file.Unzip(zipReader, folderPathPrefix)
-			if err != nil {
-				return fmt.Errorf("Failed to unzip file: %w", err)
-			}
-			defer os.RemoveAll(folderPathPrefix)
-
-			// Upload the history
-			if err := features.UploadHistory(app, folderPathPrefix); err != nil {
-				return c.JSON(http.StatusInternalServerError, map[string]string{
-					"error": fmt.Sprintf("Failed to upload history: %v", err),
-				})
-			}
-
-			return c.JSON(http.StatusOK, map[string]string{
-				"message": "History uploaded successfully",
-			})
-		}, apis.RequireAdminAuth())
-
-		return nil
+		return c.HTML(http.StatusOK, html)
 	})
+
+	// Add the upload history API endpoint
+	e.Router.POST("/_/upload-history", func(c echo.Context) error {
+		// Get the uploaded file
+		files, err := rest.FindUploadedFiles(c.Request(), "historyFile")
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"error": fmt.Sprintf("Failed to get uploaded file: %v", err),
+			})
+		}
+
+		if len(files) == 0 {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"error": "No file was uploaded",
+			})
+		}
+
+		uploadedFile := files[0]
+
+		// Check if the file is a zip file
+		if ext := filepath.Ext(uploadedFile.Name); ext != ".zip" {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"error": "Only zip files are allowed",
+			})
+		}
+
+		// Read the file content
+		reader, err := uploadedFile.Reader.Open()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{
+				"error": fmt.Sprintf("Failed to read file: %v", err),
+			})
+		}
+		defer reader.Close()
+
+		// Read the entire file into memory
+		fileBytes, err := io.ReadAll(reader)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{
+				"error": fmt.Sprintf("Failed to read zip file: %v", err),
+			})
+		}
+
+		// Create a bytes reader which implements io.ReaderAt
+		zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"error": fmt.Sprintf("Failed to read zip file: %v", err),
+			})
+		}
+
+		// Unzip the zip file
+		folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
+		err = file.Unzip(zipReader, folderPathPrefix)
+		if err != nil {
+			return fmt.Errorf("Failed to unzip file: %w", err)
+		}
+		defer os.RemoveAll(folderPathPrefix)
+
+		// Upload the history
+		if err := features.UploadHistory(app, folderPathPrefix); err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{
+				"error": fmt.Sprintf("Failed to upload history: %v", err),
+			})
+		}
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": "History uploaded successfully",
+		})
+	}, apis.RequireAdminAuth())
+
+	return nil
 }

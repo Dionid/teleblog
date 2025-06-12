@@ -196,10 +196,10 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			return err
 		}
 
-		if len(chats) == 0 {
-			// TODO: Change
-			return c.JSON(200, []teleblog.Post{})
-		}
+		// if len(chats) == 0 {
+		// 	// TODO: Change
+		// 	return c.JSON(200, []teleblog.Post{})
+		// }
 
 		chatIds := []interface{}{}
 		for _, chat := range chats {
@@ -250,8 +250,6 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 				"chat",
 				dbx.NewExp("chat.id = post.chat_id"),
 			).
-			// TODO: think about it
-			// GroupBy("post.id").
 			OrderBy("post.created desc", "post.tg_post_id asc").
 			GroupBy("post.album_id")
 

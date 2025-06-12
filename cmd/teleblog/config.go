@@ -8,12 +8,13 @@ import (
 )
 
 type Config struct {
-	Env              string `mapstructure:"ENV"`
-	Port             int    `mapstructure:"PORT"`
-	AppVersion       string `mapstructure:"APP_VERSION"`
-	TelegramBotToken string `mapstructure:"TELEGRAM_BOT_TOKEN"`
-	DisableBot       bool   `mapstructure:"DISABLE_BOT"`
-	DisablePrepareDB bool   `mapstructure:"DISABLE_PREPARE_DB"`
+	Env                string `mapstructure:"ENV"`
+	Port               int    `mapstructure:"PORT"`
+	AppVersion         string `mapstructure:"APP_VERSION"`
+	TelegramBotToken   string `mapstructure:"TELEGRAM_BOT_TOKEN"`
+	DisableBot         bool   `mapstructure:"DISABLE_BOT"`
+	DisablePrepareDB   bool   `mapstructure:"DISABLE_PREPARE_DB"`
+	TelegramBotVerbose bool   `mapstructure:"TELEGRAM_BOT_VERBOSE"`
 }
 
 // Call to load the variables from env
