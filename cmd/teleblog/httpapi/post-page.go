@@ -226,7 +226,9 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 		component := views.PostPage(
 			views.BaseLayoutData{
-				Seo: seo,
+				Seo:                    seo,
+				YandexMetrikaCounter:   siteConfig.YandexMetrikaCounter,
+				GoogleAnalyticsCounter: siteConfig.GoogleAnalyticsCounter,
 			},
 			views.PostPageData{
 				Header: header,

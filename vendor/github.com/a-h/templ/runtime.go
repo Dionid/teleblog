@@ -5,21 +5,16 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"html"
 	"html/template"
 	"io"
 	"net/http"
-	"os"
 	"reflect"
-	"runtime"
 	"sort"
-	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/a-h/templ/safehtml"
 )
@@ -82,77 +77,9 @@ func GetChildren(ctx context.Context) Component {
 	return *v.children
 }
 
-// ComponentHandler is a http.Handler that renders components.
-type ComponentHandler struct {
-	Component    Component
-	Status       int
-	ContentType  string
-	ErrorHandler func(r *http.Request, err error) http.Handler
-}
-
-const componentHandlerErrorMessage = "templ: failed to render template"
-
-// ServeHTTP implements the http.Handler interface.
-func (ch ComponentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// Since the component may error, write to a buffer first.
-	// This prevents partial responses from being written to the client.
-	buf := GetBuffer()
-	defer ReleaseBuffer(buf)
-	err := ch.Component.Render(r.Context(), buf)
-	if err != nil {
-		if ch.ErrorHandler != nil {
-			w.Header().Set("Content-Type", ch.ContentType)
-			ch.ErrorHandler(r, err).ServeHTTP(w, r)
-			return
-		}
-		http.Error(w, componentHandlerErrorMessage, http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", ch.ContentType)
-	if ch.Status != 0 {
-		w.WriteHeader(ch.Status)
-	}
-	// Ignore write error like http.Error() does, because there is
-	// no way to recover at this point.
-	_, _ = w.Write(buf.Bytes())
-}
-
-// Handler creates a http.Handler that renders the template.
-func Handler(c Component, options ...func(*ComponentHandler)) *ComponentHandler {
-	ch := &ComponentHandler{
-		Component:   c,
-		ContentType: "text/html; charset=utf-8",
-	}
-	for _, o := range options {
-		o(ch)
-	}
-	return ch
-}
-
-// WithStatus sets the HTTP status code returned by the ComponentHandler.
-func WithStatus(status int) func(*ComponentHandler) {
-	return func(ch *ComponentHandler) {
-		ch.Status = status
-	}
-}
-
-// WithContentType sets the Content-Type header returned by the ComponentHandler.
-func WithContentType(contentType string) func(*ComponentHandler) {
-	return func(ch *ComponentHandler) {
-		ch.ContentType = contentType
-	}
-}
-
-// WithErrorHandler sets the error handler used if rendering fails.
-func WithErrorHandler(eh func(r *http.Request, err error) http.Handler) func(*ComponentHandler) {
-	return func(ch *ComponentHandler) {
-		ch.ErrorHandler = eh
-	}
-}
-
 // EscapeString escapes HTML text within templates.
-func EscapeString(s string) string {
-	return html.EscapeString(s)
+func EscapeString[T ~string](s T) string {
+	return html.EscapeString(string(s))
 }
 
 // Bool attribute value.
@@ -230,6 +157,10 @@ func (cp *cssProcessor) Add(item any) {
 	case KeyValue[CSSClass, bool]:
 		cp.AddClassName(c.Key.ClassName(), c.Value)
 	case CSSClasses:
+		for _, item := range c {
+			cp.Add(item)
+		}
+	case []CSSClass:
 		for _, item := range c {
 			cp.Add(item)
 		}
@@ -321,11 +252,11 @@ func (css ComponentCSSClass) ClassName() string {
 // CSSID calculates an ID.
 func CSSID(name string, css string) string {
 	sum := sha256.Sum256([]byte(css))
-	hp := hex.EncodeToString(sum[:])[0:4]
+	hs := hex.EncodeToString(sum[:])[0:8] // NOTE: See issue #978. Minimum recommended hs length is 6.
 	// Benchmarking showed this was fastest, and with fewest allocations (1).
 	// Using strings.Builder (2 allocs).
 	// Using fmt.Sprintf (3 allocs).
-	return name + "_" + hp
+	return name + "_" + hs
 }
 
 // NewCSSMiddleware creates HTTP middleware that renders a global stylesheet of ComponentCSSClass
@@ -404,18 +335,18 @@ func RenderCSSItems(ctx context.Context, w io.Writer, classes ...any) (err error
 	_, v := getContext(ctx)
 	sb := new(strings.Builder)
 	renderCSSItemsToBuilder(sb, v, classes...)
-	if sb.Len() > 0 {
-		if _, err = io.WriteString(w, `<style type="text/css">`); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, sb.String()); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, `</style>`); err != nil {
+	if sb.Len() == 0 {
+		return nil
+	}
+	if _, err = io.WriteString(w, `<style type="text/css"`); err != nil {
+		return err
+	}
+	if v.nonce != "" {
+		if err = writeStrings(w, ` nonce="`, EscapeString(v.nonce), `"`); err != nil {
 			return err
 		}
 	}
-	return nil
+	return writeStrings(w, `>`, sb.String(), `</style>`)
 }
 
 func renderCSSItemsToBuilder(sb *strings.Builder, v *contextValue, classes ...any) {
@@ -438,6 +369,10 @@ func renderCSSItemsToBuilder(sb *strings.Builder, v *contextValue, classes ...an
 			renderCSSItemsToBuilder(sb, v, ccc.Key)
 		case CSSClasses:
 			renderCSSItemsToBuilder(sb, v, ccc...)
+		case []CSSClass:
+			for _, item := range ccc {
+				renderCSSItemsToBuilder(sb, v, item)
+			}
 		case func() CSSClass:
 			renderCSSItemsToBuilder(sb, v, ccc())
 		case []string:
@@ -478,19 +413,38 @@ func SanitizeCSS[T ~string](property string, value T) SafeCSS {
 	return SafeCSS(p + ":" + v + ";")
 }
 
+type Attributer interface {
+	Items() []KeyValue[string, any]
+}
+
 // Attributes is an alias to map[string]any made for spread attributes.
 type Attributes map[string]any
 
-// sortedKeys returns the keys of a map in sorted order.
-func sortedKeys(m map[string]any) (keys []string) {
-	keys = make([]string, len(m))
-	var i int
-	for k := range m {
-		keys[i] = k
+var _ Attributer = Attributes{}
+
+// Returns the items of the attributes map in key sorted order.
+func (a Attributes) Items() []KeyValue[string, any] {
+	var (
+		items = make([]KeyValue[string, any], len(a))
+		i     int
+	)
+	for k, v := range a {
+		items[i] = KeyValue[string, any]{Key: k, Value: v}
 		i++
 	}
-	sort.Strings(keys)
-	return keys
+	sort.Slice(items, func(i, j int) bool {
+		return items[i].Key < items[j].Key
+	})
+	return items
+}
+
+// OrderedAttributes stores attributes in order of insertion.
+type OrderedAttributes []KeyValue[string, any]
+
+var _ Attributer = OrderedAttributes{}
+
+func (a OrderedAttributes) Items() []KeyValue[string, any] {
+	return a
 }
 
 func writeStrings(w io.Writer, ss ...string) (err error) {
@@ -502,9 +456,10 @@ func writeStrings(w io.Writer, ss ...string) (err error) {
 	return nil
 }
 
-func RenderAttributes(ctx context.Context, w io.Writer, attributes Attributes) (err error) {
-	for _, key := range sortedKeys(attributes) {
-		value := attributes[key]
+func RenderAttributes(ctx context.Context, w io.Writer, attributes Attributer) (err error) {
+	for _, item := range attributes.Items() {
+		key := item.Key
+		value := item.Value
 		switch value := value.(type) {
 		case string:
 			if err = writeStrings(w, ` `, EscapeString(key), `="`, EscapeString(value), `"`); err != nil {
@@ -551,42 +506,7 @@ func RenderAttributes(ctx context.Context, w io.Writer, attributes Attributes) (
 	return nil
 }
 
-// Script handling.
-
-func safeEncodeScriptParams(escapeHTML bool, params []any) []string {
-	encodedParams := make([]string, len(params))
-	for i := 0; i < len(encodedParams); i++ {
-		enc, _ := json.Marshal(params[i])
-		if !escapeHTML {
-			encodedParams[i] = string(enc)
-			continue
-		}
-		encodedParams[i] = EscapeString(string(enc))
-	}
-	return encodedParams
-}
-
-// SafeScript encodes unknown parameters for safety for inside HTML attributes.
-func SafeScript(functionName string, params ...any) string {
-	encodedParams := safeEncodeScriptParams(true, params)
-	sb := new(strings.Builder)
-	sb.WriteString(functionName)
-	sb.WriteRune('(')
-	sb.WriteString(strings.Join(encodedParams, ","))
-	sb.WriteRune(')')
-	return sb.String()
-}
-
-// SafeScript encodes unknown parameters for safety for inline scripts.
-func SafeScriptInline(functionName string, params ...any) string {
-	encodedParams := safeEncodeScriptParams(false, params)
-	sb := new(strings.Builder)
-	sb.WriteString(functionName)
-	sb.WriteRune('(')
-	sb.WriteString(strings.Join(encodedParams, ","))
-	sb.WriteRune(')')
-	return sb.String()
-}
+// Context.
 
 type contextKeyType int
 
@@ -663,95 +583,6 @@ func getContext(ctx context.Context) (context.Context, *contextValue) {
 	return ctx, v
 }
 
-// ComponentScript is a templ Script template.
-type ComponentScript struct {
-	// Name of the script, e.g. print.
-	Name string
-	// Function to render.
-	Function string
-	// Call of the function in JavaScript syntax, including parameters, and
-	// ensures parameters are HTML escaped; useful for injecting into HTML
-	// attributes like onclick, onhover, etc.
-	//
-	// Given:
-	//    functionName("some string",12345)
-	// It would render:
-	//    __templ_functionName_sha(&#34;some string&#34;,12345))
-	//
-	// This is can be injected into HTML attributes:
-	//    <button onClick="__templ_functionName_sha(&#34;some string&#34;,12345))">Click Me</button>
-	Call string
-	// Call of the function in JavaScript syntax, including parameters. It
-	// does not HTML escape parameters; useful for directly calling in script
-	// elements.
-	//
-	// Given:
-	//    functionName("some string",12345)
-	// It would render:
-	//    __templ_functionName_sha("some string",12345))
-	//
-	// This is can be used to call the function inside a script tag:
-	//    <script>__templ_functionName_sha("some string",12345))</script>
-	CallInline string
-}
-
-var _ Component = ComponentScript{}
-
-func writeScriptHeader(ctx context.Context, w io.Writer) (err error) {
-	var nonceAttr string
-	if nonce := GetNonce(ctx); nonce != "" {
-		nonceAttr = " nonce=\"" + EscapeString(nonce) + "\""
-	}
-	_, err = fmt.Fprintf(w, `<script type="text/javascript"%s>`, nonceAttr)
-	return err
-}
-
-func (c ComponentScript) Render(ctx context.Context, w io.Writer) error {
-	err := RenderScriptItems(ctx, w, c)
-	if err != nil {
-		return err
-	}
-	if len(c.Call) > 0 {
-		if err = writeScriptHeader(ctx, w); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, c.CallInline); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, `</script>`); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// RenderScriptItems renders a <script> element, if the script has not already been rendered.
-func RenderScriptItems(ctx context.Context, w io.Writer, scripts ...ComponentScript) (err error) {
-	if len(scripts) == 0 {
-		return nil
-	}
-	_, v := getContext(ctx)
-	sb := new(strings.Builder)
-	for _, s := range scripts {
-		if !v.hasScriptBeenRendered(s.Name) {
-			sb.WriteString(s.Function)
-			v.addScript(s.Name)
-		}
-	}
-	if sb.Len() > 0 {
-		if err = writeScriptHeader(ctx, w); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, sb.String()); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, `</script>`); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 var bufferPool = sync.Pool{
 	New: func() any {
 		return new(bytes.Buffer)
@@ -767,9 +598,29 @@ func ReleaseBuffer(b *bytes.Buffer) {
 	bufferPool.Put(b)
 }
 
+type ints interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+
+type uints interface {
+	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+}
+
+type floats interface {
+	~float32 | ~float64
+}
+
+type complexNumbers interface {
+	~complex64 | ~complex128
+}
+
+type stringable interface {
+	ints | uints | floats | complexNumbers | ~string | ~bool
+}
+
 // JoinStringErrs joins an optional list of errors.
-func JoinStringErrs(s string, errs ...error) (string, error) {
-	return s, errors.Join(errs...)
+func JoinStringErrs[T stringable](s T, errs ...error) (string, error) {
+	return fmt.Sprint(s), errors.Join(errs...)
 }
 
 // Error returned during template rendering.
@@ -824,92 +675,4 @@ func ToGoHTML(ctx context.Context, c Component) (s template.HTML, err error) {
 	}
 	s = template.HTML(b.String())
 	return
-}
-
-// WriteWatchModeString is used when rendering templates in development mode.
-// the generator would have written non-go code to the _templ.txt file, which
-// is then read by this function and written to the output.
-func WriteWatchModeString(w *bytes.Buffer, lineNum int) error {
-	_, path, _, _ := runtime.Caller(1)
-	if !strings.HasSuffix(path, "_templ.go") {
-		return errors.New("templ: WriteWatchModeString can only be called from _templ.go")
-	}
-	txtFilePath := strings.Replace(path, "_templ.go", "_templ.txt", 1)
-
-	literals, err := getWatchedStrings(txtFilePath)
-	if err != nil {
-		return fmt.Errorf("templ: failed to cache strings: %w", err)
-	}
-
-	if lineNum > len(literals) {
-		return errors.New("templ: failed to find line " + strconv.Itoa(lineNum) + " in " + txtFilePath)
-	}
-
-	unquoted, err := strconv.Unquote(`"` + literals[lineNum-1] + `"`)
-	if err != nil {
-		return err
-	}
-	_, err = io.WriteString(io.Writer(w), unquoted)
-	return err
-}
-
-var (
-	watchModeCache  = map[string]watchState{}
-	watchStateMutex sync.Mutex
-)
-
-type watchState struct {
-	modTime time.Time
-	strings []string
-}
-
-func getWatchedStrings(txtFilePath string) ([]string, error) {
-	watchStateMutex.Lock()
-	defer watchStateMutex.Unlock()
-
-	state, cached := watchModeCache[txtFilePath]
-	if !cached {
-		return cacheStrings(txtFilePath)
-	}
-
-	if time.Since(state.modTime) < time.Millisecond*100 {
-		return state.strings, nil
-	}
-
-	info, err := os.Stat(txtFilePath)
-	if err != nil {
-		return nil, fmt.Errorf("templ: failed to stat %s: %w", txtFilePath, err)
-	}
-
-	if !info.ModTime().After(state.modTime) {
-		return state.strings, nil
-	}
-
-	return cacheStrings(txtFilePath)
-}
-
-func cacheStrings(txtFilePath string) ([]string, error) {
-	txtFile, err := os.Open(txtFilePath)
-	if err != nil {
-		return nil, fmt.Errorf("templ: failed to open %s: %w", txtFilePath, err)
-	}
-	defer txtFile.Close()
-
-	info, err := txtFile.Stat()
-	if err != nil {
-		return nil, fmt.Errorf("templ: failed to stat %s: %w", txtFilePath, err)
-	}
-
-	all, err := io.ReadAll(txtFile)
-	if err != nil {
-		return nil, fmt.Errorf("templ: failed to read %s: %w", txtFilePath, err)
-	}
-
-	literals := strings.Split(string(all), "\n")
-	watchModeCache[txtFilePath] = watchState{
-		modTime: info.ModTime(),
-		strings: literals,
-	}
-
-	return literals, nil
 }

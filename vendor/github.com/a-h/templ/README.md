@@ -1,6 +1,6 @@
 ![templ](https://github.com/a-h/templ/raw/main/templ.png)
 
-## A HTML templating language for Go that has great developer tooling.
+## An HTML templating language for Go that has great developer tooling.
 
 ![templ](ide-demo.gif)
 
@@ -13,25 +13,27 @@ See user documentation at https://templ.guide
 <a href="https://pkg.go.dev/github.com/a-h/templ"><img src="https://pkg.go.dev/badge/github.com/a-h/templ.svg" alt="Go Reference" /></a>
 <a href="https://xcfile.dev"><img src="https://xcfile.dev/badge.svg" alt="xc compatible" /></a>
 <a href="https://raw.githack.com/wiki/a-h/templ/coverage.html"><img src="https://github.com/a-h/templ/wiki/coverage.svg" alt="Go Coverage" /></a>
-<a href="https://goreportcard.com/report/github.com/a-h/templ"><img src="https://goreportcard.com/badge/github.com/a-h/templ" alt="Go Report Card" /></a<
+<a href="https://goreportcard.com/report/github.com/a-h/templ"><img src="https://goreportcard.com/badge/github.com/a-h/templ" alt="Go Report Card" /></a>
 </p>
 
 ## Tasks
+
+### version-set
+
+Set the version of templ to the current version.
+
+```sh
+version set --template="0.3.%d"
+```
 
 ### build
 
 Build a local version.
 
 ```sh
-go run ./get-version > .version
+version set --template="0.3.%d"
 cd cmd/templ
 go build
-```
-
-### nix-update-gomod2nix
-
-```sh
-gomod2nix
 ```
 
 ### install-snapshot
@@ -45,7 +47,7 @@ rm -f ~/bin/templ
 # Clear LSP logs.
 rm -f cmd/templ/lspcmd/*.txt
 # Update version.
-go run ./get-version > .version
+version set --template="0.3.%d"
 # Install to $GOPATH/bin or $HOME/go/bin
 cd cmd/templ && go install
 ```
@@ -71,7 +73,7 @@ go run ./cmd/templ generate -include-version=false
 Run Go tests.
 
 ```sh
-go run ./get-version > .version
+version set --template="0.3.%d"
 go run ./cmd/templ generate -include-version=false
 go test ./...
 ```
@@ -81,7 +83,7 @@ go test ./...
 Run Go tests.
 
 ```sh
-go run ./get-version > .version
+version set --template="0.3.%d"
 go run ./cmd/templ generate -include-version=false
 go test ./... -short
 ```
@@ -114,8 +116,17 @@ go tool cover -func coverage.out | grep total
 
 ### test-cover-watch
 
+interactive: true
+
 ```sh
 gotestsum --watch -- -coverprofile=coverage.out
+```
+
+### test-fuzz
+
+```sh
+./parser/v2/fuzz.sh
+./parser/v2/goexpression/fuzz.sh
 ```
 
 ### benchmark
@@ -137,16 +148,28 @@ go run ./cmd/templ fmt .
 
 ### lint
 
+Run the lint operations that are run as part of the CI.
+
 ```sh
 golangci-lint run --verbose
 ```
 
-### push-release-tag
+### ensure-generated
 
-Push a semantic version number to Github to trigger the release process.
+Ensure that templ files have been generated with the local version of templ, and that those files have been added to git.
+
+Requires: generate
 
 ```sh
-./push-tag.sh
+git diff --exit-code
+```
+
+### push-release-tag
+
+Push a semantic version number to GitHub to trigger the release process.
+
+```sh
+version push --template="0.3.%d" --prefix="v"
 ```
 
 ### docs-run

@@ -2,7 +2,7 @@
 
 Template to create your own site from Telegram channel.
 
-Demo: [davidshekunts.com](https://davidshekunts.com)
+Demo: [davidshekunts.com](https://davidshekunts.ru)
 
 # Stack
 
@@ -31,24 +31,25 @@ Don't take this project as a reference for best practices.
 
 # How to use
 
-## Configure
+## Configure (for prod and dev)
 
 1. Create bot in [@BotFather](t.me/BotFather)
 1. `cd cmd/teleblog && cp app.env.example app.env` and fill it with your data
 1. `make serve-teleblog` to run Teleblog + Pocketbase admin panel
-1. Go to `127.0.0.1:8090/_` to see Pocketbase admin panel and fill in your admin
+1. Go to `{site_url}:8090/_` to see Pocketbase admin panel and fill in your admin
 1. Check or create user in `user` table
-1. Create `tg_verification_token` (be sure that column "verified" is false)
-1. Send this token to your bot `/verifytoken YOUR_TOKEN` (this will add tg_id and tg_user to your user)
-1. Add bot to public TG channels and their groups
-1. Send group links to your bot `/addchannel YOUR_CHANNEL_LINK`
+1. Fill logo, seo and description data in `config` table
+1. Add menu items in `menu_item` table
+1. Verify in bot to start parsing your channel
+    1. Create `tg_verification_token` (be sure that column "verified" is false)
+    1. Send this token to your bot `/verifytoken YOUR_TOKEN` (this will add tg_id and tg_user to your user)
+    1. Add bot to public TG channels and their groups
+    1. Send group links to your bot `/addchannel YOUR_CHANNEL_LINK`
 
-## Customization
+## Customize
 
-1. Change [base_layout.templ](cmd/teleblog/httpapi/views/base_layout.templ) google tag manager
-1. Change [base_layout.templ](cmd/teleblog/httpapi/views/base_layout.templ) meta tags
-1. Change [index.templ](cmd/teleblog/httpapi/views/index.templ) with your profile information
-1. Change any template as you need
+1. Change any template as you need in `cmd/teleblog/httpapi`
+1. Add any public assets to `cmd/teleblog/httpapi/public`
 
 ## Deploy
 
@@ -64,10 +65,10 @@ Don't take this project as a reference for best practices.
     1. Add public key to your droplet `~/.ssh/authorized_keys`
     1. Create Repository Environment named `prod` (github.com/USER/REPOSITORY/settings/environments)
     1. Set 3 secrets:
-        1. SERVER_IP – your droplet IP
-        1. SSH_PRIV_KEY – your custom private key
-        1. SSH_PUB_KEY – your custom public key
-    1. Push to master and check actions
+        1. `SERVER_IP` – your droplet IP
+        1. `SSH_PRIV_KEY` – your custom private key
+        1. `SSH_PUB_KEY` – your custom public key
+    1. Push to `main` and check actions
 
 ## Upload history messages
 

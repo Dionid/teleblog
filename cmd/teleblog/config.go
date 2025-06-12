@@ -12,7 +12,6 @@ type Config struct {
 	Port             int    `mapstructure:"PORT"`
 	AppVersion       string `mapstructure:"APP_VERSION"`
 	TelegramBotToken string `mapstructure:"TELEGRAM_BOT_TOKEN"`
-	UserId           string `mapstructure:"USER_ID"`
 	DisableBot       bool   `mapstructure:"DISABLE_BOT"`
 }
 

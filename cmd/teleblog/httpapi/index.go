@@ -181,7 +181,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		chats := []teleblog.Chat{}
 
 		err = teleblog.ChatQuery(app.Dao()).Where(
-			dbx.HashExp{"user_id": config.UserId, "tg_type": "channel"},
+			dbx.HashExp{"tg_type": "channel"},
 		).All(&chats)
 		if err != nil {
 			return err
@@ -399,6 +399,8 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 					Url:         siteConfig.SeoUrl,
 					Type:        "website",
 				},
+				YandexMetrikaCounter:   siteConfig.YandexMetrikaCounter,
+				GoogleAnalyticsCounter: siteConfig.GoogleAnalyticsCounter,
 			},
 			views.IndexPageInfo{
 				Description: siteConfig.Description,

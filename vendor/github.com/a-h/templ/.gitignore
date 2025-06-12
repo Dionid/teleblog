@@ -23,6 +23,14 @@ result
 # Editors
 ## nvim
 .null-ls*
+# vscode
+.vscode/
 
 # Go workspace.
 go.work
+
+# direnv
+.direnv
+
+# templ txt files.
+*_templ.txt

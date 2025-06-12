@@ -14,38 +14,42 @@ type HeaderData struct {
 templ Header(header HeaderData) {
     <header class="flex w-full items-center justify-between">
         <a href="/" class="w-36 p-1 rounded bg-white shadow-sm" aria-label="На главную">
-            <img src={ header.LogoUrl } alt={ header.LogoAlt }>
+            if header.LogoUrl != "" {
+                <img src={ header.LogoUrl } alt={ header.LogoAlt }>
+            }
         </a>
         <div class="flex items-center">
-            <div class="dropdown dropdown-end">
-                <div tabindex="0" role="button" class="btn btn-ghost bg-white shadow-sm" aria-label="Открыть меню навигации">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h7" />
-                    </svg>
+            if len(header.MenuItems) > 0 {
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost bg-white shadow-sm" aria-label="Открыть меню навигации">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                    </div>
+                    <ul
+                        tabindex="0"
+                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+                        role="menu"
+                    >
+                        for _, item := range header.MenuItems {
+                            <li role="none">
+                                <a role="menuitem" target="_blank" href={ templ.SafeURL(item.Url) } class="bg-white border-transparent" aria-label={ "Перейти на страницу '" + item.Name + "'" }>
+                                    { item.Name }
+                                </a>
+                            </li>
+                        }
+                    </ul>
                 </div>
-                <ul
-                    tabindex="0"
-                    class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-                    role="menu"
-                >
-                    for _, item := range header.MenuItems {
-                        <li role="none">
-                            <a role="menuitem" target="_blank" href={ templ.SafeURL(item.Url) } class="bg-white border-transparent" aria-label={ "Перейти на страницу '" + item.Name + "'" }>
-                                { item.Name }
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </div>
+            }
         </div>
     </header>
 }

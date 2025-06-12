@@ -57,8 +57,7 @@ func main() {
 
 	// # HTTP API
 	httpapi.InitApi(httpapi.Config{
-		Env:    config.Env,
-		UserId: config.UserId,
+		Env: config.Env,
 	}, app, gctx)
 
 	preSeedDB(app)

@@ -14,8 +14,7 @@ import (
 )
 
 type Config struct {
-	Env    string
-	UserId string
+	Env string
 }
 
 func CacheControlMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
