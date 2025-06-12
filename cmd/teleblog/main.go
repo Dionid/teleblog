@@ -19,6 +19,7 @@ import (
 	"github.com/pocketbase/pocketbase/mails"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"gopkg.in/telebot.v3"
+	"gopkg.in/telebot.v3/middleware"
 )
 
 func main() {
@@ -27,27 +28,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	gctx, _ := context.WithCancel(context.Background())
+	gctx, cancel := context.WithCancel(context.Background())
 
 	// # Pocketbase
 	app := pocketbase.New()
-
-	// # Send verification email on sign-up
-	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {
-		return mails.SendRecordVerification(app, e.Record)
-	})
-
-	// Initialize admin UI with custom buttons
-	admin.InitUploadHistoryUI(app)
-
-	AdditionalCommands(app)
 
 	// # Migrations
 	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
 
 	curPath, err := os.Getwd()
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
@@ -55,12 +46,16 @@ func main() {
 		Dir:         path.Join(curPath, "pb_migrations"),
 	})
 
-	// # HTTP API
+	// # API
 	httpapi.InitApi(httpapi.Config{
 		Env: config.Env,
 	}, app, gctx)
 
-	preSeedDB(app)
+	// # Initialize update history
+	admin.InitUploadHistoryUI(app)
+
+	// # Init additional commands
+	AdditionalCommands(app)
 
 	// # Bot
 	if !config.DisableBot {
@@ -82,24 +77,38 @@ func main() {
 			return
 		}
 
+		b.Use(middleware.Logger())
+
 		botapi.InitBotCommands(b, app)
 
 		go b.Start()
 	}
 
 	// # Pre start
+	// ## Extract slugs and set album id for posts
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		// # Set slug for posts
 		if err := features.ExtractSlugs(app); err != nil {
-			return err
+			return fmt.Errorf("Extract slugs error: %w", err)
 		}
 
 		// # Set album id for posts
 		return features.SetAlbumId(app)
 	})
 
+	// ## Prepare DB
+	preSeedDB(app)
+
+	// ## Send verification email on sign-up
+	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {
+		return mails.SendRecordVerification(app, e.Record)
+	})
+
 	// # Start app
 	if err := app.Start(); err != nil {
-		log.Fatal(err)
+		cancel()
+		log.Fatal(
+			fmt.Errorf("PocketBase start error: %s", err),
+		)
 	}
 }

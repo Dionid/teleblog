@@ -332,19 +332,19 @@ func BaseLayout(data BaseLayoutData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, ");\n\t\t</script><!-- Yandex.Metrika counter --><script type=\"text/javascript\">\n\t\t\t(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};\n\t\t\tm[i].l=1*new Date();\n\t\t\tfor (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}\n\t\t\tk=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})\n\t\t\t(window, document, \"script\", \"https://mc.yandex.com/metrika/tag.js\", \"ym\");\n\n\t\t\tym(")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, ");\n\t\t</script><!-- Yandex.Metrika counter --><script type=\"text/javascript\">\n\t\t\t(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};\n\t\t\tm[i].l=1*new Date();\n\t\t\tfor (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}\n\t\t\tk=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})\n\t\t\t(window, document, \"script\", \"https://mc.yandex.com/metrika/tag.js\", \"ym\");\n\n\t\t\tym(parseInt(")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var21, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(data.YandexMetrikaCounter)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 93, Col: 34}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 93, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var21)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, ", \"init\", {\n\t\t\t\t\tclickmap:true,\n\t\t\t\t\ttrackLinks:true,\n\t\t\t\t\taccurateTrackBounce:true\n\t\t\t});\n\t\t</script><noscript><div><img src=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "), \"init\", {\n\t\t\t\t\tclickmap:true,\n\t\t\t\t\ttrackLinks:true,\n\t\t\t\t\taccurateTrackBounce:true\n\t\t\t});\n\t\t</script><noscript><div><img src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
