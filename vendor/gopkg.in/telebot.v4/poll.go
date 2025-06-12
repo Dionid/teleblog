@@ -18,7 +18,7 @@ const (
 // Poll contains information about a poll.
 type Poll struct {
 	ID         string       `json:"id"`
-	Type       PollType     `json:"type"`
+	Type       string       `json:"type"`
 	Question   string       `json:"question"`
 	Options    []PollOption `json:"options"`
 	VoterCount int          `json:"total_voter_count"`
@@ -59,12 +59,12 @@ type PollAnswer struct {
 
 // IsRegular says whether poll is a regular.
 func (p *Poll) IsRegular() bool {
-	return p.Type == PollRegular
+	return p.Type == "regular"
 }
 
 // IsQuiz says whether poll is a quiz.
 func (p *Poll) IsQuiz() bool {
-	return p.Type == PollQuiz
+	return p.Type == "quiz"
 }
 
 // CloseDate returns the close date of poll in local time.
