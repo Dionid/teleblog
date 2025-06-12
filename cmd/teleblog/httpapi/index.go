@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
+	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views/partials"
 	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
@@ -154,9 +155,24 @@ func fetchLinkPreview(url string) (*views.LinkPreview, error) {
 
 func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 	e.Router.GET("", func(c echo.Context) error {
+		// # Config
+		siteConfig := teleblog.Config{}
+
+		err := teleblog.ConfigQuery(app.Dao()).One(&siteConfig)
+		if err != nil {
+			return err
+		}
+
+		if siteConfig.Id == "" {
+			return c.JSON(404, map[string]string{
+				"error": "Configuration not found",
+			})
+		}
+
+		// # Get chats
 		chats := []teleblog.Chat{}
 
-		err := teleblog.ChatQuery(app.Dao()).Where(
+		err = teleblog.ChatQuery(app.Dao()).Where(
 			dbx.HashExp{"user_id": config.UserId, "tg_type": "channel"},
 		).All(&chats)
 		if err != nil {
@@ -351,7 +367,33 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			CurrentPage: currentPage,
 		}
 
-		component := views.IndexPage(pagination, posts, tags)
+		fmt.Println("siteConfig.Id", siteConfig.Id)
+		fmt.Println("siteConfig.Description", siteConfig.Description)
+
+		component := views.IndexPage(
+			views.BaseLayoutData{
+				Seo: views.SeoMetadata{
+					Title:       siteConfig.SeoTitle,
+					Description: siteConfig.SeoDescription,
+					Image:       siteConfig.SeoImage,
+					Url:         siteConfig.SeoUrl,
+					Type:        "website",
+				},
+			},
+			views.IndexPageInfo{
+				Description: siteConfig.Description,
+				Header: partials.HeaderData{
+					LogoUrl: siteConfig.LogoUrl,
+					LogoAlt: siteConfig.LogoAlt,
+				},
+				Footer: partials.FooterData{
+					Text: siteConfig.Footer,
+				},
+			},
+			pagination,
+			posts,
+			tags,
+		)
 
 		return component.Render(c.Request().Context(), c.Response().Writer)
 	})

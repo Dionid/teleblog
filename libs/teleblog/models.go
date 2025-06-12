@@ -172,3 +172,28 @@ func (m *PostTag) TableName() string {
 func PostTagQuery(dao *daos.Dao) *dbx.SelectQuery {
 	return dao.ModelQuery(&Tag{})
 }
+
+// # Config
+
+var _ models.Model = (*Config)(nil)
+
+type Config struct {
+	models.BaseModel
+
+	Description    string `json:"description" db:"description"`
+	SeoTitle       string `json:"seoTitle" db:"seo_title"`
+	SeoDescription string `json:"seoDescription" db:"seo_description"`
+	SeoImage       string `json:"seoImage" db:"seo_image"`
+	SeoUrl         string `json:"seoUrl" db:"seo_url"`
+	LogoUrl        string `json:"logoUrl" db:"logo_url"`
+	LogoAlt        string `json:"logoAlt" db:"logo_alt"`
+	Footer         string `json:"footer" db:"footer"`
+}
+
+func (m *Config) TableName() string {
+	return "config"
+}
+
+func ConfigQuery(dao *daos.Dao) *dbx.SelectQuery {
+	return dao.ModelQuery(&Config{})
+}

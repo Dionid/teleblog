@@ -1,9 +1,12 @@
 package partials
 
+type FooterData struct {
+    Text string
+}
 
-templ Footer() {
+templ Footer(footer FooterData) {
     <footer class="w-full flex items-center justify-between">
-        <div>Сделано <a href="https://about-me.davidshekunts.ru/" target="_blank">Давидом Шекунцем</a> с ♥️</div>
+        <div>@templ.Raw(footer.Text)</div>
         <div>@templ.Raw("@2025")</div>
     </footer>
 }

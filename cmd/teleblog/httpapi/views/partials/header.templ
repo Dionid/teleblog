@@ -1,9 +1,14 @@
 package partials
 
-templ Header() {
+type HeaderData struct {
+    LogoUrl string // URL for the logo image
+    LogoAlt string // Alternative text for the logo image
+}
+
+templ Header(header HeaderData) {
     <header class="flex w-full items-center justify-between">
         <a href="/" class="w-36 p-1 rounded bg-white shadow-sm" aria-label="На главную">
-            @Logo()
+            <img src={ header.LogoUrl } alt={ header.LogoAlt }>
         </a>
         <div class="flex items-center">
             <div class="dropdown dropdown-end">

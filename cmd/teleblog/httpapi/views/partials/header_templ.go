@@ -10,7 +10,12 @@ import "context"
 import "io"
 import "bytes"
 
-func Header() templ.Component {
+type HeaderData struct {
+	LogoUrl string // URL for the logo image
+	LogoAlt string // Alternative text for the logo image
+}
+
+func Header(header HeaderData) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -23,15 +28,33 @@ func Header() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<header class=\"flex w-full items-center justify-between\"><a href=\"/\" class=\"w-36 p-1 rounded bg-white shadow-sm\" aria-label=\"На главную\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<header class=\"flex w-full items-center justify-between\"><a href=\"/\" class=\"w-36 p-1 rounded bg-white shadow-sm\" aria-label=\"На главную\"><img src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Logo().Render(ctx, templ_7745c5c3_Buffer)
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(header.LogoUrl)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 11, Col: 37}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a><div class=\"flex items-center\"><div class=\"dropdown dropdown-end\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost bg-white shadow-sm\" aria-label=\"Открыть меню навигации\"><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h7\"></path></svg></div><ul tabindex=\"0\" class=\"menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow\" role=\"menu\"><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://about-me.davidshekunts.ru\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу &#39;Обо мне&#39;\">👨🏻 Обо мне 👴🏿</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://t.me/it_kachalka\" class=\"bg-white border-transparent\" aria-label=\"Перейти в Telegram канал IT-Качалка\">🦾 IT-Качалка 💪</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://fop.davidshekunts.ru/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу FOP\">λ ФОП λ</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://fdd.davidshekunts.ru/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу FDD\">🛌 FDD 🛌</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://n2p.dev/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу N2P\">📜 N2P 📜</a></li></ul></div></div></header>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" alt=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var3 string
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(header.LogoAlt)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `partials/header.templ`, Line: 11, Col: 60}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></a><div class=\"flex items-center\"><div class=\"dropdown dropdown-end\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost bg-white shadow-sm\" aria-label=\"Открыть меню навигации\"><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h7\"></path></svg></div><ul tabindex=\"0\" class=\"menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow\" role=\"menu\"><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://about-me.davidshekunts.ru\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу &#39;Обо мне&#39;\">👨🏻 Обо мне 👴🏿</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://t.me/it_kachalka\" class=\"bg-white border-transparent\" aria-label=\"Перейти в Telegram канал IT-Качалка\">🦾 IT-Качалка 💪</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://fop.davidshekunts.ru/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу FOP\">λ ФОП λ</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://fdd.davidshekunts.ru/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу FDD\">🛌 FDD 🛌</a></li><li role=\"none\"><a role=\"menuitem\" target=\"_blank\" href=\"https://n2p.dev/\" class=\"bg-white border-transparent\" aria-label=\"Перейти на страницу N2P\">📜 N2P 📜</a></li></ul></div></div></header>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

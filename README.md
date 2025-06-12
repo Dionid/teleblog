@@ -98,6 +98,7 @@ Status: Done
 
 Goal: ...
 
+1. Custom logo, description, footer and menu
 1. H1 from any text
 1. Schema.org + Open Graph.
 1. Auto-translate

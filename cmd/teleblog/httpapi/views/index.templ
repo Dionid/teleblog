@@ -116,27 +116,29 @@ templ Pagination(data PaginationData) {
 	}
 }
 
-templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleblog.Tag) {
-	@BaseLayout(nil) {
+type IndexPageInfo struct {
+	Description string
+
+	Header partials.HeaderData
+	Footer partials.FooterData
+}
+
+templ IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationData, posts []*InpexPagePost, tags []*teleblog.Tag) {
+	@BaseLayout(base) {
 		<div class="flex flex-col w-full justify-center items-center">
 			<div class="w-full flex justify-center max-w-6xl">
 				<div class="w-full flex flex-col justify-center max-w-3xl">
 					<div class="w-full p-3 sm:p-6">
-						@partials.Header()
+						@partials.Header(info.Header)
 					</div>
 					<div class="w-full flex flex-col justify-center p-3 sm:p-6">
-						<div class="card shadow-sm bg-white">
-							<div class="card-body flex-col p-4 items-center md:flex-row">
-								<div class="avatar">
-									<div class="w-24 rounded-full">
-										<img src="/public/avatar.png" alt="Морда Давида Шекунца"/>
-									</div>
-								</div>
-								<div class="p-2 sm:p-4">
-									Привет! Меня зовут <b>Давид Шекунц</b>, я – Full-Stack Go & TS Tech Lead и вы находитесь на сайте с постами из моей <a href="https://t.me/it_kachalka" target="_blank" class="border-b-2 border-dashed border-secondary">🦾 IT-Качалки 💪</a>
+						if info.Description != "" {
+							<div class="card shadow-sm bg-white">
+								<div class="card-body flex-col p-4 items-center md:flex-row">
+									@templ.Raw(info.Description)
 								</div>
 							</div>
-						</div>
+						}
 						<script src={ templu.PathWithVersion(ctx, "/public/widgets/posts-list-widget.js") }></script>
 						@templ.JSONScript("posts-list-widget-data", posts)
 						<div id="posts-list-widget" class="flex flex-col w-full items-center pt-6">
@@ -288,7 +290,7 @@ templ IndexPage(pagination PaginationData, posts []*InpexPagePost, tags []*teleb
 						</div>
 					</div>
 					<div class="w-full p-4 sm:p-6">
-						@partials.Footer()
+						@partials.Footer(info.Footer)
 					</div>
 				</div>
 			</div>

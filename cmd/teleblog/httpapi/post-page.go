@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
+	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views/partials"
 	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/Dionid/teleblog/libs/templu"
 	"github.com/labstack/echo/v5"
@@ -15,10 +16,25 @@ import (
 
 func PostPageHandler(e *core.ServeEvent, app core.App) {
 	e.Router.GET("/post/:id", func(c echo.Context) error {
+		// # Config
+		siteConfig := teleblog.Config{}
+
+		err := teleblog.ConfigQuery(app.Dao()).One(&siteConfig)
+		if err != nil {
+			return err
+		}
+
+		if siteConfig.Id == "" {
+			return c.JSON(404, map[string]string{
+				"error": "Configuration not found",
+			})
+		}
+
+		// # Get post by ID or slug
 		postIdOrSlug := c.PathParam("id")
 
 		post := views.PostPagePost{}
-		err := teleblog.PostQuery(app.Dao()).Where(
+		err = teleblog.PostQuery(app.Dao()).Where(
 			dbx.Or(
 				dbx.HashExp{"id": postIdOrSlug},
 				dbx.HashExp{"slug": postIdOrSlug},
@@ -186,7 +202,23 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			seo.Image = fmt.Sprintf("https://davidshekunts.ru%s", post.Media[0])
 		}
 
-		component := views.PostPage(chat, post, comments, &seo)
+		component := views.PostPage(
+			views.BaseLayoutData{
+				Seo: seo,
+			},
+			views.PostPageData{
+				Header: partials.HeaderData{
+					LogoUrl: siteConfig.LogoUrl,
+					LogoAlt: siteConfig.LogoAlt,
+				},
+				Footer: partials.FooterData{
+					Text: siteConfig.Footer,
+				},
+			},
+			chat,
+			post,
+			comments,
+		)
 
 		return component.Render(c.Request().Context(), c.Response().Writer)
 	})

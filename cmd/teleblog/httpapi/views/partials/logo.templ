@@ -1,7 +1,10 @@
 package partials
 
+type LogoData struct {
+    Url string // URL for the logo image
+    Alt string // Alternative text for the logo image
+}
 
-templ Logo() {
-    // <h1 class="text-2xl font-bold">Teleblog</h1>
-    <img src="/public/logo-white.png" alt="David Shekunts logo">
+templ Logo(logo LogoData) {
+    <img src={ logo.Url } alt={ logo.Alt }>
 }
