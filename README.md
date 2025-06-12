@@ -31,15 +31,34 @@ Don't take this project as a reference for best practices.
 
 # How to use
 
-## Configure (for prod and dev)
+## Deploy
+
+1. Deploy Preparations
+    1. Get VPS or Digital Ocean droplet
+    1. `cp .env.example .env` and fill it
+    1. go to `/infra` and change configuration replacing `davidshekunts.ru` to needed domain in 3 files
+1. Setup server
+    1. Run `make setup-server` (it will configure autorestarts and nginx)
+    1. Change ENV in `teleblog/app.env` on server from `LOCAL` to `PRODUCTION`
+1. Deploy via SSH
+    1. Run `make deploy` (it will build and deploy Teleblog to your server)
+1. Deploy Automatic (Github Actions)
+    1. Create new ssh key `ssh-keygen` with custom name (don't use passphrase)
+    1. Add public key to your server `~/.ssh/authorized_keys`
+    1. Create Repository Environment named `prod` (github.com/USER/REPOSITORY/settings/environments)
+    1. Set 3 secrets:
+        1. `SERVER_IP` – your server IP
+        1. `SSH_PRIV_KEY` – your custom private key
+        1. `SSH_PUB_KEY` – your custom public key
+    1. Push to `main` and check actions
+
+## Configure
 
 1. Create bot in [@BotFather](t.me/BotFather)
 1. `cd cmd/teleblog && cp app.env.example app.env` and fill it with your data
 1. `make serve-teleblog` to run Teleblog + Pocketbase admin panel
 1. Go to `{site_url}:8090/_` to see Pocketbase admin panel and fill in your admin
 1. Check or create user in `user` table
-1. Fill logo, seo and description data in `config` table
-1. Add menu items in `menu_item` table
 1. Verify in bot to start parsing your channel
     1. Create `tg_verification_token` (be sure that column "verified" is false)
     1. Send this token to your bot `/verifytoken YOUR_TOKEN` (this will add tg_id and tg_user to your user)
@@ -48,27 +67,10 @@ Don't take this project as a reference for best practices.
 
 ## Customize
 
+1. Fill logo, seo and description data in `config` table
+1. Add menu items in `menu_item` table
 1. Change any template as you need in `cmd/teleblog/httpapi`
 1. Add any public assets to `cmd/teleblog/httpapi/public`
-
-## Deploy
-
-1. Deploy Preparations
-    1. Create Digital Ocean droplet
-    1. `cp .env.example .env` and fill it
-    1. Run `make setup-droplet` (it will configure autorestarts and nginx)
-    1. Change ENV in `app.env` in droplet from `LOCAL` to `PRODUCTION`
-1. Deploy Manual
-    1. Run `make deploy` (it will build and deploy Teleblog to your droplet)
-1. Deploy Automatic (Github Actions)
-    1. Create new ssh key `ssh-keygen` with custom name (don't use passphrase)
-    1. Add public key to your droplet `~/.ssh/authorized_keys`
-    1. Create Repository Environment named `prod` (github.com/USER/REPOSITORY/settings/environments)
-    1. Set 3 secrets:
-        1. `SERVER_IP` – your droplet IP
-        1. `SSH_PRIV_KEY` – your custom private key
-        1. `SSH_PUB_KEY` – your custom public key
-    1. Push to `main` and check actions
 
 ## Upload history messages
 

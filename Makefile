@@ -63,7 +63,7 @@ setup:
 	go install github.com/a-h/templ/cmd/templ@latest
 	go mod tidy
 
-setup-droplet:
+setup-server:
 	scp ./infra/teleblog.service root@${SERVER_IP}:/lib/systemd/system/teleblog.service
 	ssh root@${SERVER_IP} "apt update \
 	&& apt-get install -y zip \
