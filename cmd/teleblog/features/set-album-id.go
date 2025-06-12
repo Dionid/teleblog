@@ -2,6 +2,7 @@ package features
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/Dionid/teleblog/libs/teleblog"
@@ -26,7 +27,7 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 
 			err = json.Unmarshal(jb, &rawMessage)
 			if err != nil {
-				return err
+				return fmt.Errorf("SetAlbumId: (post_id: %s) unmarshal history message error: %w", post.Id, err)
 			}
 
 			// if rawMessage.Photo == nil {
@@ -40,7 +41,7 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 
 			err = json.Unmarshal(jb, &rawMessage)
 			if err != nil {
-				return err
+				return fmt.Errorf("SetAlbumId: (post_id: %s) unmarshal realtime message error: %w", post.Id, err)
 			}
 
 			if rawMessage.AlbumID != "" {

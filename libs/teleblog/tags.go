@@ -42,7 +42,7 @@ func ExtractTagsFromPost(post Post) ([]string, error) {
 
 		err := json.Unmarshal(jb, &rawMessage)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("ExtractTagsFromPost: (post_id: %s) unmarshal history message error: %w", post.Id, err)
 		}
 
 		for _, entity := range rawMessage.TextEntities {
@@ -56,7 +56,7 @@ func ExtractTagsFromPost(post Post) ([]string, error) {
 
 		err := json.Unmarshal(jb, &rawMessage)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("ExtractTagsFromPost: (post_id: %s) realtime unmarshal message error: %w", post.Id, err)
 		}
 
 		text := utf16.Encode([]rune(post.Text))

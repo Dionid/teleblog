@@ -3,7 +3,6 @@ package botapi
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -50,14 +49,14 @@ func downloadPhoto(b *telebot.Bot, fileId string, uniqueID string, outputDir str
 	return filename, nil
 }
 
-func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
+func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) error {
 	err := b.SetCommands([]telebot.Command{
 		{Text: "start", Description: "start the bot"},
 		{Text: VERIFY_TOKEN_COMMAND_NAME, Description: "send token to bind bot to your telebot account (e.g. /verifytoken YOUR_TOKEN)"},
 		{Text: ADD_CHANNEL_COMMAND_NAME, Description: "send channel to create blog from it (e.g. /addchannel @YOUR_CHANNEL_NAME)"},
 	})
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	b.Handle("/start", func(c telebot.Context) error {
@@ -65,7 +64,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 	})
 
 	b.Use(middleware.Recover(func(err error, ctx telebot.Context) {
-		app.Logger().Error("Error in bot", err)
+		app.Logger().Error("Error in bot: ", err)
 	}))
 
 	VerifyTokenCommand(b, app)
@@ -405,4 +404,6 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) {
 
 		return err
 	})
+
+	return nil
 }

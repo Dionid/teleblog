@@ -11,7 +11,7 @@ RestartSec     = 5s
 StandardOutput = append:/root/teleblog/info.log
 StandardError  = append:/root/teleblog/errors.log
 WorkingDirectory  = /root/teleblog
-ExecStart      = /root/teleblog/teleblog-linux serve davidshekunts.ru davidshekunts.com
+ExecStart      = /root/teleblog/teleblog-linux serve --http=127.0.0.1:8091
 
 [Install]
 WantedBy = multi-user.target

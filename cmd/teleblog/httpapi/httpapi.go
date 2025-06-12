@@ -3,7 +3,7 @@ package httpapi
 import (
 	"context"
 	"embed"
-	"log"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -51,7 +51,7 @@ func InitApi(config Config, app core.App, gctx context.Context) {
 				CacheControlMiddleware,
 			)
 		} else {
-			log.Fatalf("Unknown env: %s", config.Env)
+			return fmt.Errorf("Unknown env: %s", config.Env)
 		}
 
 		IndexPageHandler(config, e, app)

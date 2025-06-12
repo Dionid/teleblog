@@ -11,7 +11,6 @@ import (
 
 	"github.com/Dionid/teleblog/cmd/teleblog/admin"
 	"github.com/Dionid/teleblog/cmd/teleblog/botapi"
-	"github.com/Dionid/teleblog/cmd/teleblog/features"
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi"
 	_ "github.com/Dionid/teleblog/cmd/teleblog/pb_migrations"
 	"github.com/pocketbase/pocketbase"
@@ -19,7 +18,6 @@ import (
 	"github.com/pocketbase/pocketbase/mails"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"gopkg.in/telebot.v4"
-	"gopkg.in/telebot.v4/middleware"
 )
 
 func main() {
@@ -65,7 +63,6 @@ func main() {
 			Poller:  &telebot.LongPoller{Timeout: 60 * time.Second, AllowedUpdates: telebot.AllowedUpdates},
 			OnError: func(err error, c telebot.Context) {
 				app.Logger().Error("Error in bot", "error:", err)
-				fmt.Println("Error in bot:", err)
 			},
 			Synchronous: true,
 		}
@@ -78,27 +75,21 @@ func main() {
 			return
 		}
 
-		b.Use(middleware.Logger())
-
-		botapi.InitBotCommands(b, app)
+		err = botapi.InitBotCommands(b, app)
+		if err != nil && !strings.Contains(err.Error(), "retry after") {
+			log.Fatal(
+				fmt.Errorf("Init bot commands error: %s", err),
+			)
+			return
+		}
 
 		go b.Start()
 	}
 
 	// # Pre start
-	// ## Extract slugs and set album id for posts
-	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		// # Set slug for posts
-		if err := features.ExtractSlugs(app); err != nil {
-			return fmt.Errorf("Extract slugs error: %w", err)
-		}
-
-		// # Set album id for posts
-		return features.SetAlbumId(app)
-	})
 
 	// ## Prepare DB
-	preSeedDB(app)
+	prepareDB(app)
 
 	// ## Send verification email on sign-up
 	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {

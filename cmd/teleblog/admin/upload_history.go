@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -456,7 +455,7 @@ func InitUploadHistoryUI(app *pocketbase.PocketBase) {
 			folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
 			err = file.Unzip(zipReader, folderPathPrefix)
 			if err != nil {
-				log.Fatal(err)
+				return fmt.Errorf("Failed to unzip file: %w", err)
 			}
 			defer os.RemoveAll(folderPathPrefix)
 
