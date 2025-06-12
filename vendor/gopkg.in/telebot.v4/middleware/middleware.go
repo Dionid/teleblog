@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"errors"
+	"log"
 
-	tele "gopkg.in/telebot.v3"
+	tele "gopkg.in/telebot.v4"
 )
 
 // AutoRespond returns a middleware that automatically responds
@@ -42,9 +43,11 @@ func Recover(onError ...RecoverFunc) tele.MiddlewareFunc {
 			var f RecoverFunc
 			if len(onError) > 0 {
 				f = onError[0]
+			} else if b, ok := c.Bot().(*tele.Bot); ok {
+				f = b.OnError
 			} else {
-				f = func(err error, c tele.Context) {
-					c.Bot().OnError(err, c)
+				f = func(err error, _ tele.Context) {
+					log.Println("telebot/middleware/recover:", err)
 				}
 			}
 

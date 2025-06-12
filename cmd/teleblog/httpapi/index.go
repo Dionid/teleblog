@@ -15,7 +15,7 @@ import (
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/core"
 	"golang.org/x/net/html"
-	"gopkg.in/telebot.v3"
+	"gopkg.in/telebot.v4"
 )
 
 type PostPageFilters struct {

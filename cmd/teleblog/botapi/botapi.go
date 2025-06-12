@@ -18,8 +18,8 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/tools/filesystem"
 	"github.com/pocketbase/pocketbase/tools/types"
-	"gopkg.in/telebot.v3"
-	"gopkg.in/telebot.v3/middleware"
+	"gopkg.in/telebot.v4"
+	"gopkg.in/telebot.v4/middleware"
 )
 
 const ADD_CHANNEL_COMMAND_NAME = "addchannel"

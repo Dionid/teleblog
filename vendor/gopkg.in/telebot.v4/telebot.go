@@ -6,7 +6,7 @@
 //
 //	import (
 //		"time"
-//		tele "gopkg.in/telebot.v3"
+//		tele "gopkg.in/telebot.v4"
 //	)
 //
 //	func main() {
@@ -45,6 +45,8 @@ const DefaultApiURL = "https://api.telegram.org"
 const (
 	// Basic message handlers.
 	OnText                 = "\atext"
+	OnForward              = "\aforward"
+	OnReply                = "\areply"
 	OnEdited               = "\aedited"
 	OnPhoto                = "\aphoto"
 	OnAudio                = "\aaudio"
@@ -60,6 +62,7 @@ const (
 	OnDice                 = "\adice"
 	OnInvoice              = "\ainvoice"
 	OnPayment              = "\apayment"
+	OnRefund               = "\arefund"
 	OnGame                 = "\agame"
 	OnPoll                 = "\apoll"
 	OnPollAnswer           = "\apoll_answer"
@@ -112,6 +115,11 @@ const (
 
 	OnBoost        = "\aboost_updated"
 	OnBoostRemoved = "\aboost_removed"
+
+	OnBusinessConnection      = "\abusiness_connection"
+	OnBusinessMessage         = "\abusiness_message"
+	OnEditedBusinessMessage   = "\aedited_business_message"
+	OnDeletedBusinessMessages = "\adeleted_business_messages"
 )
 
 // ChatAction is a client-side status indicating bot activity.

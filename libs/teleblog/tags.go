@@ -7,7 +7,7 @@ import (
 	"strings"
 	"unicode/utf16"
 
-	"gopkg.in/telebot.v3"
+	"gopkg.in/telebot.v4"
 )
 
 func CorrectTagValue(rawValue string) (string, error) {

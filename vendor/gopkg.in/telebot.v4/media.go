@@ -2,6 +2,7 @@ package telebot
 
 import (
 	"encoding/json"
+	"math"
 )
 
 // Media is a generic type for all kinds of media that includes File.
@@ -29,7 +30,8 @@ type InputMedia struct {
 	Performer            string   `json:"performer,omitempty"`
 	Streaming            bool     `json:"supports_streaming,omitempty"`
 	DisableTypeDetection bool     `json:"disable_content_type_detection,omitempty"`
-	HasSpoiler           bool     `json:"is_spoiler,omitempty"`
+	CaptionAbove         bool     `json:"show_caption_above_media,omitempty"`
+	HasSpoiler           bool     `json:"has_spoiler,omitempty"`
 }
 
 // Inputtable is a generic type for all kinds of media you
@@ -67,9 +69,12 @@ func (a Album) SetCaption(caption string) {
 type Photo struct {
 	File
 
-	Width   int    `json:"width"`
-	Height  int    `json:"height"`
-	Caption string `json:"caption,omitempty"`
+	// (Optional)
+	Width        int    `json:"width"`
+	Height       int    `json:"height"`
+	Caption      string `json:"caption,omitempty"`
+	HasSpoiler   bool   `json:"has_spoiler,omitempty"`
+	CaptionAbove bool   `json:"show_caption_above_media,omitempty"`
 }
 
 type photoSize struct {
@@ -90,9 +95,15 @@ func (p *Photo) MediaFile() *File {
 
 func (p *Photo) InputMedia() InputMedia {
 	return InputMedia{
-		Type:    p.MediaType(),
-		Caption: p.Caption,
+		Type:         p.MediaType(),
+		Caption:      p.Caption,
+		HasSpoiler:   p.HasSpoiler,
+		CaptionAbove: p.CaptionAbove,
 	}
+}
+
+func (p *Photo) Paid() bool {
+	return true
 }
 
 // UnmarshalJSON is custom unmarshaller required to abstract
@@ -119,6 +130,7 @@ func (p *Photo) UnmarshalJSON(data []byte) error {
 	p.File = hq.File
 	p.Width = hq.Width
 	p.Height = hq.Height
+	p.Caption = hq.Caption
 
 	return nil
 }
@@ -155,6 +167,7 @@ func (a *Audio) InputMedia() InputMedia {
 		Title:     a.Title,
 		Performer: a.Performer,
 	}
+
 }
 
 // Document object represents a general file (as opposed to Photo or Audio).
@@ -196,11 +209,13 @@ type Video struct {
 	Duration int `json:"duration,omitempty"`
 
 	// (Optional)
-	Caption   string `json:"caption,omitempty"`
-	Thumbnail *Photo `json:"thumbnail,omitempty"`
-	Streaming bool   `json:"supports_streaming,omitempty"`
-	MIME      string `json:"mime_type,omitempty"`
-	FileName  string `json:"file_name,omitempty"`
+	Caption      string `json:"caption,omitempty"`
+	Thumbnail    *Photo `json:"thumbnail,omitempty"`
+	Streaming    bool   `json:"supports_streaming,omitempty"`
+	MIME         string `json:"mime_type,omitempty"`
+	FileName     string `json:"file_name,omitempty"`
+	HasSpoiler   bool   `json:"has_spoiler,omitempty"`
+	CaptionAbove bool   `json:"show_caption_above_media,omitempty"`
 }
 
 func (v *Video) MediaType() string {
@@ -214,13 +229,19 @@ func (v *Video) MediaFile() *File {
 
 func (v *Video) InputMedia() InputMedia {
 	return InputMedia{
-		Type:      v.MediaType(),
-		Caption:   v.Caption,
-		Width:     v.Width,
-		Height:    v.Height,
-		Duration:  v.Duration,
-		Streaming: v.Streaming,
+		Type:         v.MediaType(),
+		Caption:      v.Caption,
+		Width:        v.Width,
+		Height:       v.Height,
+		Duration:     v.Duration,
+		Streaming:    v.Streaming,
+		HasSpoiler:   v.HasSpoiler,
+		CaptionAbove: v.CaptionAbove,
 	}
+}
+
+func (v *Video) Paid() bool {
+	return true
 }
 
 // Animation object represents a animation file.
@@ -232,10 +253,12 @@ type Animation struct {
 	Duration int `json:"duration,omitempty"`
 
 	// (Optional)
-	Caption   string `json:"caption,omitempty"`
-	Thumbnail *Photo `json:"thumbnail,omitempty"`
-	MIME      string `json:"mime_type,omitempty"`
-	FileName  string `json:"file_name,omitempty"`
+	Caption      string `json:"caption,omitempty"`
+	Thumbnail    *Photo `json:"thumbnail,omitempty"`
+	MIME         string `json:"mime_type,omitempty"`
+	FileName     string `json:"file_name,omitempty"`
+	HasSpoiler   bool   `json:"has_spoiler,omitempty"`
+	CaptionAbove bool   `json:"show_caption_above_media,omitempty"`
 }
 
 func (a *Animation) MediaType() string {
@@ -249,11 +272,13 @@ func (a *Animation) MediaFile() *File {
 
 func (a *Animation) InputMedia() InputMedia {
 	return InputMedia{
-		Type:     a.MediaType(),
-		Caption:  a.Caption,
-		Width:    a.Width,
-		Height:   a.Height,
-		Duration: a.Duration,
+		Type:         a.MediaType(),
+		Caption:      a.Caption,
+		Width:        a.Width,
+		Height:       a.Height,
+		Duration:     a.Duration,
+		HasSpoiler:   a.HasSpoiler,
+		CaptionAbove: a.CaptionAbove,
 	}
 }
 
@@ -308,7 +333,7 @@ type Sticker struct {
 	SetName          string         `json:"set_name"`
 	PremiumAnimation *File          `json:"premium_animation"`
 	MaskPosition     *MaskPosition  `json:"mask_position"`
-	CustomEmoji      string         `json:"custom_emoji_id"`
+	CustomEmojiID    string         `json:"custom_emoji_id"`
 	Repaint          bool           `json:"needs_repainting"`
 }
 
@@ -328,7 +353,12 @@ type Contact struct {
 	// (Optional)
 	LastName string `json:"last_name"`
 	UserID   int64  `json:"user_id,omitempty"`
+	VCard    string `json:"vcard,omitempty"`
 }
+
+// LiveForever is an alias for math.MaxInt32.
+// Use it for LivePeriod of the Location.
+const LiveForever = math.MaxInt32
 
 // Location object represents geographic position.
 type Location struct {
@@ -341,6 +371,10 @@ type Location struct {
 	// Period in seconds for which the location will be updated
 	// (see Live Locations, should be between 60 and 86400.)
 	LivePeriod int `json:"live_period,omitempty"`
+
+	// (Optional) Unique identifier of the business connection
+	// on behalf of which the message to be edited was sent
+	BusinessConnectionID string `json:"business_connection_id,omitempty"`
 }
 
 // Venue object represents a venue location with name, address and
@@ -375,3 +409,29 @@ var (
 	Slot = &Dice{Type: "🎰"}
 	Bowl = &Dice{Type: "🎳"}
 )
+
+// PaidInputtable is a generic type for all kinds of media you
+// can put into an album that are paid.
+type PaidInputtable interface {
+	Inputtable
+
+	// Paid shows if the media is paid.
+	Paid() bool
+}
+
+// PaidAlbum lets you group multiple paid media into a single message.
+type PaidAlbum []PaidInputtable
+
+type PaidMedias struct {
+	Stars     int         `json:"star_count"`
+	PaidMedia []PaidMedia `json:"paid_media"`
+}
+
+type PaidMedia struct {
+	Type     string `json:"type"`
+	Photo    *Photo `json:"photo"`    // photo
+	Video    *Video `json:"video"`    // video
+	Width    int    `json:"width"`    // preview only
+	Height   int    `json:"height"`   // preview only
+	Duration int    `json:"duration"` // preview only
+}

@@ -266,10 +266,7 @@ func (b *Bot) NewMarkup() *ReplyMarkup {
 // NewContext returns a new native context object,
 // field by the passed update.
 func (b *Bot) NewContext(u Update) Context {
-	return &nativeContext{
-		b: b,
-		u: u,
-	}
+	return NewContext(b, u)
 }
 
 // Send accepts 2+ arguments, starting with destination chat, followed by
@@ -291,7 +288,7 @@ func (b *Bot) Send(to Recipient, what interface{}, opts ...interface{}) (*Messag
 		return nil, ErrBadRecipient
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 
 	switch object := what.(type) {
 	case string:
@@ -303,6 +300,53 @@ func (b *Bot) Send(to Recipient, what interface{}, opts ...interface{}) (*Messag
 	}
 }
 
+// SendPaid sends multiple instances of paid media as a single message.
+// To include the caption, make sure the first PaidInputtable of an album has it.
+func (b *Bot) SendPaid(to Recipient, stars int, a PaidAlbum, opts ...interface{}) (*Message, error) {
+	if to == nil {
+		return nil, ErrBadRecipient
+	}
+
+	params := map[string]string{
+		"chat_id":    to.Recipient(),
+		"star_count": strconv.Itoa(stars),
+	}
+	sendOpts := b.extractOptions(opts)
+
+	media := make([]string, len(a))
+	files := make(map[string]File)
+
+	for i, x := range a {
+		repr := x.MediaFile().process(strconv.Itoa(i), files)
+		if repr == "" {
+			return nil, fmt.Errorf("telebot: paid media entry #%d does not exist", i)
+		}
+
+		im := x.InputMedia()
+		im.Media = repr
+
+		if i == 0 {
+			params["caption"] = im.Caption
+			if im.CaptionAbove {
+				params["show_caption_above_media"] = "true"
+			}
+		}
+
+		data, _ := json.Marshal(im)
+		media[i] = string(data)
+	}
+
+	params["media"] = "[" + strings.Join(media, ",") + "]"
+	b.embedSendOptions(params, sendOpts)
+
+	data, err := b.sendFiles("sendPaidMedia", files, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return extractMessage(data)
+}
+
 // SendAlbum sends multiple instances of media as a single message.
 // To include the caption, make sure the first Inputtable of an album has it.
 // From all existing options, it only supports tele.Silent.
@@ -311,7 +355,7 @@ func (b *Bot) SendAlbum(to Recipient, a Album, opts ...interface{}) ([]Message, 
 		return nil, ErrBadRecipient
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	media := make([]string, len(a))
 	files := make(map[string]File)
 
@@ -377,7 +421,7 @@ func (b *Bot) SendAlbum(to Recipient, a Album, opts ...interface{}) ([]Message, 
 // Reply behaves just like Send() with an exception of "reply-to" indicator.
 // This function will panic upon nil Message.
 func (b *Bot) Reply(to *Message, what interface{}, opts ...interface{}) (*Message, error) {
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	if sendOpts == nil {
 		sendOpts = &SendOptions{}
 	}
@@ -400,7 +444,7 @@ func (b *Bot) Forward(to Recipient, msg Editable, opts ...interface{}) (*Message
 		"message_id":   msgID,
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	data, err := b.Raw("forwardMessage", params)
@@ -425,7 +469,7 @@ func (b *Bot) ForwardMany(to Recipient, msgs []Editable, opts ...*SendOptions) (
 // Copy behaves just like Forward() but the copied message doesn't have a link to the original message (see Bots API).
 //
 // This function will panic upon nil Editable.
-func (b *Bot) Copy(to Recipient, msg Editable, options ...interface{}) (*Message, error) {
+func (b *Bot) Copy(to Recipient, msg Editable, opts ...interface{}) (*Message, error) {
 	if to == nil {
 		return nil, ErrBadRecipient
 	}
@@ -437,7 +481,7 @@ func (b *Bot) Copy(to Recipient, msg Editable, options ...interface{}) (*Message
 		"message_id":   msgID,
 	}
 
-	sendOpts := extractOptions(options)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	data, err := b.Raw("copyMessage", params)
@@ -505,6 +549,9 @@ func (b *Bot) Edit(msg Editable, what interface{}, opts ...interface{}) (*Messag
 		if v.AlertRadius != 0 {
 			params["proximity_alert_radius"] = strconv.Itoa(v.AlertRadius)
 		}
+		if v.LivePeriod != 0 {
+			params["live_period"] = strconv.Itoa(v.LivePeriod)
+		}
 	default:
 		return nil, ErrUnsupportedWhat
 	}
@@ -518,7 +565,7 @@ func (b *Bot) Edit(msg Editable, what interface{}, opts ...interface{}) (*Messag
 		params["message_id"] = msgID
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	data, err := b.Raw(method, params)
@@ -582,7 +629,7 @@ func (b *Bot) EditCaption(msg Editable, caption string, opts ...interface{}) (*M
 		params["message_id"] = msgID
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	data, err := b.Raw("editMessageCaption", params)
@@ -646,7 +693,7 @@ func (b *Bot) EditMedia(msg Editable, media Inputtable, opts ...interface{}) (*M
 	msgID, chatID := msg.MessageSig()
 	params := make(map[string]string)
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	im := media.InputMedia()
@@ -947,7 +994,7 @@ func (b *Bot) StopLiveLocation(msg Editable, opts ...interface{}) (*Message, err
 		"message_id": msgID,
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	data, err := b.Raw("stopMessageLiveLocation", params)
@@ -971,7 +1018,7 @@ func (b *Bot) StopPoll(msg Editable, opts ...interface{}) (*Poll, error) {
 		"message_id": msgID,
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	data, err := b.Raw("stopPoll", params)
@@ -1010,7 +1057,7 @@ func (b *Bot) Pin(msg Editable, opts ...interface{}) error {
 		"message_id": msgID,
 	}
 
-	sendOpts := extractOptions(opts)
+	sendOpts := b.extractOptions(opts)
 	b.embedSendOptions(params, sendOpts)
 
 	_, err := b.Raw("pinChatMessage", params)
@@ -1146,8 +1193,11 @@ func (b *Bot) MenuButton(chat *User) (*MenuButton, error) {
 //   - MenuButtonType for simple menu buttons (default, commands)
 //   - MenuButton complete structure for web_app menu button type
 func (b *Bot) SetMenuButton(chat *User, mb interface{}) error {
-	params := map[string]interface{}{
-		"chat_id": chat.Recipient(),
+	params := map[string]interface{}{}
+
+	// chat_id is optional
+	if chat != nil {
+		params["chat_id"] = chat.Recipient()
 	}
 
 	switch v := mb.(type) {
@@ -1250,6 +1300,28 @@ func (b *Bot) SetMyShortDescription(desc, language string) error {
 // MyShortDescription the current bot short description for the given user language.
 func (b *Bot) MyShortDescription(language string) (*BotInfo, error) {
 	return b.botInfo(language, "getMyShortDescription")
+}
+
+func (b *Bot) StarTransactions(offset, limit int) ([]StarTransaction, error) {
+	params := map[string]int{
+		"offset": offset,
+		"limit":  limit,
+	}
+
+	data, err := b.Raw("getStarTransactions", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp struct {
+		Result struct {
+			Transactions []StarTransaction `json:"transactions"`
+		}
+	}
+	if err := json.Unmarshal(data, &resp); err != nil {
+		return nil, wrapError(err)
+	}
+	return resp.Result.Transactions, nil
 }
 
 func (b *Bot) botInfo(language, key string) (*BotInfo, error) {

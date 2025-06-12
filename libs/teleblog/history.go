@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"gopkg.in/telebot.v3"
+	"gopkg.in/telebot.v4"
 )
 
 type HistoryMessageTextEntity struct {

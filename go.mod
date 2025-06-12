@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	golang.org/x/net v0.39.0
-	gopkg.in/telebot.v3 v3.3.6
+	gopkg.in/telebot.v4 v4.0.0-beta.5
 )
 
 require (

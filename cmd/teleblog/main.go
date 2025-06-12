@@ -18,8 +18,8 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/mails"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
-	"gopkg.in/telebot.v3"
-	"gopkg.in/telebot.v3/middleware"
+	"gopkg.in/telebot.v4"
+	"gopkg.in/telebot.v4/middleware"
 )
 
 func main() {

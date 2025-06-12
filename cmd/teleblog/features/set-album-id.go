@@ -6,7 +6,7 @@ import (
 
 	"github.com/Dionid/teleblog/libs/teleblog"
 	"github.com/pocketbase/pocketbase"
-	"gopkg.in/telebot.v3"
+	"gopkg.in/telebot.v4"
 )
 
 func SetAlbumId(app *pocketbase.PocketBase) error {

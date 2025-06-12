@@ -567,10 +567,10 @@ google.golang.org/protobuf/types/known/timestamppb
 # gopkg.in/ini.v1 v1.67.0
 ## explicit
 gopkg.in/ini.v1
-# gopkg.in/telebot.v3 v3.3.6
+# gopkg.in/telebot.v4 v4.0.0-beta.5
 ## explicit; go 1.16
-gopkg.in/telebot.v3
-gopkg.in/telebot.v3/middleware
+gopkg.in/telebot.v4
+gopkg.in/telebot.v4/middleware
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3

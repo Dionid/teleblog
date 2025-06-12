@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/core"
-	"gopkg.in/telebot.v3"
+	"gopkg.in/telebot.v4"
 )
 
 func PostPageHandler(e *core.ServeEvent, app core.App) {

@@ -64,7 +64,7 @@ type Message struct {
 
 	// (Optional) Information about the message that is being replied to,
 	// which may come from another chat or forum topic.
-	ExternalReplyInfo *ExternalReplyInfo `json:"external_reply"`
+	ExternalReply *ExternalReply `json:"external_reply"`
 
 	// (Optional) For replies that quote part of the original message,
 	// the quoted part of the message.
@@ -84,6 +84,10 @@ type Message struct {
 
 	// (Optional) Message can't be forwarded.
 	Protected bool `json:"has_protected_content,omitempty"`
+
+	// (Optional) True, if the message was sent by an implicit action,
+	// for example, as an away or a greeting business message, or as a scheduled message
+	FromOffline bool `json:"is_from_offline,omitempty"`
 
 	// AlbumID is the unique identifier of a media message group
 	// this message belongs to.
@@ -108,6 +112,9 @@ type Message struct {
 	// if it is a text message and link preview options were changed.
 	PreviewOptions *PreviewOptions `json:"link_preview_options,omitempty"`
 
+	// (Optional) Unique identifier of the message effect added to the message
+	EffectID string `json:"effect_id"`
+
 	// Some messages containing media, may as well have a caption.
 	Caption string `json:"caption,omitempty"`
 
@@ -120,6 +127,9 @@ type Message struct {
 
 	// For a general file, information about it.
 	Document *Document `json:"document"`
+
+	// Message contains paid media; information about the paid media
+	PaidMedia PaidMedias `json:"paid_media"`
 
 	// For a photo, all available sizes (thumbnails).
 	Photo *Photo `json:"photo"`
@@ -168,6 +178,16 @@ type Message struct {
 
 	// (Optional) Service message: a giveaway without public winners was completed.
 	GiveawayCompleted *GiveawayCompleted `json:"giveaway_completed"`
+
+	// (Optional) Unique identifier of the business connection from which the message
+	// was received. If non-empty, the message belongs to a chat of the corresponding
+	// business account that is independent from any potential bot chat which might
+	// share the same identifier.
+	BusinessConnectionID string `json:"business_connection_id"`
+
+	// (Optional) The bot that actually sent the message on behalf of the business account.
+	// Available only for outgoing messages sent on behalf of the connected business account.
+	BusinessBot *User `json:"sender_business_bot"`
 
 	// For a service message, represents a user,
 	// that just got added to chat, this message came from.
@@ -262,6 +282,9 @@ type Message struct {
 	// Message is a service message about a successful payment.
 	Payment *Payment `json:"successful_payment"`
 
+	// Message is a service message about a refunded payment, information about the payment.
+	RefundedPayment *RefundedPayment `json:"refunded_payment"`
+
 	// For a service message, a user was shared with the bot.
 	UserShared *RecipientShared `json:"users_shared,omitempty"`
 
@@ -299,9 +322,12 @@ type Message struct {
 	// Service message: user boosted the chat.
 	BoostAdded *BoostAdded `json:"boost_added"`
 
+	// Service message: chat background set
+	ChatBackground ChatBackground `json:"chat_background_set"`
+
 	// If the sender of the message boosted the chat, the number of boosts
 	// added by the user.
-	SenderBoostCount int `json:"sender_boost_count"`
+	SenderBoosts int `json:"sender_boost_count"`
 
 	// Service message: forum topic created
 	TopicCreated *Topic `json:"forum_topic_created,omitempty"`
@@ -323,6 +349,9 @@ type Message struct {
 
 	// Service message: represents spoiler information about the message.
 	HasMediaSpoiler bool `json:"has_media_spoiler,omitempty"`
+
+	// (Optional) Pass True, if the caption must be shown above the message media
+	CaptionAbove bool `json:"show_caption_above_media"`
 
 	// Service message: the user allowed the bot added to the attachment menu to write messages
 	WriteAccessAllowed *WriteAccessAllowed `json:"write_access_allowed,omitempty"`
@@ -352,7 +381,7 @@ type MessageEntity struct {
 	Language string `json:"language,omitempty"`
 
 	// (Optional) For EntityCustomEmoji entity type only.
-	CustomEmoji string `json:"custom_emoji_id"`
+	CustomEmojiID string `json:"custom_emoji_id"`
 }
 
 // EntityType is a MessageEntity type.
@@ -377,6 +406,7 @@ const (
 	EntitySpoiler       EntityType = "spoiler"
 	EntityCustomEmoji   EntityType = "custom_emoji"
 	EntityBlockquote    EntityType = "blockquote"
+	EntityEBlockquote   EntityType = "expandable_blockquote"
 )
 
 // Entities are used to set message's text entities as a send option.
@@ -551,7 +581,7 @@ type MessageReactionCount struct {
 	DateUnixtime int64 `json:"date"`
 
 	// List of reactions that are present on the message.
-	Reactions *ReactionCount `json:"reactions"`
+	Reactions []*ReactionCount `json:"reactions"`
 }
 
 // Time returns the moment of change in local time.
@@ -612,9 +642,9 @@ func (mo *MessageOrigin) Time() time.Time {
 	return time.Unix(mo.DateUnixtime, 0)
 }
 
-// ExternalReplyInfo contains information about a message that is being replied to,
+// ExternalReply contains information about a message that is being replied to,
 // which may come from another chat or forum topic.
-type ExternalReplyInfo struct {
+type ExternalReply struct {
 	// Origin of the message replied to by the given message.
 	Origin *MessageOrigin `json:"origin"`
 
@@ -626,7 +656,7 @@ type ExternalReplyInfo struct {
 	// Available only if the original chat is a supergroup or a channel.
 	MessageID int `json:"message_id"`
 
-	// (Optional) ReactionOptions used for link preview generation for the original message,
+	// (Optional) PreviewOptions used for link preview generation for the original message,
 	// if it is a text message.
 	PreviewOptions *PreviewOptions `json:"link_preview_options"`
 
@@ -657,9 +687,6 @@ type ExternalReplyInfo struct {
 	// (Optional) Message is a voice message, information about the file.
 	Voice *Voice `json:"voice"`
 
-	// (Optional) True, if the message media is covered by a spoiler animation.
-	HasMediaSpoiler bool `json:"has_media_spoiler"`
-
 	// (Optional) Message is a shared contact, information about the contact.
 	Contact *Contact `json:"contact"`
 
@@ -686,6 +713,12 @@ type ExternalReplyInfo struct {
 
 	// (Optional) A giveaway with public winners was completed.
 	GiveawayWinners *GiveawayWinners `json:"giveaway_winners"`
+
+	// Message contains paid media; information about the paid media
+	PaidMedia PaidMedias `json:"paid_media"`
+
+	// (Optional) True, if the message media is covered by a spoiler animation.
+	HasMediaSpoiler bool `json:"has_media_spoiler"`
 }
 
 // ReplyParams describes reply parameters for the message that is being sent.

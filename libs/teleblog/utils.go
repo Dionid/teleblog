@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/telebot.v3"
+	"gopkg.in/telebot.v4"
 )
 
 func WriteJsonMessage(message *telebot.Message) error {
