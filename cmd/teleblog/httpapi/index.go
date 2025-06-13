@@ -251,6 +251,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			"chat.id as chat_id",
 			"post.tg_post_id",
 			"post.tg_group_message_id",
+			"post.created",
 			"count(comment.id) as comments_count",
 			"chat.tg_username as tg_chat_username",
 		).

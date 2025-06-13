@@ -32,10 +32,23 @@ func main() {
 	}
 
 	// # Pocketbase
-	app := pocketbase.New()
+	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+	isServerCmd := false
+
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "serve") {
+			isServerCmd = true
+			break
+		}
+	}
+
+	app := pocketbase.NewWithConfig(
+		pocketbase.Config{
+			DefaultDev: !isServerCmd || isGoRun,
+		},
+	)
 
 	// # Migrations
-	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
 
 	curPath, err := os.Getwd()
 	if err != nil {

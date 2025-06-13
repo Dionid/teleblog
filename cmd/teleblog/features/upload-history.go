@@ -113,8 +113,6 @@ func ParseChannelHistory(app core.App, historyZip teleblog.HistoryExport, histor
 
 					fileName := postCollection.Id + "/" + post.Id + "/" + file.Name
 
-					fmt.Println("fileName: ", fileName)
-
 					err = fsys.UploadFile(file, fileName)
 					if err != nil {
 						return err

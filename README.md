@@ -126,3 +126,16 @@ Goal: Future features
 
 1. Pinned messages
 1. Likes counter
+1. Album id
+
+# FAQ
+
+## Why some posts are separated and some merged?
+
+Every photo, video, audio, file, poll, etc. is a separate post in TG.
+
+To merge them toghether, we use `album_id` field.
+
+But there is no `album_id` for messages parsed from history.
+
+So right now the only way is to assume that messages that are created in the same time are from the same album.

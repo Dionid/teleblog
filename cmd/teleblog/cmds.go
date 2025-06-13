@@ -57,6 +57,8 @@ func AdditionalCommands(app *pocketbase.PocketBase) {
 				fileName = args[0]
 			}
 
+			app.Logger().Info("Uploading history from zip file...", "file_name", fileName)
+
 			// Check if the file is a zip file
 			if ext := filepath.Ext(fileName); ext != ".zip" {
 				log.Fatal(errors.New("Not zip"))
