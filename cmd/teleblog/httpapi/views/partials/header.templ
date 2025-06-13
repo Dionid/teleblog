@@ -14,11 +14,11 @@ type HeaderData struct {
 templ Header(header HeaderData) {
     <header class="flex w-full items-center justify-between">
             if header.LogoUrl != "" {
-                <a href="/" class="w-36 p-1 rounded bg-white shadow-sm" aria-label="На главную">
+                <a id="site-logo" href="/" class="w-36 p-1 rounded bg-white shadow-sm" aria-label="На главную">
                     <img src={ header.LogoUrl } alt={ header.LogoAlt }>
                 </a>
             } else {
-                <a href="/" class="w-36 p-0 rounded bg-white shadow-sm" aria-label="На главную">
+                <a id="site-logo" href="/" class="w-36 p-0 rounded bg-white shadow-sm" aria-label="На главную">
                 </a>
             }
         <div class="flex items-center">

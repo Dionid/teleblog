@@ -196,6 +196,8 @@ type Config struct {
 
 	PrimaryColor string `json:"mainColor" db:"main_color"`
 	BgImage      string `json:"bgImage" db:"bg_image"`
+	CustomCss    string `json:"customCss" db:"custom_css"`
+	Favicon      string `json:"favicon" db:"favicon"`
 }
 
 func (m *Config) TableName() string {

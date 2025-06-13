@@ -445,6 +445,11 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 					&siteConfig.BaseModel,
 					siteConfig.BgImage,
 				),
+				FavIcon: teleblog.ImagePath(
+					configCollection,
+					&siteConfig.BaseModel,
+					siteConfig.Favicon,
+				),
 			},
 			views.IndexPageInfo{
 				Description: siteConfig.Description,

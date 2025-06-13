@@ -45,7 +45,7 @@ func Header(header HeaderData) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if header.LogoUrl != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/\" class=\"w-36 p-1 rounded bg-white shadow-sm\" aria-label=\"На главную\"><img src=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a id=\"site-logo\" href=\"/\" class=\"w-36 p-1 rounded bg-white shadow-sm\" aria-label=\"На главную\"><img src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -76,7 +76,7 @@ func Header(header HeaderData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"/\" class=\"w-36 p-0 rounded bg-white shadow-sm\" aria-label=\"На главную\"></a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a id=\"site-logo\" href=\"/\" class=\"w-36 p-0 rounded bg-white shadow-sm\" aria-label=\"На главную\"></a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

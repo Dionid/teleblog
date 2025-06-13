@@ -16,10 +16,16 @@ import (
 
 func PostPageHandler(e *core.ServeEvent, app core.App) {
 	e.Router.GET("/post/:id", func(c echo.Context) error {
+		// # Site config collection
+		siteConfigCollection, err := teleblog.Configcollection(app.Dao())
+		if err != nil {
+			return fmt.Errorf("IndexPageHandler: get config collection error: %w", err)
+		}
+
 		// # Config
 		siteConfig := teleblog.Config{}
 
-		err := teleblog.ConfigQuery(app.Dao()).One(&siteConfig)
+		err = teleblog.ConfigQuery(app.Dao()).One(&siteConfig)
 		if err != nil {
 			return err
 		}
@@ -196,7 +202,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			Title:       post.Title,
 			Description: post.SeoDescription,
 			Image:       "",
-			Url:         fmt.Sprintf("https://davidshekunts.ru%s", views.GetPostUrl(post.Post)),
+			Url:         fmt.Sprintf("%s%s", app.Settings().Meta.AppUrl, views.GetPostUrl(post.Post)),
 			Type:        "article",
 		}
 
@@ -209,12 +215,16 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 		}
 
 		if len(post.Media) > 0 {
-			seo.Image = fmt.Sprintf("https://davidshekunts.ru%s", post.Media[0])
+			seo.Image = fmt.Sprintf("%s%s", app.Settings().Meta.AppUrl, post.Media[0])
 		}
 
 		// ## Header
 		header := partials.HeaderData{
-			LogoUrl:   siteConfig.LogoUrl,
+			LogoUrl: teleblog.ImagePath(
+				siteConfigCollection,
+				&siteConfig.BaseModel,
+				siteConfig.LogoUrl,
+			),
 			LogoAlt:   siteConfig.LogoAlt,
 			MenuItems: []partials.HeaderMenuItem{},
 		}
@@ -231,6 +241,18 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 				Seo:                    seo,
 				YandexMetrikaCounter:   siteConfig.YandexMetrikaCounter,
 				GoogleAnalyticsCounter: siteConfig.GoogleAnalyticsCounter,
+				PrimaryColor:           siteConfig.PrimaryColor,
+				BgImage: teleblog.ImagePath(
+					siteConfigCollection,
+					&siteConfig.BaseModel,
+					siteConfig.BgImage,
+				),
+				CustomCss: siteConfig.CustomCss,
+				FavIcon: teleblog.ImagePath(
+					siteConfigCollection,
+					&siteConfig.BaseModel,
+					siteConfig.Favicon,
+				),
 			},
 			views.PostPageData{
 				Header: header,
