@@ -213,17 +213,6 @@ func Unzip(zipReader *zip.Reader, dist string) error {
 			continue
 		}
 
-		rc, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer rc.Close()
-
-		fileBytes, err := io.ReadAll(rc)
-		if err != nil {
-			return err
-		}
-
 		// Remove the root directory from the path if it exists
 		relativePath := file.Name
 		if rootPath != "" {
@@ -240,11 +229,27 @@ func Unzip(zipReader *zip.Reader, dist string) error {
 
 		extractPath := filepath.Join(dist, relativePath)
 		if err := os.MkdirAll(filepath.Dir(extractPath), os.ModePerm); err != nil {
-			return err
+			return fmt.Errorf("failed to create directory for %s: %w", extractPath, err)
 		}
 
-		if err := os.WriteFile(extractPath, fileBytes, file.Mode()); err != nil {
-			return err
+		// Create destination file
+		destFile, err := os.OpenFile(extractPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if err != nil {
+			return fmt.Errorf("failed to create file %s: %w", extractPath, err)
+		}
+		defer destFile.Close()
+
+		// Open the file from the zip
+		srcFile, err := file.Open()
+		if err != nil {
+			return fmt.Errorf("failed to open file %s in zip: %w", file.Name, err)
+		}
+		defer srcFile.Close()
+
+		// Stream copy from zip to destination without loading entire file into memory
+		_, err = io.Copy(destFile, srcFile)
+		if err != nil {
+			return fmt.Errorf("failed to copy file %s to %s: %w", file.Name, extractPath, err)
 		}
 	}
 
