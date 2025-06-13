@@ -349,7 +349,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 						continue
 					}
 
-					markup = teleblog.FormHistoryTextWithMarkup(rawMessage.TextEntities)
+					markup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
 				} else {
 					rawMessage := telebot.Message{}
 

@@ -16,6 +16,7 @@ func SetAlbumId(app *pocketbase.PocketBase) error {
 	err := teleblog.
 		PostQuery(app.Dao()).
 		Where(dbx.HashExp{"unparsable": false}).
+		Where(dbx.NewExp("album_id IS NULL OR album_id = ''")).
 		All(&posts)
 
 	for _, post := range posts {

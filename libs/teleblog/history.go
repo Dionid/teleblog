@@ -1,6 +1,7 @@
 package teleblog
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -12,6 +13,118 @@ import (
 type HistoryMessageTextEntity struct {
 	Type telebot.EntityType `json:"type"`
 	Text string             `json:"text"`
+}
+
+const (
+	EntityPlainText telebot.EntityType = "plain_text"
+)
+
+type HistoryMessageTextItem struct {
+	Type       telebot.EntityType `json:"type"`                  // "text" | "bold" | "italic" | "link" | "hashtag" | "mention" | "text_link"
+	Text       string             `json:"text"`                  // The text content of the entity
+	Href       string             `json:"href,omitempty"`        // For "text_link" entities, the URL they point to
+	DocumentId string             `json:"document_id,omitempty"` // For "document" entities, the ID of the document
+}
+
+// Can be string or array of objects
+type HistoryMessageText struct {
+	Items []HistoryMessageTextItem `json:"entities"`
+}
+
+// HistoryMessage represents a single message in the chat history
+// It includes all fields from result.json and additional fields like reactions
+// and media types.
+
+func (h *HistoryMessageText) UnmarshalJSON(data []byte) error {
+	// check if it is a string
+	if len(data) > 0 && data[0] == '"' && data[len(data)-1] == '"' {
+		text := string(data[1 : len(data)-1])
+
+		h.Items = []HistoryMessageTextItem{
+			{
+				Type: EntityPlainText,
+				Text: text,
+			},
+		}
+
+		return nil
+	}
+
+	var entities []interface{}
+	if err := json.Unmarshal(data, &entities); err != nil {
+		return err
+	}
+
+	h.Items = []HistoryMessageTextItem{}
+
+	// Check if "text" is a string or an array of objects
+	for _, entity := range entities {
+		switch e := entity.(type) {
+		case string:
+			// If it's a string, create a text entity
+			h.Items = append(h.Items, HistoryMessageTextItem{
+				Type: EntityPlainText,
+				Text: e,
+			})
+		case map[string]any:
+			// If it's a map, check for "type" and "text" keys
+			if entityType, ok := e["type"].(string); ok {
+				switch entityType {
+				case "text_link":
+					if text, ok := e["text"].(string); ok {
+						href, ok := e["href"].(string)
+						if !ok {
+							return fmt.Errorf("missing or invalid 'href' field in text_href entity")
+						}
+
+						h.Items = append(h.Items, HistoryMessageTextItem{
+							Type: telebot.EntityType(entityType),
+							Text: text,
+							Href: href,
+						})
+					} else {
+						fmt.Printf("missing or invalid 'text' field in entity of type '%s'", entityType)
+					}
+				default:
+					if text, ok := e["text"].(string); ok {
+						h.Items = append(h.Items, HistoryMessageTextItem{
+							Type: telebot.EntityType(entityType),
+							Text: text,
+						})
+					} else {
+						fmt.Printf("Warning: missing or invalid 'text' field in entity of type '%s'\n", entityType)
+					}
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func (h *HistoryMessageText) MarshalJSON() ([]byte, error) {
+	if len(h.Items) == 0 {
+		return json.Marshal("")
+	}
+
+	// If all items are text, return as a string
+	allText := true
+	for _, item := range h.Items {
+		if item.Type != "text" {
+			allText = false
+			break
+		}
+	}
+
+	if allText {
+		text := ""
+		for _, item := range h.Items {
+			text += item.Text
+		}
+		return json.Marshal(text)
+	}
+
+	return json.Marshal(h.Items)
 }
 
 type HistoryMessage struct {
@@ -33,7 +146,7 @@ type HistoryMessage struct {
 	ActorId           string                   `json:"actor_id"`
 	Action            string                   `json:"action"`
 	Title             string                   `json:"title"`
-	Text              interface{}              `json:"text"` // Can be string or array of objects
+	Text              HistoryMessageText       `json:"text"` // Can be string or array of objects
 	FileName          string                   `json:"file_name"`
 	FileSize          int                      `json:"file_size"`
 	Thumbnail         string                   `json:"thumbnail"`

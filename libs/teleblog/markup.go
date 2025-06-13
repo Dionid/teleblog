@@ -17,7 +17,47 @@ type MarkupByPosition struct {
 	Tag      []rune
 }
 
-func FormHistoryTextWithMarkup(markup []HistoryMessageTextEntity) string {
+func FormHistoryRawTextWithMarkup(markup HistoryMessageText) string {
+	text := ""
+
+	for _, entity := range markup.Items {
+		switch entity.Type {
+		case telebot.EntityItalic:
+			text += "<i class='inline'>" + entity.Text + "</i>"
+		case telebot.EntityBold:
+			text += "<b class='inline'>" + entity.Text + "</b>"
+		case telebot.EntityURL:
+			link := entity.Text
+			if strings.Contains(link, "://") == false {
+				link = "http://" + link
+			}
+			text += "<a target='_blank' href='https://" + link + "' class='inline c-link'>" + entity.Text + "</a>"
+		case "link":
+			text += "<a target='_blank' class='inline c-link' href='https://" + entity.Text + "'>" + entity.Text + "</a>"
+		case telebot.EntityHashtag:
+			tag, err := CorrectTagValue(entity.Text)
+			if err != nil {
+				continue
+			}
+			text += "<a class='inline c-link' href='?tag=" + tag + "'>" + entity.Text + "</a>"
+		case telebot.EntityTextLink:
+			text += "<a target='_blank' class='inline c-link' href='" + entity.Href + "'>" + entity.Text + "</a>"
+		case telebot.EntityMention:
+			mention := strings.TrimPrefix(entity.Text, "@")
+			text += "<a target='_blank' href='https://t.me/" + mention + "' class='inline c-link'>" + entity.Text + "</a>"
+		default:
+			// escapedText := html.EscapeString(entity.Text)
+			text += html.EscapeString(entity.Text)
+		}
+	}
+
+	text = strings.ReplaceAll(text, "\\n", "<br>")
+	text = strings.ReplaceAll(text, "\n", "<br>")
+
+	return text
+}
+
+func HistoryTextEntitiesWithToTextWithMarkup(markup []HistoryMessageTextEntity) string {
 	text := ""
 
 	for _, entity := range markup {

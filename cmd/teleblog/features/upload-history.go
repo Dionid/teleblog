@@ -164,7 +164,7 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 			continue
 		}
 
-		if message.Text == "" {
+		if len(message.Text.Items) == 0 {
 			continue
 		}
 

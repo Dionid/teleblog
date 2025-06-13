@@ -107,7 +107,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 				return err
 			}
 
-			post.TextWithMarkup = teleblog.FormHistoryTextWithMarkup(rawMessage.TextEntities)
+			post.TextWithMarkup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
 		} else {
 			rawMessage := telebot.Message{}
 
@@ -158,7 +158,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 				comment.AuthorTitle = rawMessage.From
 
-				comment.TextWithMarkup = teleblog.FormHistoryTextWithMarkup(rawMessage.TextEntities)
+				comment.TextWithMarkup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
 			} else {
 				rawMessage := telebot.Message{}
 
