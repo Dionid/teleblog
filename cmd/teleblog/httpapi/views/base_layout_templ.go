@@ -310,14 +310,14 @@ func BaseLayout(data BaseLayoutData) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if data.FavIcon != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<link rel=\"apple-touch-icon\" sizes=\"96x96\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<link rel=\"icon\" sizes=\"96x96\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(templ.SafeURL(data.FavIcon))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 61, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 61, Col: 69}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 			if templ_7745c5c3_Err != nil {
