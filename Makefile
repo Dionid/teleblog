@@ -71,8 +71,7 @@ setup-server:
 	&& systemctl enable teleblog \
 	&& systemctl daemon-reload"
 	scp ./cmd/teleblog/app.env.example root@${SERVER_IP}:/root/teleblog/app.env
-	scp ./infra/davidshekunts.ru root@${SERVER_IP}:/etc/nginx/sites-enabled/davidshekunts.ru
-	scp ./infra/davidshekunts.com root@${SERVER_IP}:/etc/nginx/sites-enabled/davidshekunts.com
+	scp ./infra/teleblog root@${SERVER_IP}:/etc/nginx/sites-available/teleblog
 
 # Deploy
 

@@ -36,7 +36,7 @@ Don't take this project as a reference for best practices.
 1. Deploy Preparations
     1. Get VPS or Digital Ocean droplet
     1. `cp .env.example .env` and fill it
-    1. go to `/infra` and change configuration replacing `davidshekunts.ru` to needed domain in 3 files
+    1. Replace `davidshekunts.ru` with your domain in `/infra/teleblog`
 1. Setup server
     1. Run `make setup-server` (it will configure autorestarts and nginx)
     1. Change ENV in `teleblog/app.env` on server from `LOCAL` to `PRODUCTION`
