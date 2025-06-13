@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -18,7 +19,9 @@ type SitemapURL struct {
 
 func SiteMapAndRobotsPageHandler(e *core.ServeEvent, app core.App) {
 	e.Router.GET("/robots.txt", func(c echo.Context) error {
-		return c.String(http.StatusOK, `User-agent: *
+		baseURL := app.Settings().Meta.AppUrl
+
+		txt := fmt.Sprintf(`User-agent: *
 Allow: /
 Allow: /post/*
 Allow: /public/*
@@ -32,10 +35,12 @@ Disallow: /_/*
 Crawl-delay: 1
 
 # Main sitemap
-Sitemap: https://davidshekunts.ru/sitemap.xml
+Sitemap: %s/sitemap.xml
 
 # Host directive for preferred domain version
-Host: davidshekunts.ru`)
+Host: %s`, baseURL, baseURL)
+
+		return c.String(http.StatusOK, txt)
 	})
 
 	// # sitemap.xml
@@ -49,7 +54,7 @@ Host: davidshekunts.ru`)
 			return err
 		}
 
-		baseURL := "https://davidshekunts.ru"
+		baseURL := app.Settings().Meta.AppUrl
 		urls := []SitemapURL{
 			{
 				Loc:        baseURL,

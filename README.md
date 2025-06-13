@@ -2,7 +2,7 @@
 
 Template to create your own site from Telegram channel.
 
-Demo: [davidshekunts.com](https://davidshekunts.ru)
+Demo: [davidshekunts.ru](https://davidshekunts.ru)
 
 # Stack
 
