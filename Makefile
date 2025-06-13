@@ -4,34 +4,37 @@ export $(shell sed 's/=.*//' .env)
 PROJECT_NAME=teleblog
 BINARY_NAME=${PROJECT_NAME}
 
-# Run
+# Setup
 
-parse:
-	cd cmd/cli && go run .
-
-serve-teleblog:
-	npx tailwindcss build -i tailwind.css -o cmd/teleblog/httpapi/public/style.css --minify
-	cd cmd/teleblog \
-	&& go generate ./... \
-	&& go run . serve
-
-upload-history:
-	cd cmd/teleblog \
-	&& go generate ./... \
-	&& go run . upload-history
-
-# Cmds
-
-extract-tags:
-	cd cmd/teleblog \
-	&& go generate ./... \
-	&& go run . extract-tags
+setup:
+	go install github.com/a-h/templ/cmd/templ@latest
+	go mod tidy
 
 # Generate
 
 templ:
 	cd cmd/teleblog \
 	&& go generate ./...
+
+# Dev & Run
+
+serve:
+	npx tailwindcss build -i tailwind.css -o cmd/teleblog/httpapi/public/style.css --minify
+	cd cmd/teleblog \
+	&& go generate ./... \
+	&& go run . serve
+
+# Scripts
+
+upload-history:
+	cd cmd/teleblog \
+	&& go generate ./... \
+	&& go run . upload-history
+
+extract-tags:
+	cd cmd/teleblog \
+	&& go generate ./... \
+	&& go run . extract-tags
 
 # Build
 
@@ -56,23 +59,6 @@ clean:
 	rm ${BINARY_NAME}-teleblog-darwin
 	rm ${BINARY_NAME}-teleblog-linux
 
-# Setup
-
-setup:
-	npm i
-	go install github.com/a-h/templ/cmd/templ@latest
-	go mod tidy
-
-setup-server:
-	scp ./infra/teleblog.service root@${SERVER_IP}:/lib/systemd/system/teleblog.service
-	ssh root@${SERVER_IP} "apt update \
-	&& apt-get install -y zip \
-	&& mkdir -p /root/teleblog \
-	&& systemctl enable teleblog \
-	&& systemctl daemon-reload"
-	scp ./cmd/teleblog/app.env.example root@${SERVER_IP}:/root/teleblog/app.env
-	scp ./infra/teleblog root@${SERVER_IP}:/etc/nginx/sites-available/teleblog
-
 # Deploy
 
 increment-production-app-version:
@@ -85,11 +71,6 @@ increment-production-app-version:
 		sed -i "s/^APP_VERSION=.*/APP_VERSION=$$new_version/" app.env && \
 		echo "Version updated to $$new_version"'
 
-# connect to server
-# add folder to root/teleblog/pb_data/backups with current date
-# copy root/teleblog/pb_data/data.db and root/teleblog/pb_data/logs.db to this folder
-# zip this folder
-# delete folder
 backup-production-db:
 	ssh root@${SERVER_IP} '\
 		cd /root/teleblog/pb_data/backups && \

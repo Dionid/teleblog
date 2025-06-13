@@ -29,36 +29,36 @@ Don't take this project as a reference for best practices.
 1. `infra` - some infrastructure code (nginx, systemctl)
 1. `libs` - libraries
 
-# How to use
+# How to
+
+## Install dependencies
+
+1. Install Go & Node.js
+1. Run `make setup`
+1. Install node deps (`npm install` or `yarn install` or `pnpm install`)
+
+## Develope
+
+1. Run `cd cmd/teleblog && cp app.env.example app.env` and fill it
+1. Run `make dev`
 
 ## Deploy
 
-1. Deploy Preparations
-    1. Get VPS or Digital Ocean droplet
-    1. `cp .env.example .env` and fill it
-    1. Replace `davidshekunts.ru` with your domain in `/infra/teleblog`
-1. Setup server
-    1. Run `make setup-server` (it will configure autorestarts and nginx)
-    1. Change ENV in `teleblog/app.env` on server from `LOCAL` to `PRODUCTION`
-1. Deploy via SSH
-    1. Run `make deploy` (it will build and deploy Teleblog to your server)
-1. Deploy Automatic (Github Actions)
-    1. Create new ssh key `ssh-keygen` with custom name (don't use passphrase)
-    1. Add public key to your server `~/.ssh/authorized_keys`
-    1. Create Repository Environment named `prod` (github.com/USER/REPOSITORY/settings/environments)
-    1. Set 3 secrets:
-        1. `SERVER_IP` – your server IP
-        1. `SSH_PRIV_KEY` – your custom private key
-        1. `SSH_PUB_KEY` – your custom public key
-    1. Push to `main` and check actions
+1. From sources
+    1. Make sure you have Go installed, GOBIN and PATH configured on server
+    1. Clone repository `git clone git@github.com:Dionid/teleblog.git`
+    1. Install dependencies (live in section above)
+    1. Run `make serve`
+1. Go install
+    1. Make sure you have Go installed, GOBIN and PATH configured on server
+    1. Run `go install github.com/Dionid/teleblog/cmd/teleblog@latest` on server
+    1. Run `teleblog serve --http=127.0.0.1:8091`
 
 ## Configure
 
 1. Create bot in [@BotFather](t.me/BotFather)
-1. `cd cmd/teleblog && cp app.env.example app.env` and fill it with your data
-1. `make serve-teleblog` to run Teleblog + Pocketbase admin panel
-1. Go to `{site_url}:8090/_` to see Pocketbase admin panel and fill in your admin
-1. Check or create user (username will be enough) in `user` table
+1. Go to `SITE_URL:8090/_` to see Pocketbase admin panel and fill in your admin
+1. Create user in `user` table (`username` will be enough)
 1. Verify in bot to start parsing your channel
     1. Create `tg_verification_token` (be sure that column "verified" is false)
     1. Send this token to your bot `/verifytoken YOUR_TOKEN` (this will add `tg_id`, `tg_user` and `verified` to your user)
@@ -74,14 +74,12 @@ Don't take this project as a reference for best practices.
 
 ## Upload history messages
 
-1. Export JSON history from your channel
+1. Export JSON history from your channel and zip it with files
+1. Via UI
+    1. Go to `/_/upload-history` and upload file to it
 1. Via terminal
     1. Paste it to `cmd/teleblog` folder
     1. Run `cd cmd/teleblog && go run . upload-history YOUR_HISTORY.json` (! DONT FORGET to upload channel posts firstly and linked groups posts afterwards)
-1. Via UI
-    1. Run your application
-    1. Authorize in admin panel (`/_`)
-    1. Go to `/_/upload-history` and upload file to it
 
 # Roadmap
 
@@ -99,29 +97,31 @@ Status: Done
 
 ## Third phase
 
-Goal: ...
+Goal: Separate it from demo project
 
-1. Custom logo, description, footer and menu
-1. H1 from any text
+1. ~~Custom logo, description, footer and menu~~
+1. ~~Custom domain~~
+
+## X phase
+
+Goal: Future features
+
 1. Schema.org + Open Graph.
 1. Auto-translate
 1. Repost to Medium
 1. Files
 1. Spoilers for Audio & Circles
-1. ...
-
-## X phase
-
 1. Dark / Light theme changer
 1. Delete old tags
 1. Author Image ([getUserProfilePhotos](https://core.telegram.org/bots/api#getuserprofilephotos))
 1. Admin page
 1. Partial reload
 1. Sorting
-1. ...
+1. Releases
+1. Docker image
+1. H1 from any text
 
-## Don't work with History Messages
+# Don't work with History Messages
 
-1. Pined messages
+1. Pinned messages
 1. Likes counter
-1. ...
