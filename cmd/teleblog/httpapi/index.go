@@ -201,11 +201,6 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			return err
 		}
 
-		// if len(chats) == 0 {
-		// 	// TODO: Change
-		// 	return c.JSON(200, []teleblog.Post{})
-		// }
-
 		chatIds := []interface{}{}
 		for _, chat := range chats {
 			chatIds = append(chatIds, chat.Id)
@@ -236,6 +231,14 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			return err
 		}
 
+		// type Result sutrct {
+		// 	Id 		  string `db:"id"`
+		// 	AlbumID   string `db:"album_id"`
+		// 	TgChatUsername string `db:"tg_chat_username"`
+		// 	CommentCount int64 `db:"comments_count"`
+
+		// }
+
 		// ## Posts
 		posts := []*views.InpexPagePost{}
 		contentQuery := baseQuery(
@@ -243,20 +246,20 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			filters,
 			chatIds...,
 		).Select(
-			"post.*",
+			"post.id",
+			"post.album_id",
+			"chat.id as chat_id",
+			"post.tg_post_id",
+			"post.tg_group_message_id",
 			"count(comment.id) as comments_count",
 			"chat.tg_username as tg_chat_username",
-			"json_group_array(json_object("+
-				"'id', post.id,"+
-				"'media', post.media"+
-				")) as album_posts",
 		).
 			LeftJoin(
 				"chat",
 				dbx.NewExp("chat.id = post.chat_id"),
 			).
-			OrderBy("post.created desc", "post.tg_post_id asc").
-			GroupBy("post.album_id")
+			GroupBy("post.album_id").
+			OrderBy("post.created desc", "post.tg_post_id asc")
 
 		// ## Pagination
 		// ### Per page
@@ -270,7 +273,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 
 		contentQuery = contentQuery.Limit(perPage)
 
-		// ### Current page
+		// ## Current page
 		currentPage := filters.Page
 		if currentPage == 0 {
 			currentPage = 1
@@ -284,92 +287,93 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			return err
 		}
 
-		// TODO: count comments separately, because search string make it incorrect
-		// ...
-
 		postCollection, err := app.Dao().FindCollectionByNameOrId("post")
 		if err != nil {
 			return err
 		}
 
 		for _, post := range posts {
-			markup := ""
+			innerPosts := []teleblog.Post{}
+
+			err := teleblog.PostQuery(app.Dao()).Where(
+				dbx.HashExp{"album_id": post.AlbumID},
+			).All(&innerPosts)
+			if err != nil {
+				return fmt.Errorf("IndexPageHandler: get inner posts error: %w", err)
+			}
 
 			for i, media := range post.Media {
 				post.Media[i] = postCollection.Id + "/" + post.Id + "/" + media
 			}
 
-			for _, innerPost := range post.AlbumPosts {
-				if innerPost.Id == post.Id || innerPost.Media == "" {
-					continue
-				}
-
+			for _, innerPost := range innerPosts {
 				// # Text
 				post.Text += innerPost.Text
+
+				if innerPost.IsTgHistoryMessage {
+					post.IsTgHistoryMessage = innerPost.IsTgHistoryMessage
+				}
 
 				// # Photos
 				medias := []string{}
 
-				err = json.Unmarshal([]byte(innerPost.Media), &medias)
-				if err != nil {
-					return err
-				}
-
-				for i, media := range medias {
-					medias[i] = postCollection.Id + "/" + innerPost.Id + "/" + media
+				for _, media := range innerPost.Media {
+					medias = append(medias, postCollection.Id+"/"+innerPost.Id+"/"+media)
 				}
 
 				post.Media = append(post.Media, medias...)
-			}
 
-			// # Prase raw message
-			jb, err := post.TgMessageRaw.MarshalJSON()
-			if err != nil {
-				return err
-			}
+				// # Markup
+				markup := ""
 
-			if post.IsTgHistoryMessage {
-				rawMessage := teleblog.HistoryMessage{}
-
-				err = json.Unmarshal(jb, &rawMessage)
-				if err != nil {
-					app.Logger().Error("IndexPageHandler: unmarshal history message error", "error", err, "post_id", post.Id)
-					_, err := app.DB().Update(
-						"post",
-						dbx.Params{"unparsable": true},
-						dbx.HashExp{"id": post.Id},
-					).Execute()
-					if err != nil {
-						return fmt.Errorf("IndexPageHandler: update post error: %w", err)
-					}
-					continue
-				}
-
-				markup = teleblog.FormHistoryTextWithMarkup(rawMessage.TextEntities)
-			} else {
-				rawMessage := telebot.Message{}
-
-				err = json.Unmarshal(jb, &rawMessage)
-				if err != nil {
-					app.Logger().Error("IndexPageHandler: unmarshal history message error", "error", err, "post_id", post.Id)
-					_, err := app.DB().Update(
-						"post",
-						dbx.Params{"unparsable": true},
-						dbx.HashExp{"id": post.Id},
-					).Execute()
-					if err != nil {
-						return fmt.Errorf("IndexPageHandler: update post error: %w", err)
-					}
-					continue // Skip if unmarshal error, it may be a non-history message
-				}
-
-				markup, err = teleblog.FormWebhookTextMarkup(post.Text, rawMessage.Entities)
+				jb, err := innerPost.TgMessageRaw.MarshalJSON()
 				if err != nil {
 					return err
 				}
-			}
 
-			post.TextWithMarkup = markup
+				if innerPost.IsTgHistoryMessage {
+					rawMessage := teleblog.HistoryMessage{}
+
+					err = json.Unmarshal(jb, &rawMessage)
+					if err != nil {
+						app.Logger().Error("IndexPageHandler: unmarshal history message error", "error", err, "post_id", post.Id)
+						_, err := app.DB().Update(
+							"post",
+							dbx.Params{"unparsable": true},
+							dbx.HashExp{"id": innerPost.Id},
+						).Execute()
+						if err != nil {
+							return fmt.Errorf("IndexPageHandler: update post error: %w", err)
+						}
+						continue
+					}
+
+					markup = teleblog.FormHistoryTextWithMarkup(rawMessage.TextEntities)
+				} else {
+					rawMessage := telebot.Message{}
+
+					err = json.Unmarshal(jb, &rawMessage)
+					if err != nil {
+						app.Logger().Error("IndexPageHandler: unmarshal history message error", "error", err, "post_id", post.Id)
+						_, err := app.DB().Update(
+							"post",
+							dbx.Params{"unparsable": true},
+							dbx.HashExp{"id": innerPost.Id},
+						).Execute()
+						if err != nil {
+							return fmt.Errorf("IndexPageHandler: update post error: %w", err)
+						}
+						continue // Skip if unmarshal error, it may be a non-history message
+					}
+
+					markup, err = teleblog.FormWebhookTextMarkup(innerPost.Text, rawMessage.Entities)
+					if err != nil {
+						return err
+					}
+				}
+
+				post.TextWithMarkup += markup
+			}
 
 			// Extract and fetch link preview
 			if url := extractFirstURL(post.Text); url != "" {

@@ -178,7 +178,7 @@ templ IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDa
 										<div class="card shadow-sm bg-white w-full overflow-hidden" :set={ fmt.Sprintf(`post = dataById["%s"]`, post.Id) }>
 											if len(post.Media) == 1 {
 												<div class="flex justify-center">
-													if strings.Contains(post.Media[0], ".mp4") {
+													if strings.Contains(strings.ToLower(post.Media[0]), ".mp4") || strings.Contains(strings.ToLower(post.Media[0]), ".mov") || strings.Contains(strings.ToLower(post.Media[0]), ".webm") {
 														<video 
 															src={ "/api/files/" + post.Media[0] } 
 															class="max-h-80 cursor-pointer" 
@@ -198,7 +198,7 @@ templ IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDa
 												<div class="grid grid-cols-2 gap-2">
 													for _, photo := range post.Media {
 														<div class="flex justify-center">
-															if strings.Contains(photo, ".mp4") {
+															if strings.Contains(strings.ToLower(photo), ".mp4") || strings.Contains(strings.ToLower(photo), ".mov") || strings.Contains(strings.ToLower(photo), ".webm") {
 																<video 
 																	src={ "/api/files/" + photo } 
 																	class="w-full h-60 object-cover cursor-pointer" 
@@ -209,8 +209,8 @@ templ IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDa
 																	src={ "/api/files/" + photo } 
 																	class="w-full h-60 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
 																	data-photo={ photo }
-																	alt={ path.Base(photo) }
 																	onclick="openImageModal(this.dataset.photo)"
+																	alt={ path.Base(photo) }
 																/>
 															}
 														</div>

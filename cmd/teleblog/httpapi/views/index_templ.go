@@ -682,7 +682,7 @@ func IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDat
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					if strings.Contains(post.Media[0], ".mp4") {
+					if strings.Contains(strings.ToLower(post.Media[0]), ".mp4") || strings.Contains(strings.ToLower(post.Media[0]), ".mov") || strings.Contains(strings.ToLower(post.Media[0]), ".webm") {
 						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "<video src=\"")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
@@ -759,7 +759,7 @@ func IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDat
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						if strings.Contains(photo, ".mp4") {
+						if strings.Contains(strings.ToLower(photo), ".mp4") || strings.Contains(strings.ToLower(photo), ".mov") || strings.Contains(strings.ToLower(photo), ".webm") {
 							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, "<video src=\"")
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
@@ -804,20 +804,20 @@ func IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDat
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
-							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 68, "\" alt=\"")
+							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 68, "\" onclick=\"openImageModal(this.dataset.photo)\" alt=\"")
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
 							var templ_7745c5c3_Var49 string
 							templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.JoinStringErrs(path.Base(photo))
 							if templ_7745c5c3_Err != nil {
-								return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 212, Col: 39}
+								return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 213, Col: 39}
 							}
 							_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var49))
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
-							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 69, "\" onclick=\"openImageModal(this.dataset.photo)\">")
+							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 69, "\">")
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
