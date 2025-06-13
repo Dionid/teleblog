@@ -79,7 +79,8 @@ Don't take this project as a reference for best practices.
     1. Go to `/_/upload-history` and upload file to it
 1. Via terminal
     1. Paste it to `cmd/teleblog` folder
-    1. Run `cd cmd/teleblog && go run . upload-history YOUR_HISTORY.json` (! DONT FORGET to upload channel posts firstly and linked groups posts afterwards)
+    1. Run `cd cmd/teleblog && go run . upload-history FILE_NAME.zip`
+1. !ATTENTION! Upload channels posts firstly and linked chats comments secondly
 
 # Roadmap
 

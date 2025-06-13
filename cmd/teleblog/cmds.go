@@ -49,7 +49,7 @@ func AdditionalCommands(app *pocketbase.PocketBase) {
 		Run: func(cmd *cobra.Command, args []string) {
 			defer (func() {
 				if r := recover(); r != nil {
-					log.Fatal("recover", r)
+					log.Fatal("recover: ", r)
 				}
 			})()
 
@@ -67,33 +67,43 @@ func AdditionalCommands(app *pocketbase.PocketBase) {
 			// Read the file content
 			reader, err := os.Open(fileName)
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal(
+					fmt.Errorf("Failed to open file %s: %w", fileName, err),
+				)
 			}
 			defer reader.Close()
 
 			// Read the entire file into memory
 			fileBytes, err := io.ReadAll(reader)
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal(
+					fmt.Errorf("Failed to read file %s: %w", fileName, err),
+				)
 			}
 
 			// Create a bytes reader which implements io.ReaderAt
 			zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal(
+					fmt.Errorf("Failed to create zip reader for file %s: %w", fileName, err),
+				)
 			}
 
 			// Unzip the zip file
 			folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
 			err = file.Unzip(zipReader, folderPathPrefix)
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal(
+					fmt.Errorf("Failed to unzip file %s: %w", fileName, err),
+				)
 			}
 			defer os.RemoveAll(folderPathPrefix)
 
 			err = features.UploadHistory(app, folderPathPrefix)
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal(
+					fmt.Errorf("Failed to upload history from file %s: %w", fileName, err),
+				)
 			}
 
 			app.Logger().Info("Done")

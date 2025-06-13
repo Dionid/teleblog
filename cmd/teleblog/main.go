@@ -57,6 +57,8 @@ func main() {
 
 	// # Init
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+		app.Logger().Info("Starting PocketBase server...")
+
 		// # Initialize update history
 		err := admin.InitUploadHistoryUI(app, e)
 		if err != nil {
@@ -103,8 +105,6 @@ func main() {
 	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {
 		return mails.SendRecordVerification(app, e.Record)
 	})
-
-	app.Logger().Info("Starting PocketBase server...")
 
 	// # Start app
 	if err := app.Start(); err != nil {
