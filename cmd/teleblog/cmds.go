@@ -2,10 +2,8 @@ package main
 
 import (
 	"archive/zip"
-	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -64,34 +62,26 @@ func AdditionalCommands(app *pocketbase.PocketBase) {
 				log.Fatal(errors.New("Not zip"))
 			}
 
-			// Read the file content
-			reader, err := os.Open(fileName)
+			// Get file information to check size and existence
+			_, err := os.Stat(fileName)
 			if err != nil {
 				log.Fatal(
-					fmt.Errorf("Failed to open file %s: %w", fileName, err),
-				)
-			}
-			defer reader.Close()
-
-			// Read the entire file into memory
-			fileBytes, err := io.ReadAll(reader)
-			if err != nil {
-				log.Fatal(
-					fmt.Errorf("Failed to read file %s: %w", fileName, err),
+					fmt.Errorf("Failed to access file %s: %w", fileName, err),
 				)
 			}
 
-			// Create a bytes reader which implements io.ReaderAt
-			zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
+			// Open the zip file directly without loading it all into memory
+			zipFile, err := zip.OpenReader(fileName)
 			if err != nil {
 				log.Fatal(
-					fmt.Errorf("Failed to create zip reader for file %s: %w", fileName, err),
+					fmt.Errorf("Failed to open zip file %s: %w", fileName, err),
 				)
 			}
+			defer zipFile.Close()
 
 			// Unzip the zip file
 			folderPathPrefix := "extracted-" + time.Now().Format("20060102150405")
-			err = file.Unzip(zipReader, folderPathPrefix)
+			err = file.Unzip(&zipFile.Reader, folderPathPrefix)
 			if err != nil {
 				log.Fatal(
 					fmt.Errorf("Failed to unzip file %s: %w", fileName, err),
