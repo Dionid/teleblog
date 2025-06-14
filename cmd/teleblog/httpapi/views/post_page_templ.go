@@ -88,7 +88,7 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				if strings.Contains(post.Media[0], ".mp4") {
+				if strings.Contains(strings.ToLower(post.Media[0]), ".mp4") || strings.Contains(strings.ToLower(post.Media[0]), ".mov") || strings.Contains(strings.ToLower(post.Media[0]), ".webm") {
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<video src=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -160,18 +160,18 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				for _, photo := range post.Media {
+				for _, media := range post.Media {
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"flex justify-center\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					if strings.Contains(photo, ".mp4") {
+					if strings.Contains(strings.ToLower(media), ".mp4") || strings.Contains(strings.ToLower(media), ".mov") || strings.Contains(strings.ToLower(media), ".webm") {
 						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<video src=\"")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var7 string
-						templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(photo)
+						templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(media)
 						if templ_7745c5c3_Err != nil {
 							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 68, Col: 25}
 						}
@@ -189,7 +189,7 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var8 string
-						templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(photo)
+						templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(media)
 						if templ_7745c5c3_Err != nil {
 							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 74, Col: 25}
 						}
@@ -202,7 +202,7 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var9 string
-						templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(photo)
+						templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(media)
 						if templ_7745c5c3_Err != nil {
 							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 76, Col: 32}
 						}
@@ -215,7 +215,7 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var10 string
-						templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(path.Base(photo))
+						templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(path.Base(media))
 						if templ_7745c5c3_Err != nil {
 							return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 77, Col: 36}
 						}
