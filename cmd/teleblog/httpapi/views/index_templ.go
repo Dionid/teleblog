@@ -862,7 +862,7 @@ func IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDat
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				} else {
+				} else if post.Text != "" {
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 76, "<div class=\"link-as-contents\" v-show=\"!post.collapsed\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
