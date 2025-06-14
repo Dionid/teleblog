@@ -127,6 +127,12 @@ func (h *HistoryMessageText) MarshalJSON() ([]byte, error) {
 	return json.Marshal(h.Items)
 }
 
+type HistoryMessageReaction struct {
+	Type  string `json:"type"` // emoji
+	Count int    `json:"count"`
+	Emoji string `json:"emoji"`
+}
+
 type HistoryMessage struct {
 	Id               int                        `json:"id"`
 	Type             string                     `json:"type"` // service | message
@@ -160,17 +166,15 @@ type HistoryMessage struct {
 	Reactions         []HistoryMessageReaction `json:"reactions"`
 }
 
-type HistoryMessageReaction struct {
-	Type  string `json:"type"` // emoji
-	Count int    `json:"count"`
-	Emoji string `json:"emoji"`
-}
-
 type History struct {
 	Id       int64            `json:"id"`
 	Name     string           `json:"name"`
-	Type     string           `json:"type"` // "public_channel" | "public_supergroup"
+	Type     string           `json:"type"` // "public_channel" | "public_supergroup" | "private_supergroup"
 	Messages []HistoryMessage `json:"messages"`
+}
+
+func (h *History) GetChatTgId() (int64, error) {
+	return strconv.ParseInt(fmt.Sprintf("-100%d", h.Id), 10, 64)
 }
 
 // HistoryZip represents the folder structure of a Telegram chat export
@@ -231,8 +235,4 @@ func FolderToHistoryExport(folderPath string) (*HistoryExport, error) {
 	historyExport.ResultJson = resultJsonPath
 
 	return &historyExport, nil
-}
-
-func (h *History) GetChatTgId() (int64, error) {
-	return strconv.ParseInt(fmt.Sprintf("-100%d", h.Id), 10, 64)
 }

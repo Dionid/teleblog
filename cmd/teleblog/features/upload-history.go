@@ -205,7 +205,15 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 			forwardFromTgId, err := strconv.ParseInt(
 				fmt.Sprintf(
 					"-100%s",
-					strings.ReplaceAll(message.FromId, "channel", ""),
+					strings.ReplaceAll(
+						strings.ReplaceAll(
+							message.FromId,
+							"user",
+							"",
+						),
+						"channel",
+						"",
+					),
 				),
 				10,
 				64,
@@ -406,7 +414,7 @@ func UploadHistory(app *pocketbase.PocketBase, historyExportPath string) error {
 		}
 
 		return nil
-	} else if chat.TgType == "supergroup" || chat.TgType == "group" {
+	} else if chat.TgType == "supergroup" || chat.TgType == "group" || chat.TgType == "private_supergroup" {
 		return ParseGroupHistory(app, history, &chat)
 	}
 
