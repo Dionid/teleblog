@@ -169,14 +169,26 @@ templ PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, p
 																	{ comment.ReplyToComment.AuthorTitle }
 																</div>
 															}
-															<div class="break-words link-as-contents">
-																@templ.Raw(comment.ReplyToComment.TextWithMarkup)
-															</div>
+															if comment.ReplyToComment.TextWithMarkup != "" {
+																<div class="break-words link-as-contents tl-text-with-markup">
+																	@templ.Raw(comment.ReplyToComment.TextWithMarkup)
+																</div>
+															} else if comment.ReplyToComment.Text != "" {
+																<div class="break-words link-as-contents tl-text-without-markup">
+																	@templ.Raw(comment.ReplyToComment.Text)
+																</div>
+															}
 														</div>
 													}
-													<div class="break-words link-as-contents ">
-														@templ.Raw(comment.TextWithMarkup)
-													</div>
+													if comment.TextWithMarkup != "" {
+														<div class="break-words link-as-contents tl-text-with-markup">
+															@templ.Raw(comment.TextWithMarkup)
+														</div>
+													} else if comment.Text != "" {
+														<div class="break-words link-as-contents tl-text-without-markup">
+															@templ.Raw(comment.Text)
+														</div>
+													}
 												</div>
 											</div>
 										</div>

@@ -483,7 +483,7 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</a>")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</a> ")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -506,46 +506,84 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 							return templ_7745c5c3_Err
 						}
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "<div class=\"break-words link-as-contents\">")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
+					if comment.ReplyToComment.TextWithMarkup != "" {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "<div class=\"break-words link-as-contents tl-text-with-markup\">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templ.Raw(comment.ReplyToComment.TextWithMarkup).Render(ctx, templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "</div>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					} else if comment.ReplyToComment.Text != "" {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 53, "<div class=\"break-words link-as-contents tl-text-without-markup\">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templ.Raw(comment.ReplyToComment.Text).Render(ctx, templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "</div>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
 					}
-					templ_7745c5c3_Err = templ.Raw(comment.ReplyToComment.TextWithMarkup).Render(ctx, templ_7745c5c3_Buffer)
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "</div></div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "</div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 53, "<div class=\"break-words link-as-contents \">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
+				if comment.TextWithMarkup != "" {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "<div class=\"break-words link-as-contents tl-text-with-markup\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templ.Raw(comment.TextWithMarkup).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 57, "</div>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				} else if comment.Text != "" {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, "<div class=\"break-words link-as-contents tl-text-without-markup\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templ.Raw(comment.Text).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 59, "</div>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
 				}
-				templ_7745c5c3_Err = templ.Raw(comment.TextWithMarkup).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "</div></div></div></div></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 60, "</div></div></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "<a target=\"_blank\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 61, "<a target=\"_blank\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var25 templ.SafeURL
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("https://t.me/%s/%d", chat.TgUsername, post.TgMessageId)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 188, Col: 100}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `post_page.templ`, Line: 200, Col: 100}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "\" class=\"flex w-full btn btn-primary mt-6\" aria-label=\"Добавить комментарий в Telegram\">Добавить комментарий +</a></div></div></div><div class=\"w-full p-4 sm:p-6\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "\" class=\"flex w-full btn btn-primary mt-6\" aria-label=\"Добавить комментарий в Telegram\">Добавить комментарий +</a></div></div></div><div class=\"w-full p-4 sm:p-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -553,7 +591,7 @@ func PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, po
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 57, "</div><div class=\"link opacity-0 link-secondary\"></div></div></div></div><dialog id=\"imageModal\" alt=\"modal\" class=\"modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent\"><div class=\"relative\"><img id=\"modalImage\" class=\"max-w-[95vw] max-h-[95vh] object-contain\" src=\"\"> <button onclick=\"closeImageModal()\" class=\"absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors\" aria-label=\"Закрыть изображение\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></dialog><script>\n\t\t\tfunction openImageModal(photoPath) {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tconst modalImg = document.getElementById('modalImage');\n\t\t\t\tmodalImg.src = photoPath;\n\t\t\t\tmodal.showModal();\n\t\t\t}\n\n\t\t\tfunction closeImageModal() {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tmodal.close();\n\t\t\t}\n\n\t\t\t// Close modal when clicking outside\n\t\t\tdocument.getElementById('imageModal').addEventListener('click', function(event) {\n\t\t\t\tif (event.target === this) {\n\t\t\t\t\tthis.close();\n\t\t\t\t}\n\t\t\t});\n\t\t</script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 63, "</div><div class=\"link opacity-0 link-secondary\"></div></div></div></div><dialog id=\"imageModal\" alt=\"modal\" class=\"modal backdrop:bg-black/50 p-4 w-full rounded-lg overflow-hidden bg-transparent\"><div class=\"relative\"><img id=\"modalImage\" class=\"max-w-[95vw] max-h-[95vh] object-contain\" src=\"\"> <button onclick=\"closeImageModal()\" class=\"absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors\" aria-label=\"Закрыть изображение\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></dialog><script>\n\t\t\tfunction openImageModal(photoPath) {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tconst modalImg = document.getElementById('modalImage');\n\t\t\t\tmodalImg.src = photoPath;\n\t\t\t\tmodal.showModal();\n\t\t\t}\n\n\t\t\tfunction closeImageModal() {\n\t\t\t\tconst modal = document.getElementById('imageModal');\n\t\t\t\tmodal.close();\n\t\t\t}\n\n\t\t\t// Close modal when clicking outside\n\t\t\tdocument.getElementById('imageModal').addEventListener('click', function(event) {\n\t\t\t\tif (event.target === this) {\n\t\t\t\t\tthis.close();\n\t\t\t\t}\n\t\t\t});\n\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

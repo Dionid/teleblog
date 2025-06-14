@@ -3,6 +3,8 @@ package httpapi
 import (
 	"encoding/json"
 	"fmt"
+	"html"
+	"strings"
 
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views"
 	"github.com/Dionid/teleblog/cmd/teleblog/httpapi/views/partials"
@@ -109,8 +111,14 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 			if len(rawMessage.Text.Items) > 0 {
 				post.TextWithMarkup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
-			} else {
+			} else if len(rawMessage.TextEntities) > 0 {
 				post.TextWithMarkup = teleblog.HistoryTextEntitiesWithToTextWithMarkup(rawMessage.TextEntities)
+			} else {
+				post.TextWithMarkup = strings.ReplaceAll(
+					html.EscapeString(rawMessage.Title),
+					"\n",
+					"<br>",
+				)
 			}
 		} else {
 			rawMessage := telebot.Message{}
@@ -120,9 +128,22 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 				return err
 			}
 
-			post.TextWithMarkup, err = teleblog.FormWebhookTextMarkup(post.Text, rawMessage.Entities)
-			if err != nil {
-				return err
+			if len(rawMessage.Entities) > 0 {
+				post.TextWithMarkup, err = teleblog.FormWebhookTextMarkup(rawMessage.Text, rawMessage.Entities)
+				if err != nil {
+					return err
+				}
+			} else if len(rawMessage.CaptionEntities) > 0 {
+				post.TextWithMarkup, err = teleblog.FormWebhookTextMarkup(rawMessage.Caption, rawMessage.CaptionEntities)
+				if err != nil {
+					return err
+				}
+			} else {
+				post.TextWithMarkup = strings.ReplaceAll(
+					html.EscapeString(rawMessage.Text),
+					"\n",
+					"<br>",
+				)
 			}
 		}
 
@@ -193,6 +214,12 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 					if err != nil {
 						return err
 					}
+				} else {
+					comment.TextWithMarkup = strings.ReplaceAll(
+						html.EscapeString(rawMessage.Text),
+						"\n",
+						"<br>",
+					)
 				}
 			}
 		}
