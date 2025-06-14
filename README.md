@@ -100,8 +100,7 @@ Status: Done
 
 Goal: Separate it from demo project
 
-1. ~~Custom logo, description, footer and menu~~
-1. ~~Custom domain~~
+Status: Done
 
 ## X phase
 
