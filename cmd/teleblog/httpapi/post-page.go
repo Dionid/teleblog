@@ -162,7 +162,11 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 				comment.AuthorTitle = rawMessage.From
 
-				comment.TextWithMarkup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
+				if len(rawMessage.Text.Items) > 0 {
+					comment.TextWithMarkup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
+				} else {
+					comment.TextWithMarkup = teleblog.HistoryTextEntitiesWithToTextWithMarkup(rawMessage.TextEntities)
+				}
 			} else {
 				rawMessage := telebot.Message{}
 
