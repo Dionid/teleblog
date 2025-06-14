@@ -234,11 +234,11 @@ templ IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDa
 												// 	<a href={ templ.SafeURL(GetPostUrl(post.Post)) } class="text-xl font-bold mt-2">{ post.Title }</a>
 												// }
 												if post.TextWithMarkup != "" {
-													<div class="link-as-contents" v-show="!post.collapsed">
+													<div class="link-as-contents tl-text-with-markup" v-show="!post.collapsed">
 														@templ.Raw(post.TextWithMarkup)
 													</div>
 												} else if post.Text != "" {
-													<div class="link-as-contents" v-show="!post.collapsed">
+													<div class="link-as-contents tl-raw-text" v-show="!post.collapsed">
 														@templ.Raw(post.Text)
 													</div>
 												}

@@ -183,9 +183,16 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 					comment.AuthorUsername = &rawMessage.Sender.Username
 				}
 
-				comment.TextWithMarkup, err = teleblog.FormWebhookTextMarkup(comment.Text, rawMessage.Entities)
-				if err != nil {
-					return err
+				if len(rawMessage.Entities) > 0 {
+					comment.TextWithMarkup, err = teleblog.FormWebhookTextMarkup(rawMessage.Text, rawMessage.Entities)
+					if err != nil {
+						return err
+					}
+				} else if len(rawMessage.CaptionEntities) > 0 {
+					comment.TextWithMarkup, err = teleblog.FormWebhookTextMarkup(rawMessage.Caption, rawMessage.CaptionEntities)
+					if err != nil {
+						return err
+					}
 				}
 			}
 		}

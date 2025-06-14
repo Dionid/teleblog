@@ -371,9 +371,16 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 						continue // Skip if unmarshal error, it may be a non-history message
 					}
 
-					markup, err = teleblog.FormWebhookTextMarkup(innerPost.Text, rawMessage.Entities)
-					if err != nil {
-						return err
+					if len(rawMessage.Entities) > 0 {
+						markup, err = teleblog.FormWebhookTextMarkup(rawMessage.Text, rawMessage.Entities)
+						if err != nil {
+							return err
+						}
+					} else if len(rawMessage.CaptionEntities) > 0 {
+						markup, err = teleblog.FormWebhookTextMarkup(rawMessage.Caption, rawMessage.CaptionEntities)
+						if err != nil {
+							return err
+						}
 					}
 				}
 
