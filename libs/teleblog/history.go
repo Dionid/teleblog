@@ -31,6 +31,11 @@ type HistoryMessageText struct {
 	Items []HistoryMessageTextItem `json:"entities"`
 }
 
+// HistoryMessageTextConverted is used to convert the JSON structure
+type HistoryMessageTextConverted struct {
+	Items []HistoryMessageTextItem `json:"entities"`
+}
+
 // HistoryMessage represents a single message in the chat history
 // It includes all fields from result.json and additional fields like reactions
 // and media types.
@@ -50,9 +55,15 @@ func (h *HistoryMessageText) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	var entities []interface{}
+	converted := HistoryMessageTextConverted{}
+	if err := json.Unmarshal(data, &converted); err == nil {
+		h.Items = converted.Items
+		return nil
+	}
+
+	var entities []any
 	if err := json.Unmarshal(data, &entities); err != nil {
-		return err
+		return fmt.Errorf("unmarshal HistoryMessageText: %w", err)
 	}
 
 	h.Items = []HistoryMessageTextItem{}
@@ -124,7 +135,30 @@ func (h *HistoryMessageText) MarshalJSON() ([]byte, error) {
 		return json.Marshal(text)
 	}
 
-	return json.Marshal(h.Items)
+	toMarshall := make([]any, len(h.Items))
+	for i, item := range h.Items {
+		if item.Type == EntityPlainText {
+			toMarshall[i] = item.Text
+		} else {
+			ent := map[string]any{
+				"type": item.Type,
+				"text": item.Text,
+			}
+			if item.Href != "" {
+				ent["href"] = item.Href
+			}
+			if item.DocumentId != "" {
+				ent["document_id"] = item.DocumentId
+			}
+			toMarshall[i] = ent
+		}
+	}
+	if len(toMarshall) == 1 && toMarshall[0] == "" {
+		// If there's only one item and it's an empty string, return as an empty string
+		return json.Marshal("")
+	}
+
+	return json.Marshal(toMarshall)
 }
 
 type HistoryMessageReaction struct {

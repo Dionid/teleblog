@@ -149,7 +149,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 		for _, comment := range comments {
 			jb, err := comment.TgMessageRaw.MarshalJSON()
 			if err != nil {
-				return err
+				return fmt.Errorf("PostPageHandler: marshal comment error: %w", err)
 			}
 
 			if comment.IsTgHistoryMessage {
@@ -157,7 +157,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 				err = json.Unmarshal(jb, &rawMessage)
 				if err != nil {
-					return err
+					return fmt.Errorf("PostPageHandler: unmarshal history message error: %w", err)
 				}
 
 				comment.AuthorTitle = rawMessage.From
