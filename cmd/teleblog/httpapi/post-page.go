@@ -107,7 +107,11 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 				return err
 			}
 
-			post.TextWithMarkup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
+			if len(rawMessage.Text.Items) > 0 {
+				post.TextWithMarkup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
+			} else {
+				post.TextWithMarkup = teleblog.HistoryTextEntitiesWithToTextWithMarkup(rawMessage.TextEntities)
+			}
 		} else {
 			rawMessage := telebot.Message{}
 

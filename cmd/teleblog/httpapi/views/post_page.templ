@@ -105,9 +105,16 @@ templ PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, p
 									// 		{ post.Title }
 									// 	</h1>
 									// }
-									<div class="break-words link-as-contents">
-										@templ.Raw(post.TextWithMarkup)
-									</div>
+									if post.TextWithMarkup != "" {
+										<div class="break-words link-as-contents">
+											@templ.Raw(post.TextWithMarkup)
+										</div>
+									} else if post.Text != "" {
+										<div class="break-words link-as-contents">
+											@templ.Raw(post.Text)
+										</div>
+									}
+									
 								</div>
 							</div>
 							<div class="flex flex-col gap-4">

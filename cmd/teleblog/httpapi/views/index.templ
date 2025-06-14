@@ -227,9 +227,15 @@ templ IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDa
 												// if post.Title != "" {
 												// 	<a href={ templ.SafeURL(GetPostUrl(post.Post)) } class="text-xl font-bold mt-2">{ post.Title }</a>
 												// }
-												<div class="link-as-contents" v-show="!post.collapsed">
-													@templ.Raw(post.TextWithMarkup)
-												</div>
+												if post.TextWithMarkup != "" {
+													<div class="link-as-contents" v-show="!post.collapsed">
+														@templ.Raw(post.TextWithMarkup)
+													</div>
+												} else if post.Text != "" {
+													<div class="link-as-contents" v-show="!post.collapsed">
+														@templ.Raw(post.Text)
+													</div>
+												}
 												<div class="link-as-contents" v-html="cropText(post.text_with_markup)" v-show="post.collapsed"></div>
 												<div class="btn mt-4" v-show="post.collapsed" @click={ fmt.Sprintf("expandPostText('%s')", post.Id) } aria-label="Развернуть текст">
 													Развернуть

@@ -349,7 +349,11 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 						continue
 					}
 
-					markup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
+					if len(rawMessage.Text.Items) > 0 {
+						markup = teleblog.FormHistoryRawTextWithMarkup(rawMessage.Text)
+					} else {
+						markup = teleblog.HistoryTextEntitiesWithToTextWithMarkup(rawMessage.TextEntities)
+					}
 				} else {
 					rawMessage := telebot.Message{}
 
@@ -375,6 +379,8 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 
 				post.TextWithMarkup += markup
 			}
+
+			post.Text = strings.ReplaceAll(post.Text, "\n", "<br>")
 
 			// Extract and fetch link preview
 			if url := extractFirstURL(post.Text); url != "" {
