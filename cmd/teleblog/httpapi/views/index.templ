@@ -119,6 +119,9 @@ templ Pagination(data PaginationData) {
 type IndexPageInfo struct {
 	Description string
 
+	SelectedTag string
+	TextSearch string
+
 	Header partials.HeaderData
 	Footer partials.FooterData
 }
@@ -153,6 +156,9 @@ templ IndexPage(base BaseLayoutData, info IndexPageInfo, pagination PaginationDa
 												<option value={ tag.Value }>{ tag.Value }</option>
 											}
 										</select>
+										if info.SelectedTag != "" || info.TextSearch != "" {
+											<a href="/" class="btn bg-white text-black join-item" aria-label="убрать поиск">x</a>
+										}
 										<div class="indicator">
 											<button class="btn btn-primary join-item" @click="search" aria-label="Искать">Поиск</button>
 										</div>

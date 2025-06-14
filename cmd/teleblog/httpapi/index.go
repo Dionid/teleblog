@@ -435,6 +435,12 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			})
 		}
 
+		fmt.Println(
+			"IndexPageHandler: rendering index page with filters",
+			filters.Tag,
+			filters.Search,
+		)
+
 		component := views.IndexPage(
 			views.BaseLayoutData{
 				Seo: views.SeoMetadata{
@@ -464,6 +470,8 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			},
 			views.IndexPageInfo{
 				Description: siteConfig.Description,
+				SelectedTag: filters.Tag,
+				TextSearch:  filters.Search,
 				Header:      header,
 				Footer: partials.FooterData{
 					Text: siteConfig.Footer,
