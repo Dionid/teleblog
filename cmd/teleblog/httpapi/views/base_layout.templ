@@ -23,6 +23,8 @@ type BaseLayoutData struct {
 	BgImage string // Background image for the layout, can be used in CSS
 	CustomCss string // Custom CSS styles to be injected into the layout
 	FavIcon string // URL to the favicon image
+
+	CanonicalUrl string // Canonical URL for the page, used for SEO
 }
 
 templ BaseLayout(data BaseLayoutData) {
@@ -34,6 +36,9 @@ templ BaseLayout(data BaseLayoutData) {
 				<meta name="description" content={ data.Seo.Description }/>
 			} else {
 				<meta name="description" content={ data.Seo.Description }/>
+			}
+			if data.CanonicalUrl != "" {
+				<link rel="canonical" href={ data.CanonicalUrl }/>
 			}
 			<meta property="og:site_name" content={ data.Seo.Title }/>
 			<meta property="og:title" content={ data.Seo.Title }/>

@@ -308,6 +308,10 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			}
 
 			for _, innerPost := range innerPosts {
+				if innerPost.Text != "" {
+					post.Slug = innerPost.Slug
+				}
+
 				// # Text
 				post.Text += innerPost.Text
 

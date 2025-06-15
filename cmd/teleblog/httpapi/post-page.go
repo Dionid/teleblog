@@ -295,6 +295,11 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 					&siteConfig.BaseModel,
 					siteConfig.Favicon,
 				),
+				CanonicalUrl: fmt.Sprintf(
+					"%s%s",
+					strings.TrimSuffix(app.Settings().Meta.AppUrl, "/"),
+					views.GetPostUrl(post.Post),
+				),
 			},
 			views.PostPageData{
 				Header: header,
