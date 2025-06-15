@@ -2,6 +2,7 @@ package httpapi
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"time"
 
@@ -71,30 +72,49 @@ Host: %s`, baseURL, baseURL)
 				loc = post.Id
 			}
 
+			changeFreq := "yearly"
+
+			if post.Created.Time().AddDate(0, 0, 7).Before(time.Now()) {
+				changeFreq = "weekly"
+			}
+
 			urls = append(urls, SitemapURL{
 				Loc:        baseURL + "/post/" + loc,
-				LastMod:    post.Created.Time(),
-				ChangeFreq: "monthly",
+				LastMod:    post.Updated.Time(),
+				ChangeFreq: changeFreq,
 				Priority:   "0.8",
 			})
 		}
 
-		xmlString := `<?xml version="1.0" encoding="UTF-8"?>
+		// Create XML with proper escaping using encoding/xml
+		xmlHeader := `<?xml version="1.0" encoding="UTF-8"?>
 		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
-
-		for _, url := range urls {
-			xmlString += `
-			<url>
-				<loc>` + url.Loc + `</loc>
-				<lastmod>` + url.LastMod.Format("2006-01-02") + `</lastmod>
-				<changefreq>` + url.ChangeFreq + `</changefreq>
-				<priority>` + url.Priority + `</priority>
-			</url>`
-		}
-
-		xmlString += `
+		xmlFooter := `
 		</urlset>`
 
-		return c.String(200, xmlString)
+		var xmlContent string
+		xmlContent = xmlHeader
+
+		for _, url := range urls {
+			// HTML escape any special characters in the URL
+			escapedLoc := html.EscapeString(url.Loc)
+
+			xmlContent += fmt.Sprintf(`
+			<url>
+				<loc>%s</loc>
+				<lastmod>%s</lastmod>
+				<changefreq>%s</changefreq>
+				<priority>%s</priority>
+			</url>`,
+				escapedLoc,
+				url.LastMod.Format("2006-01-02"),
+				url.ChangeFreq,
+				url.Priority)
+		}
+
+		xmlContent += xmlFooter
+
+		c.Response().Header().Set(echo.HeaderContentType, "application/xml")
+		return c.String(http.StatusOK, xmlContent)
 	})
 }
