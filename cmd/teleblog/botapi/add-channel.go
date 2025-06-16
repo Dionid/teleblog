@@ -114,6 +114,18 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 				if err := app.Dao().Save(&newChannelsChat); err != nil {
 					return err
 				}
+
+				_, err = app.DB().Update(
+					(&teleblog.Chat{}).TableName(),
+					map[string]interface{}{
+						"tg_linked_chat_id": newChannelsChat.Id,
+					},
+					dbx.HashExp{"id": channel.Id},
+				).Execute()
+				if err != nil {
+					app.Logger().Error("Error while updating channel with linked group", "error: ", err)
+					return c.Reply("Error while updating channel with linked group.")
+				}
 			}
 		}
 

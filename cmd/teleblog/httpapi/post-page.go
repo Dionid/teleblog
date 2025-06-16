@@ -147,11 +147,20 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			}
 		}
 
+		// Extract and fetch link preview
+		if url := extractFirstURL(post.Text); url != "" {
+			if preview, err := fetchLinkPreview(url); err == nil {
+				post.LinkPreview = preview
+			}
+		}
+
 		// # Get comments from group chat
 		chat := teleblog.Chat{}
 
 		err = teleblog.ChatQuery(app.Dao()).Where(
-			dbx.HashExp{"id": post.ChatId},
+			dbx.HashExp{
+				"id": post.ChatId,
+			},
 		).Limit(1).One(&chat)
 		if err != nil {
 			return err
@@ -159,7 +168,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 		comments := []*views.PostPageComment{}
 
-		postsIds := []interface{}{post.Id}
+		postsIds := []any{post.Id}
 		if len(albumPosts) > 0 {
 			for _, albumPost := range albumPosts {
 				postsIds = append(postsIds, albumPost.Id)
@@ -170,7 +179,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			dbx.In("post_id", postsIds...),
 		).All(&comments)
 		if err != nil {
-			return err
+			return fmt.Errorf("PostPageHandler: get comments error: %w", err)
 		}
 
 		// # Prepare comments
@@ -247,6 +256,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			}
 		}
 
+		// # Prepare SEO metadata
 		seo := views.SeoMetadata{
 			Title:       post.Title,
 			Description: post.SeoDescription,

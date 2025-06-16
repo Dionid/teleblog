@@ -1,0 +1,457 @@
+{
+  "animation": null,
+  "audio": null,
+  "author_signature": "",
+  "boost_added": null,
+  "business_connection_id": "",
+  "channel_chat_created": false,
+  "chat": {
+    "accent_color_id": 0,
+    "available_reactions": null,
+    "background_custom_emoji_id": "",
+    "birthdate": {
+      "day": 0,
+      "month": 0,
+      "year": 0
+    },
+    "business_intro": {
+      "message": "",
+      "sticker": null,
+      "title": ""
+    },
+    "business_location": {
+      "address": "",
+      "location": null
+    },
+    "business_opening_hours": {
+      "opening_hours": null,
+      "time_zone_name": ""
+    },
+    "can_send_paid_media": false,
+    "custom_emoji_sticker_set_name": "",
+    "emoji_status_custom_emoji_id": "",
+    "emoji_status_expiration_date": 0,
+    "first_name": "",
+    "has_restricted_voice_and_video_messages": false,
+    "has_visible_history": false,
+    "id": -1002056115855,
+    "last_name": "",
+    "max_reaction_count": 0,
+    "profile_accent_color_id": 0,
+    "profile_background_custom_emoji_id": "",
+    "title": "Кроля говорит — надо смотреть!",
+    "type": "supergroup",
+    "unrestrict_boost_count": 0,
+    "username": ""
+  },
+  "chat_background_set": {
+    "type": {
+      "document": {
+        "file_id": "",
+        "file_local": "",
+        "file_path": "",
+        "file_size": 0,
+        "file_unique_id": "",
+        "file_url": "",
+        "mime_type": ""
+      },
+      "fill": {
+        "type": ""
+      },
+      "type": ""
+    }
+  },
+  "contact": null,
+  "date": 1750016519,
+  "delete_chat_photo": false,
+  "dice": null,
+  "document": null,
+  "edit_date": 0,
+  "effect_id": "",
+  "external_reply": null,
+  "forward_date": 0,
+  "forward_from": null,
+  "forward_from_chat": null,
+  "forward_from_message_id": 0,
+  "forward_origin": null,
+  "forward_sender_name": "",
+  "forward_signature": "",
+  "from": {
+    "active_usernames": null,
+    "added_to_attachment_menu": false,
+    "can_connect_to_business": false,
+    "can_join_groups": false,
+    "can_read_all_group_messages": false,
+    "emoji_status_custom_emoji_id": "",
+    "first_name": "Маша",
+    "has_main_web_app": false,
+    "id": 373096178,
+    "is_bot": false,
+    "is_forum": false,
+    "is_premium": false,
+    "language_code": "",
+    "last_name": "",
+    "supports_inline_queries": false,
+    "username": "kory_mf"
+  },
+  "game": null,
+  "giveaway": null,
+  "giveaway_completed": null,
+  "giveaway_created": null,
+  "giveaway_winners": null,
+  "group_chat_created": false,
+  "invoice": null,
+  "is_automatic_forward": false,
+  "is_topic_message": false,
+  "left_chat_member": null,
+  "location": null,
+  "media_group_id": "",
+  "message_id": 1196,
+  "message_thread_id": 1189,
+  "migrate_from_chat_id": 0,
+  "migrate_to_chat_id": 0,
+  "new_chat_member": null,
+  "new_chat_members": null,
+  "new_chat_photo": null,
+  "new_chat_title": "",
+  "paid_media": {
+    "paid_media": null,
+    "star_count": 0
+  },
+  "photo": null,
+  "pinned_message": null,
+  "poll": null,
+  "quote": null,
+  "refunded_payment": null,
+  "reply_to_message": {
+    "animation": null,
+    "audio": null,
+    "author_signature": "",
+    "boost_added": null,
+    "business_connection_id": "",
+    "caption": "Еще одна причина улучшать алгоритмы нейрогенераций —  \nсборка визуалов ретро-хоррор-аним, которых никогда не будет\n\nАвтор: retroosunset \n\n🐈@krolik_anja",
+    "caption_entities": [
+      {
+        "custom_emoji_id": "",
+        "length": 12,
+        "offset": 123,
+        "type": "text_link",
+        "url": "https://www.instagram.com/retroosunset?igsh=cHdwdDBqODZpMDJz"
+      },
+      {
+        "custom_emoji_id": "",
+        "length": 12,
+        "offset": 123,
+        "type": "bold"
+      },
+      {
+        "custom_emoji_id": "",
+        "length": 12,
+        "offset": 123,
+        "type": "italic"
+      },
+      {
+        "custom_emoji_id": "",
+        "length": 2,
+        "offset": 138,
+        "type": "bold"
+      },
+      {
+        "custom_emoji_id": "5440656341968374557",
+        "length": 2,
+        "offset": 138,
+        "type": "custom_emoji"
+      },
+      {
+        "custom_emoji_id": "",
+        "length": 12,
+        "offset": 140,
+        "type": "mention"
+      },
+      {
+        "custom_emoji_id": "",
+        "length": 12,
+        "offset": 140,
+        "type": "bold"
+      }
+    ],
+    "channel_chat_created": false,
+    "chat": {
+      "accent_color_id": 0,
+      "available_reactions": null,
+      "background_custom_emoji_id": "",
+      "birthdate": {
+        "day": 0,
+        "month": 0,
+        "year": 0
+      },
+      "business_intro": {
+        "message": "",
+        "sticker": null,
+        "title": ""
+      },
+      "business_location": {
+        "address": "",
+        "location": null
+      },
+      "business_opening_hours": {
+        "opening_hours": null,
+        "time_zone_name": ""
+      },
+      "can_send_paid_media": false,
+      "custom_emoji_sticker_set_name": "",
+      "emoji_status_custom_emoji_id": "",
+      "emoji_status_expiration_date": 0,
+      "first_name": "",
+      "has_restricted_voice_and_video_messages": false,
+      "has_visible_history": false,
+      "id": -1002056115855,
+      "last_name": "",
+      "max_reaction_count": 0,
+      "profile_accent_color_id": 0,
+      "profile_background_custom_emoji_id": "",
+      "title": "Кроля говорит — надо смотреть!",
+      "type": "supergroup",
+      "unrestrict_boost_count": 0,
+      "username": ""
+    },
+    "chat_background_set": {
+      "type": {
+        "document": {
+          "file_id": "",
+          "file_local": "",
+          "file_path": "",
+          "file_size": 0,
+          "file_unique_id": "",
+          "file_url": "",
+          "mime_type": ""
+        },
+        "fill": {
+          "type": ""
+        },
+        "type": ""
+      }
+    },
+    "contact": null,
+    "date": 1750013175,
+    "delete_chat_photo": false,
+    "dice": null,
+    "document": null,
+    "edit_date": 1750013190,
+    "effect_id": "",
+    "external_reply": null,
+    "forward_date": 1750013172,
+    "forward_from": null,
+    "forward_from_chat": {
+      "accent_color_id": 0,
+      "available_reactions": null,
+      "background_custom_emoji_id": "",
+      "birthdate": {
+        "day": 0,
+        "month": 0,
+        "year": 0
+      },
+      "business_intro": {
+        "message": "",
+        "sticker": null,
+        "title": ""
+      },
+      "business_location": {
+        "address": "",
+        "location": null
+      },
+      "business_opening_hours": {
+        "opening_hours": null,
+        "time_zone_name": ""
+      },
+      "can_send_paid_media": false,
+      "custom_emoji_sticker_set_name": "",
+      "emoji_status_custom_emoji_id": "",
+      "emoji_status_expiration_date": 0,
+      "first_name": "",
+      "has_restricted_voice_and_video_messages": false,
+      "has_visible_history": false,
+      "id": -1002034475322,
+      "last_name": "",
+      "max_reaction_count": 0,
+      "profile_accent_color_id": 0,
+      "profile_background_custom_emoji_id": "",
+      "title": "Кроля говорит — надо смотреть!",
+      "type": "channel",
+      "unrestrict_boost_count": 0,
+      "username": "krolya_says"
+    },
+    "forward_from_message_id": 647,
+    "forward_origin": {
+      "chat": {
+        "accent_color_id": 0,
+        "available_reactions": null,
+        "background_custom_emoji_id": "",
+        "birthdate": {
+          "day": 0,
+          "month": 0,
+          "year": 0
+        },
+        "business_intro": {
+          "message": "",
+          "sticker": null,
+          "title": ""
+        },
+        "business_location": {
+          "address": "",
+          "location": null
+        },
+        "business_opening_hours": {
+          "opening_hours": null,
+          "time_zone_name": ""
+        },
+        "can_send_paid_media": false,
+        "custom_emoji_sticker_set_name": "",
+        "emoji_status_custom_emoji_id": "",
+        "emoji_status_expiration_date": 0,
+        "first_name": "",
+        "has_restricted_voice_and_video_messages": false,
+        "has_visible_history": false,
+        "id": -1002034475322,
+        "last_name": "",
+        "max_reaction_count": 0,
+        "profile_accent_color_id": 0,
+        "profile_background_custom_emoji_id": "",
+        "title": "Кроля говорит — надо смотреть!",
+        "type": "channel",
+        "unrestrict_boost_count": 0,
+        "username": "krolya_says"
+      },
+      "date": 1750013172,
+      "message_id": 647,
+      "type": "channel"
+    },
+    "forward_sender_name": "",
+    "forward_signature": "",
+    "from": {
+      "active_usernames": null,
+      "added_to_attachment_menu": false,
+      "can_connect_to_business": false,
+      "can_join_groups": false,
+      "can_read_all_group_messages": false,
+      "emoji_status_custom_emoji_id": "",
+      "first_name": "Telegram",
+      "has_main_web_app": false,
+      "id": 777000,
+      "is_bot": false,
+      "is_forum": false,
+      "is_premium": false,
+      "language_code": "",
+      "last_name": "",
+      "supports_inline_queries": false,
+      "username": ""
+    },
+    "game": null,
+    "giveaway": null,
+    "giveaway_completed": null,
+    "giveaway_created": null,
+    "giveaway_winners": null,
+    "group_chat_created": false,
+    "invoice": null,
+    "is_automatic_forward": true,
+    "is_topic_message": false,
+    "left_chat_member": null,
+    "location": null,
+    "media_group_id": "-7886409730091765881",
+    "message_id": 1189,
+    "message_thread_id": 0,
+    "migrate_from_chat_id": 0,
+    "migrate_to_chat_id": 0,
+    "new_chat_member": null,
+    "new_chat_members": null,
+    "new_chat_photo": null,
+    "new_chat_title": "",
+    "paid_media": {
+      "paid_media": null,
+      "star_count": 0
+    },
+    "photo": {
+      "file_id": "AgACAgIAAx0CeUOhOgACAodoTxT0Flx7--yUsc-SNynaFAABf7UAAmH4MRsVqHhKdnN2AAHwcGlsAQADAgADeQADNgQ",
+      "file_local": "",
+      "file_path": "",
+      "file_size": 159549,
+      "file_unique_id": "AQADYfgxGxWoeEp-",
+      "file_url": "",
+      "height": 1080,
+      "width": 1080
+    },
+    "pinned_message": null,
+    "poll": null,
+    "quote": null,
+    "refunded_payment": null,
+    "reply_to_message": null,
+    "reply_to_story": null,
+    "sender_boost_count": 0,
+    "sender_business_bot": null,
+    "sender_chat": {
+      "accent_color_id": 0,
+      "available_reactions": null,
+      "background_custom_emoji_id": "",
+      "birthdate": {
+        "day": 0,
+        "month": 0,
+        "year": 0
+      },
+      "business_intro": {
+        "message": "",
+        "sticker": null,
+        "title": ""
+      },
+      "business_location": {
+        "address": "",
+        "location": null
+      },
+      "business_opening_hours": {
+        "opening_hours": null,
+        "time_zone_name": ""
+      },
+      "can_send_paid_media": false,
+      "custom_emoji_sticker_set_name": "",
+      "emoji_status_custom_emoji_id": "",
+      "emoji_status_expiration_date": 0,
+      "first_name": "",
+      "has_restricted_voice_and_video_messages": false,
+      "has_visible_history": false,
+      "id": -1002034475322,
+      "last_name": "",
+      "max_reaction_count": 0,
+      "profile_accent_color_id": 0,
+      "profile_background_custom_emoji_id": "",
+      "title": "Кроля говорит — надо смотреть!",
+      "type": "channel",
+      "unrestrict_boost_count": 0,
+      "username": "krolya_says"
+    },
+    "show_caption_above_media": true,
+    "sticker": null,
+    "story": null,
+    "successful_payment": null,
+    "supergroup_chat_created": false,
+    "text": "",
+    "venue": null,
+    "via_bot": null,
+    "video": null,
+    "video_note": null,
+    "voice": null
+  },
+  "reply_to_story": null,
+  "sender_boost_count": 0,
+  "sender_business_bot": null,
+  "sender_chat": null,
+  "show_caption_above_media": false,
+  "sticker": null,
+  "story": null,
+  "successful_payment": null,
+  "supergroup_chat_created": false,
+  "text": "Кто шарит, посоветуйте, в таком стиле что можно глянуть?",
+  "venue": null,
+  "via_bot": null,
+  "video": null,
+  "video_note": null,
+  "voice": null
+}

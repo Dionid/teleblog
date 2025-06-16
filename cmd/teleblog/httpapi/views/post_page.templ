@@ -23,6 +23,7 @@ type PostPageComment struct {
 type PostPagePost struct {
 	teleblog.Post
 	TextWithMarkup string `json:"text_with_markup"`
+	LinkPreview *LinkPreview `json:"link_preview"`
 }
 
 type PostPageData struct {
@@ -114,7 +115,20 @@ templ PostPage(base BaseLayoutData, postPage PostPageData, chat teleblog.Chat, p
 											@templ.Raw(post.Text)
 										</div>
 									}
-									
+									if post.LinkPreview != nil {
+										<a href={ templ.SafeURL(post.LinkPreview.URL) } target="_blank" class="flex p-2 hover:bg-slate-50 transition-colors border border-gray-200 rounded-md m-4 mb-0 overflow-hidden">
+											if post.LinkPreview.Image != "" {
+												<img src={ post.LinkPreview.Image } alt={ post.LinkPreview.Title } class="w-24 h-24 object-cover rounded"/>
+											}
+											<div class="flex flex-col ml-4 overflow-hidden">
+												<div class="font-bold line-clamp-2">{ post.LinkPreview.Title }</div>
+												if post.LinkPreview.Description != "" {
+													<div class="text-sm text-gray-600 mt-1 line-clamp-2">{ post.LinkPreview.Description }</div>
+												}
+												<div class="text-sm text-gray-500 mt-1">{ post.LinkPreview.URL }</div>
+											</div>
+										</a>
+									}
 								</div>
 							</div>
 							<div class="flex flex-col gap-4">

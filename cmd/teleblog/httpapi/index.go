@@ -42,7 +42,7 @@ func baseQuery(
 		// to avoid unsupported post types (video, photo, file, etc.)
 		AndWhere(
 			dbx.Or(
-				dbx.NewExp(`post.text != ""`),
+				dbx.NewExp(`post.text != ""`), // THIS IS CRUCIAL
 				dbx.NewExp(`json_array_length(post.media) > 0`),
 			),
 		).

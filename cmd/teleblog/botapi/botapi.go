@@ -64,7 +64,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) error {
 	})
 
 	b.Use(middleware.Recover(func(err error, ctx telebot.Context) {
-		app.Logger().Error("Error in bot: ", err)
+		app.Logger().Error("Error in bot: ", "error:", err)
 	}))
 
 	VerifyTokenCommand(b, app)
@@ -205,11 +205,6 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) error {
 
 		if skipContent(c) {
 			return nil
-		}
-
-		// # 0 if reply to something, or Post.Id if reply to post
-		if c.Message().ReplyTo != nil {
-			fmt.Println("c.Message().ReplyTo.OriginalMessageID", c.Message().ReplyTo.OriginalMessageID)
 		}
 
 		chat := &teleblog.Chat{}
