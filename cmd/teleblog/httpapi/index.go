@@ -313,7 +313,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 				}
 
 				// # Text
-				post.Text += innerPost.Text
+				post.Text += innerPost.Text + "\n\n"
 
 				if innerPost.IsTgHistoryMessage {
 					post.IsTgHistoryMessage = innerPost.IsTgHistoryMessage

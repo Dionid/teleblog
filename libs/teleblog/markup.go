@@ -29,11 +29,15 @@ func FormHistoryRawTextWithMarkup(markup HistoryMessageText) string {
 		case telebot.EntityURL:
 			link := entity.Text
 			if strings.Contains(link, "://") == false {
-				link = "http://" + link
+				link = "https://" + link
 			}
-			text += "<a target='_blank' href='https://" + link + "' class='inline c-link'>" + entity.Text + "</a>"
+			text += "<a target='_blank' href='" + link + "' class='inline c-link'>" + entity.Text + "</a>"
 		case "link":
-			text += "<a target='_blank' class='inline c-link' href='https://" + entity.Text + "'>" + entity.Text + "</a>"
+			link := entity.Text
+			if strings.Contains(link, "://") == false {
+				link = "https://" + link
+			}
+			text += "<a target='_blank' class='inline c-link' href='" + entity.Text + "'>" + entity.Text + "</a>"
 		case telebot.EntityHashtag:
 			tag, err := CorrectTagValue(entity.Text)
 			if err != nil {
@@ -69,11 +73,15 @@ func HistoryTextEntitiesWithToTextWithMarkup(markup []HistoryMessageTextEntity) 
 		case telebot.EntityURL:
 			link := entity.Text
 			if strings.Contains(link, "://") == false {
-				link = "http://" + link
+				link = "https://" + link
 			}
-			text += "<a target='_blank' href='https://" + link + "' class='inline c-link'>" + entity.Text + "</a>"
+			text += "<a target='_blank' href='" + link + "' class='inline c-link'>" + entity.Text + "</a>"
 		case "link":
-			text += "<a target='_blank' class='inline c-link' href='https://" + entity.Text + "'>" + entity.Text + "</a>"
+			link := entity.Text
+			if strings.Contains(link, "://") == false {
+				link = "https://" + link
+			}
+			text += "<a target='_blank' class='inline c-link' href='" + link + "'>" + entity.Text + "</a>"
 		case telebot.EntityHashtag:
 			tag, err := CorrectTagValue(entity.Text)
 			if err != nil {
