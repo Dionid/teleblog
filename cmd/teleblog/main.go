@@ -15,7 +15,6 @@ import (
 	_ "github.com/Dionid/teleblog/cmd/teleblog/pb_migrations"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/mails"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"gopkg.in/telebot.v4"
 )
@@ -112,11 +111,6 @@ func main() {
 		}
 
 		return nil
-	})
-
-	// ## Send verification email on sign-up
-	app.OnRecordAfterCreateRequest("users").Add(func(e *core.RecordCreateEvent) error {
-		return mails.SendRecordVerification(app, e.Record)
 	})
 
 	// # Start app

@@ -61,7 +61,7 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 			Limit(1).
 			One(channel)
 		if err != nil {
-			if !strings.Contains(err.Error(), "no rows in result set") {
+			if !strings.Contains(err.Error(), "no rows") {
 				return err
 			}
 
@@ -83,7 +83,7 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 		}
 
 		// # Add linked chat
-		if tgChannel.LinkedChatID > 0 {
+		if tgChannel.LinkedChatID != 0 {
 			linkedGroup, err := b.ChatByID(tgChannel.LinkedChatID)
 			if err != nil {
 				return c.Reply("No channel chat like this found.")
@@ -96,7 +96,7 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 				Limit(1).
 				One(channelsChat)
 			if err != nil {
-				if !strings.Contains(err.Error(), "no rows in result set") {
+				if !strings.Contains(err.Error(), "no rows") {
 					return err
 				}
 

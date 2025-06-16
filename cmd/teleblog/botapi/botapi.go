@@ -248,7 +248,7 @@ func InitBotCommands(b *telebot.Bot, app *pocketbase.PocketBase) error {
 			post := teleblog.Post{}
 
 			// # Bind by thread id
-			if c.Message().ThreadID > 0 {
+			if c.Message().ThreadID != 0 {
 				err := teleblog.PostQuery(app.Dao()).
 					AndWhere(dbx.HashExp{"tg_group_message_id": c.Message().ThreadID}).
 					Limit(1).
