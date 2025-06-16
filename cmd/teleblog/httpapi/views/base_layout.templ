@@ -141,9 +141,10 @@ templ BaseLayout(data BaseLayoutData) {
 					--p: %s;
 				}
 			</style>`,
-			 	templu.OrDefaultString(data.PrimaryColor, "89.51 0.2132 96.61"),
+			 	templu.OrDefaultString(data.PrimaryColor, "89.51% 0.2132 96.61"),
 			),
 		)
+		<link rel="stylesheet" href={ templu.PathWithVersion(ctx, "/public/custom.css") } />
 		if data.CustomCss != "" {
 			@templ.Raw(
 				fmt.Sprintf(
@@ -152,6 +153,5 @@ templ BaseLayout(data BaseLayoutData) {
 				),
 			)
 		}
-		<link rel="stylesheet" href={ templu.PathWithVersion(ctx, "/public/custom.css") } />
 	</html>
 }
