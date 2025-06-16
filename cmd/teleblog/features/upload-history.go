@@ -202,22 +202,7 @@ func ParseGroupHistory(app core.App, history teleblog.History, chat *teleblog.Ch
 
 		// # If this is forward, than can be source post
 		if message.ForwardedFrom != nil {
-			forwardFromTgId, err := strconv.ParseInt(
-				fmt.Sprintf(
-					"-100%s",
-					strings.ReplaceAll(
-						strings.ReplaceAll(
-							message.FromId,
-							"user",
-							"",
-						),
-						"channel",
-						"",
-					),
-				),
-				10,
-				64,
-			)
+			forwardFromTgId, err := teleblog.FormNegativeTgIdFromString(message.FromId)
 			if err != nil {
 				return err
 			}
@@ -378,7 +363,7 @@ func UploadHistory(app *pocketbase.PocketBase, historyExportPath string) error {
 
 	resultFile, err := os.Open(structure.ResultJson)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open result.json: %v", err)
 	}
 	defer resultFile.Close()
 
@@ -390,16 +375,23 @@ func UploadHistory(app *pocketbase.PocketBase, historyExportPath string) error {
 
 	chatId, err := history.GetChatTgId()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get chat ID from history: %v", err)
 	}
 
 	var chat teleblog.Chat
 
+	chatIdNeg, err := teleblog.FormNegativeTgIdFromInt(chatId)
+	if err != nil {
+		return fmt.Errorf("failed to form negative tg_id from chat ID %d: %v", chatId, err)
+	}
+
 	err = teleblog.ChatQuery(app.Dao()).Where(
 		dbx.HashExp{"tg_chat_id": chatId},
+	).OrWhere(
+		dbx.HashExp{"tg_chat_id": chatIdNeg},
 	).Limit(1).One(&chat)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to find chat with tg_chat_id %d: %v", chatId, err)
 	}
 
 	if chat.TgType == "channel" {
