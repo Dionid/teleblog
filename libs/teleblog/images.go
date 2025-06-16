@@ -7,5 +7,9 @@ func ImagePath(
 	image *models.BaseModel,
 	imageName string,
 ) string {
+	if imageName == "" {
+		return ""
+	}
+
 	return "/api/files/" + collection.Id + "/" + image.Id + "/" + imageName
 }

@@ -428,14 +428,14 @@ func BaseLayout(data BaseLayoutData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "), \"init\", {\n\t\t\t\t\t\tclickmap:true,\n\t\t\t\t\t\ttrackLinks:true,\n\t\t\t\t\t\taccurateTrackBounce:true\n\t\t\t\t});\n\t\t\t</script> <noscript><div><img src=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "), \"init\", {\n\t\t\t\t\t\tclickmap:true,\n\t\t\t\t\t\ttrackLinks:true,\n\t\t\t\t\t\taccurateTrackBounce:true,\n\t\t\t\t\t\twebvisor:true\n\t\t\t\t});\n\t\t\t</script> <noscript><div><img src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs("https://mc.yandex.com/watch/" + data.YandexMetrikaCounter)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 134, Col: 87}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 135, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -466,7 +466,7 @@ func BaseLayout(data BaseLayoutData) templ.Component {
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(templu.PathWithVersion(ctx, "/public/custom.css"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 147, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `base_layout.templ`, Line: 148, Col: 87}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
