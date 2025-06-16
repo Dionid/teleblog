@@ -472,6 +472,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 					&siteConfig.BaseModel,
 					siteConfig.Favicon,
 				),
+				CustomCss: siteConfig.CustomCss,
 			},
 			views.IndexPageInfo{
 				Description: siteConfig.Description,
