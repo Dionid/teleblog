@@ -244,7 +244,6 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			"post.tg_post_id",
 			"post.tg_group_message_id",
 			"post.created",
-			"count(comment.id) as comments_count",
 			"chat.tg_username as tg_chat_username",
 		).
 			LeftJoin(
@@ -293,6 +292,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 
 			innerPosts := []InnerPost{}
 
+			// THIS MUST CONTAIN ORIGINAL POST
 			err := teleblog.PostQuery(app.Dao()).
 				Select(
 					"post.*",
@@ -303,7 +303,7 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 					dbx.NewExp("comment.post_id = post.id"),
 				).
 				Where(
-					dbx.HashExp{"album_id": post.AlbumID},
+					dbx.HashExp{"post.album_id": post.AlbumID},
 				).
 				GroupBy("post.id").
 				All(&innerPosts)
