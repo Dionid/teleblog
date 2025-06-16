@@ -159,8 +159,15 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 
 		comments := []*views.PostPageComment{}
 
+		postsIds := []string{post.Id}
+		if len(albumPosts) > 0 {
+			for _, albumPost := range albumPosts {
+				postsIds = append(postsIds, albumPost.Id)
+			}
+		}
+
 		err = teleblog.CommentQuery(app.Dao()).Where(
-			dbx.HashExp{"post_id": post.Id},
+			dbx.In("post_id", postsIds),
 		).All(&comments)
 		if err != nil {
 			return err

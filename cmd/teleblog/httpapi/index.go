@@ -231,14 +231,6 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 			return err
 		}
 
-		// type Result sutrct {
-		// 	Id 		  string `db:"id"`
-		// 	AlbumID   string `db:"album_id"`
-		// 	TgChatUsername string `db:"tg_chat_username"`
-		// 	CommentCount int64 `db:"comments_count"`
-
-		// }
-
 		// ## Posts
 		posts := []*views.InpexPagePost{}
 		contentQuery := baseQuery(
@@ -294,11 +286,27 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 		}
 
 		for _, post := range posts {
-			innerPosts := []teleblog.Post{}
+			type InnerPost struct {
+				teleblog.Post
+				CommentsCount int `db:"comments_count"`
+			}
 
-			err := teleblog.PostQuery(app.Dao()).Where(
-				dbx.HashExp{"album_id": post.AlbumID},
-			).All(&innerPosts)
+			innerPosts := []InnerPost{}
+
+			err := teleblog.PostQuery(app.Dao()).
+				Select(
+					"post.*",
+					"count(comment.id) as comments_count",
+				).
+				LeftJoin(
+					"comment",
+					dbx.NewExp("comment.post_id = post.id"),
+				).
+				Where(
+					dbx.HashExp{"album_id": post.AlbumID},
+				).
+				GroupBy("post.id").
+				All(&innerPosts)
 			if err != nil {
 				return fmt.Errorf("IndexPageHandler: get inner posts error: %w", err)
 			}
@@ -389,6 +397,9 @@ func IndexPageHandler(config Config, e *core.ServeEvent, app core.App) {
 				}
 
 				post.TextWithMarkup += markup
+
+				// # Comments count
+				post.CommentsCount += innerPost.CommentsCount
 			}
 
 			post.Text = strings.ReplaceAll(post.Text, "\n", "<br>")
