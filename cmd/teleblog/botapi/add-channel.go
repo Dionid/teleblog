@@ -86,6 +86,7 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 		if tgChannel.LinkedChatID != 0 {
 			linkedGroup, err := b.ChatByID(tgChannel.LinkedChatID)
 			if err != nil {
+				app.Logger().Error("Error while getting linked group", "error: ", err)
 				return c.Reply("No channel chat like this found.")
 			}
 
