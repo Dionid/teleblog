@@ -380,15 +380,8 @@ func UploadHistory(app *pocketbase.PocketBase, historyExportPath string) error {
 
 	var chat teleblog.Chat
 
-	chatIdNeg, err := teleblog.FormNegativeTgIdFromInt(chatId)
-	if err != nil {
-		return fmt.Errorf("failed to form negative tg_id from chat ID %d: %v", chatId, err)
-	}
-
 	err = teleblog.ChatQuery(app.Dao()).Where(
 		dbx.HashExp{"tg_chat_id": chatId},
-	).OrWhere(
-		dbx.HashExp{"tg_chat_id": chatIdNeg},
 	).Limit(1).One(&chat)
 	if err != nil {
 		return fmt.Errorf("failed to find chat with tg_chat_id %d: %v", chatId, err)

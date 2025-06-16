@@ -47,19 +47,3 @@ func FormNegativeTgIdFromString(id string) (int64, error) {
 
 	return forwardFromTgId, err
 }
-
-func FormNegativeTgIdFromInt(id int64) (int64, error) {
-	forwardFromTgId, err := strconv.ParseInt(
-		fmt.Sprintf(
-			"-100%d",
-			id,
-		),
-		10,
-		64,
-	)
-	if err != nil {
-		return 0, err
-	}
-
-	return forwardFromTgId, err
-}
