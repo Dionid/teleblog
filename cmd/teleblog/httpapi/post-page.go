@@ -166,6 +166,7 @@ func PostPageHandler(e *core.ServeEvent, app core.App) {
 			return err
 		}
 
+		// # Get comments for post
 		comments := []*views.PostPageComment{}
 
 		postsIds := []any{post.Id}
