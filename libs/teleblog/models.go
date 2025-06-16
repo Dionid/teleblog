@@ -14,10 +14,12 @@ var _ models.Model = (*User)(nil)
 type User struct {
 	models.BaseModel
 
-	Email    string `json:"email" db:"email"`
-	Verified bool   `json:"verified" db:"verified"`
-	Name     string `json:"name" db:"name"`
-	// PasswordHash string `json:"passwordHash" db:"password_hash"`
+	Username     string `json:"username" db:"username"`
+	Email        string `json:"email" db:"email"`
+	Verified     bool   `json:"verified" db:"verified"`
+	Name         string `json:"name" db:"name"`
+	PasswordHash string `json:"-" db:"passwordHash"`
+	TokenKey     string `db:"tokenKey" json:"-"`
 
 	TgUserId   int64  `json:"tgUserId" db:"tg_user_id"`
 	TgUsername string `json:"tgUsername" db:"tg_username"`

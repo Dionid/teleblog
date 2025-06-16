@@ -20,7 +20,7 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 			One(user)
 
 		if err != nil {
-			app.Logger().Error("!!! Error while getting user", "error: ", err)
+			app.Logger().Error("Error while getting user", "error: ", err)
 			return c.Reply("You are not verified.")
 		}
 
@@ -87,7 +87,7 @@ func AddChannelCommand(b *telebot.Bot, app *pocketbase.PocketBase) {
 			linkedGroup, err := b.ChatByID(tgChannel.LinkedChatID)
 			if err != nil {
 				app.Logger().Error("Error while getting linked group", "error: ", err)
-				return c.Reply("No channel chat like this found.")
+				return c.Reply(err.Error())
 			}
 
 			channelsChat := &teleblog.Chat{}

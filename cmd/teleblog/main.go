@@ -104,7 +104,7 @@ func main() {
 
 		// # Prepare DB
 		if !config.DisablePrepareDB {
-			err := prepareDB(app)
+			err := prepareDB(app, config)
 			if err != nil {
 				return fmt.Errorf("prepare DB error: %s", err)
 			}
